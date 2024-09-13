@@ -1,0 +1,138 @@
+import React, {useState} from 'react';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import Card from "../../Components/Card/Card";
+import Header from "../../Components/Header/Header";
+import Game from "../../Components/Game/Game";
+import {Dropdown} from '@mui/base/Dropdown';
+import {Menu} from '@mui/base/Menu';
+import {MenuButton as BaseMenuButton} from '@mui/base/MenuButton';
+import {MenuItem as BaseMenuItem, menuItemClasses} from '@mui/base/MenuItem';
+import {blue, grey} from "@mui/material/colors";
+import {styled} from "@mui/material";
+import {useNavigate} from "react-router-dom";
+
+const {getData, getGames} = require('../../db/db');
+
+const items = getData();
+const games = getGames();
+
+function Main() {
+    const navigate = useNavigate();
+
+    const sortValues = {
+        'popular_desc': 'по популярности',
+        'price_desc': 'по убыванию цены',
+        'price_asc': 'по возрастанию цены',
+    };
+    const [sortBy, setSortBy] = useState('popular_desc')
+    const createHandleMenuClick = (menuItem: string) => {
+        return () => {
+            setSortBy(menuItem);
+        };
+    };
+
+    const Listbox = styled('ul')(({theme}) => `
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 0.875rem;
+  box-sizing: border-box;
+  padding: 6px;
+  margin: 12px 0;
+  min-width: 200px;
+  border-radius: 12px;
+  overflow: auto;
+  outline: 0px;
+  background: ${theme.palette.mode === 'dark' ? grey[900] : '#fff'};
+  border: 1px solid ${theme.palette.mode === 'dark' ? grey[700] : grey[200]};
+  color: ${theme.palette.mode === 'dark' ? grey[300] : grey[900]};
+  box-shadow: 0px 4px 6px ${theme.palette.mode === 'dark' ? 'rgba(0,0,0, 0.50)' : 'rgba(0,0,0, 0.05)'};
+  z-index: 1;
+  `,);
+
+    const MenuButton = styled(BaseMenuButton)(({theme, ...props}) => `
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-weight: 600;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  padding: 0;
+  padding-left: ".2rem";
+  border-radius: 8px;
+  transition: all 150ms ease;
+  background: var(--tg-theme-bg-color);
+  cursor: pointer;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  &:hover {
+    background: var(--tg-theme-secondary-bg-color);
+    border-color: ${theme.palette.mode === 'dark' ? grey[600] : grey[300]};
+  }
+  `,);
+
+    const MenuItem = styled(BaseMenuItem)(({theme}) => `
+  list-style: none;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: default;
+  user-select: none;
+
+  &:last-of-type {
+    border-bottom: none;
+  }
+
+  &:focus {
+    outline: 1px solid ${theme.palette.mode === 'dark' ? blue[600] : blue[200]};
+    background-color: var(--tg-theme-bg-color);
+    color: var(--tg-theme-text-color);
+  }
+
+  &.${menuItemClasses.disabled} {
+    color: var(--tg-theme-text-color);
+  }
+  `,);
+    return <div>
+        <Header/>
+        <div className="flex vertical-padding horizontal-padding">
+            <h2>Игры</h2>
+        </div>
+        <div className="flex align-stretch flex-wrap w-100">
+            {games.map((game) => {
+                return <Game game={game} key={game.id}/>;
+            })}
+        </div>
+        <div className="flex justify-between py-08 horizontal-padding">
+            <h2>Товары</h2>
+            <div className="relative">
+                <Dropdown
+                    sx={{
+                        borderColor: "var(--tg-theme-section-separator-color) !important",
+                        background: "var(--tg-theme-bg-color) !important"
+                    }}>
+                    <MenuButton className="text-blue">{sortValues[sortBy]}<KeyboardArrowDownIcon/></MenuButton>
+                    <Menu sx={{
+                        color: "var(--tg-theme-text-color) !important",
+                        borderColor: "var(--tg-theme-section-separator-color) !important",
+                        background: "var(--tg-theme-bg-color) !important"
+                    }}
+                          slots={{listbox: Listbox}}>
+                        {Object.entries(sortValues).map(([key, value]) => (
+                            <MenuItem key={key} onClick={createHandleMenuClick(key)}>
+                                {value}
+                            </MenuItem>
+                        ))}
+                        {/*<MenuItem onClick={createHandleMenuClick('2')}>по убыванию цены</MenuItem>*/}
+                        {/*<MenuItem onClick={createHandleMenuClick('3')}>по возрастанию цены</MenuItem>*/}
+                    </Menu>
+                </Dropdown>
+            </div>
+
+        </div>
+        <div className="flex column">
+            {items.map((item) => {
+                return <Card item={item} key={item.id}/>;
+            })}
+        </div>
+    </div>
+}
+
+export default Main;
