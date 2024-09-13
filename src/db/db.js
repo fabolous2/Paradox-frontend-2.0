@@ -33,15 +33,12 @@ export function getXPadding() {
 
 
 export function getUser(tg) {
-    const db_user = () => {
-        axios.get('http://127.0.0.1:8000/profile/', {
-            headers: {
-                'Authorization': `${tg.initDataUnsafe}`
-            }
-        }).then(r => {
-            return r.data;
-        })
-    }
-
+    const db_user = axios.get('http://127.0.0.1:8000/profile/', {
+        headers: {
+            'Authorization': `${tg.initDataUnsafe}`
+        }
+    }).then(r => {
+        return r.data;
+    })
     return db_user;
 }

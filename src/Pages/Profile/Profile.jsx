@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import './Profile.css'
 import avatar from '../../images/avatar.jpg';
 import Button from "../../Components/Button";
@@ -10,12 +10,18 @@ import {getUser} from '../../db/db';
 
 function Profile() {
     const navigate = useNavigate();
-    const {user} = useTelegram();
-    // const db_user = getUser(user);
+    const {tg, user} = useTelegram();
+    const [db_user, setDbUser] = useState(null);
 
-    // useEffect(() => {
-    //     console.log(tg.initDataUnsafe.user)
-    // }, [tg]);
+    useEffect(() => {
+        getUser(tg).then(r => setDbUser(r));
+    }, [tg]);
+
+    useEffect(() => {
+        if (db_user) {
+            console.log('User db data:', db_user);
+        }
+    }, [db_user]);
 
     return <div>
         <div className="flex horizontal-padding vertical-padding">
@@ -29,7 +35,7 @@ function Profile() {
             </div>
         </div>
         <div className="flex horizontal-padding justify-between">
-            <h3>Баланс: 0 ₽</h3>
+            <h3>Баланс: {db_user.balance} ₽</h3>
             <span className="text-blue pointer" onClick={() => navigate('/deposit')}>Пополнить</span>
         </div>
         <div className="flex column horizontal-padding vertical-padding gap-1">
