@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = process.env.API_URL || 'http://127.0.0.1:8000';
+const API_URL = "http://62.76.233.156:8000";
 
 export function getXPadding() {
     return "1.5rem";
