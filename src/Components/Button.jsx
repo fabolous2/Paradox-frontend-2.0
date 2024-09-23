@@ -7,7 +7,8 @@ function Button({type, title, disable, image, image_invert = false, onClick, cla
             (type === 'add' && 'add') ||
             (type === 'remove' && 'remove') ||
             (type === 'checkout' && 'checkout') ||
-            (type === 'info' && 'info')
+            (type === 'info' && 'info') ||
+            (type === 'submit' && 'submit')
         } ${className}`}
                 disabled={disable}
                 onClick={onClick}

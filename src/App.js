@@ -1,10 +1,11 @@
 import './App.css';
-import React, {useEffect} from "react";
+import React from "react";
 import {
     BrowserRouter as Router,
     Routes,
-    Route, useNavigate,
+    Route,
 } from "react-router-dom";
+import { WebAppProvider } from '@vkruglikov/react-telegram-web-app';
 import Main from "./Pages/Main/Main";
 import Profile from "./Pages/Profile/Profile";
 import OrderDetails from "./Pages/OrderDetails/OrderDetails";
@@ -13,64 +14,41 @@ import MyReferral from "./Pages/MyReferral/MyReferral";
 import Deposit from "./Pages/Deposit/Deposit";
 import Products from "./Pages/Products/Products";
 import ProductItem from "./Pages/ProductItem/ProductItem";
-import {useTelegram} from "./hooks/useTelegram";
-
-const tele = window.Telegram.WebApp;
+import TransactionDetail from "./Pages/TransactionDetail/TransactionDetail";
+import {SearchProducts} from "./Pages/SearchProducts/SearchProducts";
+import PaymentProcessing from "./Pages/PaymentProcessing/PaymentProcessing";
+import Feedbacks from "./Pages/Feedbacks/Feedbacks";
+import PostFeedback from "./Pages/PostFeedback/PostFeedback";
+import DeficiencyDeposit from './Pages/DeficiencyDeposit/DeficiencyDeposit';
+import OrderProcessing from './Pages/OrderProcessing/OrderProcessing';
+import OrderCreated from './Pages/OrderCreated/OrderCreated';
 
 function App() {
-    const {tg} = useTelegram();
-
-    useEffect(() => {
-        tg.ready();
-    }, []);
-
     return (
-        <Router>
-            <Routes>
-                <Route exact path="/" element={<MainWithBackButton/>}/>
-                <Route exact path="/profile" element={<ProfileWithBackButton/>}/>
-                <Route exact path="/orders/:id" element={<OrderDetailsWithBackButton/>}/>
-                <Route exact path="/deposit" element={<DepositWithBackButton/>}/>
-                <Route exact path="/my-referral" element={<MyReferralWithBackButton/>}/>
-                <Route exact path="/promo-code" element={<PromoCodeWithBackButton/>}/>
-                <Route exact path="/game/:id/" element={<ProductsWithBackButton/>}/>
-                <Route exact path="/product/:id/" element={<ProductItemWithBackButton/>}/>
-                <Route path="*" element={<MainWithBackButton/>}/>
-            </Routes>
-        </Router>
+        <WebAppProvider>
+            <Router>
+                <Routes>
+                    <Route exact path="/search" element={<SearchProducts/>}/>
+                    <Route exact path="/" element={<Main/>}/>
+                    <Route exact path="/profile" element={<Profile/>}/>
+                    <Route exact path="/orders/:id" element={<OrderDetails/>}/>
+                    <Route exact path="/deposit" element={<Deposit/>}/>
+                    <Route exact path="/my-referral" element={<MyReferral/>}/>
+                    <Route exact path="/promo-code" element={<PromoCode/>}/>
+                    <Route exact path="/game" element={<Products/>}/>
+                    <Route exact path="/product/:id/" element={<ProductItem/>}/>
+                    <Route exact path="/transactions" element={<TransactionDetail/>}/>
+                    <Route exact path="/payment/:order_id" element={<PaymentProcessing/>}/>
+                    <Route exact path="/feedbacks" element={<Feedbacks/>}/>
+                    <Route exact path="/post-feedback/:id" element={<PostFeedback/>}/>
+                    <Route exact path="/deficiency/:id" element={<DeficiencyDeposit/>}/>
+                    <Route exact path="/product/checkout/:id" element={<OrderProcessing/>}/>
+                    <Route exact path="/order/success" element={<OrderCreated/>}/>
+                    <Route path="*" element={<Main/>}/>
+                </Routes>
+            </Router>
+        </WebAppProvider>
     );
 }
-
-// Higher-order component to handle BackButton logic
-function withBackButton(Component) {
-    return function WrappedComponent(props) {
-        tele.onEvent('backButtonClicked', function (e) {
-            e.preventDefault();
-            window.history.back();
-        });
-
-        React.useEffect(() => {
-            tele.ready();
-            let page = window.location.pathname;
-            if (page !== '/') {
-                tele.BackButton.show();
-            } else {
-                tele.BackButton.hide();
-            }
-        });
-
-        return <Component {...props} />;
-    };
-}
-
-// Wrap each page component with the BackButton logic
-const MainWithBackButton = withBackButton(Main);
-const ProfileWithBackButton = withBackButton(Profile);
-const OrderDetailsWithBackButton = withBackButton(OrderDetails);
-const PromoCodeWithBackButton = withBackButton(PromoCode);
-const MyReferralWithBackButton = withBackButton(MyReferral);
-const DepositWithBackButton = withBackButton(Deposit);
-const ProductsWithBackButton = withBackButton(Products);
-const ProductItemWithBackButton = withBackButton(ProductItem);
 
 export default App;

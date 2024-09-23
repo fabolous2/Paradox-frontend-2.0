@@ -1,65 +1,103 @@
-import React, {useState} from 'react';
-import './OrderDetails.css'
-import avatar from '../../images/avatar.jpg';
-import Button from "../../Components/Button";
-import arrowGreater from '../../images/arrow_greater.png';
+import React, {useState, useEffect} from 'react';
 import {useParams} from 'react-router-dom';
+import { getOneOrder, getOneProduct } from '../../db/db';
+import { useNavigate } from 'react-router-dom';
+import { MainButton } from '@vkruglikov/react-telegram-web-app';
 
 function OrderDetails() {
+    const navigate = useNavigate();
+    const [order, setOrder] = useState(null);
+    const [product, setProduct] = useState(null);
+    const [loading, setLoading] = useState(true);
     const {id} = useParams();
-    return <div>
-        <div className="flex horizontal-padding vertical-padding">
-            <h3>Информация о заказе </h3>
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const orderData = await getOneOrder(id);
+            const productData = await getOneProduct(orderData.product_id);
+            setOrder(orderData);
+            setProduct(productData);
+            setLoading(false);
+        }
+        fetchData();
+    }, [id]);
+
+    const handleLeaveFeedback = () => {
+        navigate(`/post-feedback/${product.id}`);
+    };
+
+    return (
+        <div className="transaction-detail">
+            <h2 className="text-2xl font-bold mb-4">Информация о заказе</h2>
+            {loading ? (
+                <div>Loading...</div>
+            ) : (
+                <>
+                    <div className="detail-item">
+                        <div className="label">ID заказа</div>
+                        <div className="value">{order.id}</div>
+                    </div>
+                    
+                    <div className="detail-item">
+                        <div className="label">Дата и время заказа</div>
+                        <div className="value">
+                            {new Date(order.time).toLocaleString('ru-RU', { 
+                                day: '2-digit', 
+                                month: '2-digit', 
+                                year: 'numeric', 
+                                hour: '2-digit', 
+                                minute: '2-digit', 
+                                hour12: false 
+                            }).replace(/[,/]/g, '.').replace(' ', ' ')}
+                        </div>
+                    </div>
+                    
+                    <div className="detail-item">
+                        <div className="label">Товар</div>
+                        <div className="value">{product.name}</div>
+                    </div>
+
+                    <div className="detail-item">
+                        <div className="label">ID товара</div>
+                        <div className="value">{product.id}</div>
+                    </div>
+                    
+                    <div className="detail-item">
+                        <div className="label">Стоимость</div>
+                        <div className="value">{order.price}</div>
+                    </div>
+
+                    <div className="detail-item">
+                        <div className="label">Статус заказа</div>
+                        <div className="value">
+                            {order.status === "paid" ? "Оплачено" : 
+                            order.status === "closed" ? "Закрыт" :
+                            order.status === "completed" ? "Выполнен" :
+                            order.status === "progress" ? "В обработке" :
+                            null}
+                        </div>
+                    </div>
+                            
+                    <div className="detail-item">
+                        <div className="label">Почта Supercell ID</div>
+                        <div className="value">{order.additional_data.email}</div>
+                    </div>
+
+                    <div className="detail-item">
+                        <div className="label">Код Supercell ID</div>
+                        <div className="value">{order.additional_data.code}</div>
+                    </div>
+                
+                    {order.status === "completed" && (
+                        <MainButton 
+                            text="Оставить отзыв"
+                            onClick={handleLeaveFeedback}
+                        />
+                    )}
+                </>
+            )}
         </div>
-        <div className=" flex column horizontal-padding h-full gap-1 vertical-padding">
-            <div className="flex column">
-                <span className="subtitle">ID заказа</span>
-                <span>z54asd6-51c3z6a5s4-dd3512c-asd123cx-asd</span>
-            </div>
-
-            <div className="flex column">
-                <span className="subtitle">Дата и время заказа</span>
-                <span>03.05.2024 21:56:21</span>
-            </div>
-
-            <div className="flex column">
-                <span className="subtitle">Товар</span>
-                <span className="text-blue" onClick={() => {
-                }}>80 гемов</span>
-            </div>
-
-            <div className="flex column">
-                <span className="subtitle">ID товара</span>
-                <span>z54asd6-51c3z6a5s4-dd3512c-asd123cx-asd</span>
-            </div>
-
-            <div className="flex column">
-                <span className="subtitle">Стоимость</span>
-                <span>125 ₽</span>
-            </div>
-
-            <div className="flex column">
-                <span className="subtitle">Статус заказа</span>
-                <span>Завершен</span>
-            </div>
-
-            <div className="flex column">
-                <span className="subtitle">Почта Supercell ID</span>
-                <span>donatikbbs@gmail.com</span>
-            </div>
-
-            <div className="flex column">
-                <span className="subtitle">Код Supercell ID</span>
-                <span>559944</span>
-            </div>
-            <div className="bottom-0 left-0 absolute w-100 flex">
-                <div className="px-04 w-100 py-04">
-                    <Button style={{color: "red !important"}} className="w-100 text__center" type="checkout"
-                            title="Оставить отзыв"></Button>
-                </div>
-            </div>
-        </div>
-    </div>
+    );
 }
 
 export default OrderDetails;

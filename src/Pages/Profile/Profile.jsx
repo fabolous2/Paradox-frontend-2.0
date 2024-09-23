@@ -28,14 +28,14 @@ function Profile() {
             <h3>Профиль</h3>
         </div>
         <div className="flex horizontal-padding vertical-padding">
-            <img className="avatar" src={avatar} alt=""/>
+            <img className="avatar" alt=""/>
             <div className="flex column justify-center horizontal-padding">
                 <b>{user?.first_name} {user?.last_name}</b>
                 <span>{user?.username}</span>
             </div>
         </div>
         <div className="flex horizontal-padding justify-between">
-            <h3>Баланс: {db_user.balance} ₽</h3>
+            <h3>Баланс: {db_user?.balance} ₽</h3>
             <span className="text-blue pointer" onClick={() => navigate('/deposit')}>Пополнить</span>
         </div>
         <div className="flex column horizontal-padding vertical-padding gap-1">

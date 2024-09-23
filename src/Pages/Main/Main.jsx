@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import Card from "../../Components/Card/Card";
 import Header from "../../Components/Header/Header";
@@ -9,27 +9,46 @@ import {MenuButton as BaseMenuButton} from '@mui/base/MenuButton';
 import {MenuItem as BaseMenuItem, menuItemClasses} from '@mui/base/MenuItem';
 import {blue, grey} from "@mui/material/colors";
 import {styled} from "@mui/material";
-import {useNavigate} from "react-router-dom";
+import {getGamesAPI} from "../../db/db";
+import {getProducts} from "../../db/db";
 
-const {getData, getGames} = require('../../db/db');
-
-const items = getData();
-const games = getGames();
 
 function Main() {
-    const navigate = useNavigate();
+    const [games, setGamesState] = useState([]);
+    const [items, setItemsState] = useState([]);
+    const [sortBy, setSortBy] = useState('purchase_count')
 
     const sortValues = {
-        'popular_desc': 'по популярности',
-        'price_desc': 'по убыванию цены',
-        'price_asc': 'по возрастанию цены',
+        'purchase_count': 'по популярности',
+        'price_lower': 'по убыванию цены',
+        'price_higher': 'по возрастанию цены',
     };
-    const [sortBy, setSortBy] = useState('popular_desc')
-    const createHandleMenuClick = (menuItem: string) => {
+    const createHandleMenuClick = (menuItem) => {
         return () => {
             setSortBy(menuItem);
+            async function fetchItems(sort) {
+                const items = await getProducts(sort);
+                setItemsState(items);
+            }
+            fetchItems(sortBy);
         };
     };
+
+    useEffect(() => {
+        async function fetchItems(sort) {
+            const items = await getProducts(sort);
+            setItemsState(items);
+        }
+        fetchItems(sortBy);
+    }, [sortBy]);
+
+    useEffect(() => {
+        async function fetchGames() {
+            const games = await getGamesAPI();
+            setGamesState(games);
+        }
+        fetchGames();
+    }, []);
 
     const Listbox = styled('ul')(({theme}) => `
   font-family: 'IBM Plex Sans', sans-serif;
@@ -97,7 +116,7 @@ function Main() {
         </div>
         <div className="flex align-stretch flex-wrap w-100">
             {games.map((game) => {
-                return <Game game={game} key={game.id}/>;
+                return <Game id={game.id} name={game.name} image_url={game.image_url} key={game.id}/>;
             })}
         </div>
         <div className="flex justify-between py-08 horizontal-padding">

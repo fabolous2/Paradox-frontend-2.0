@@ -1,11 +1,16 @@
 import React, {useState} from 'react';
 import './Deposit.css'
 import Button from "../../Components/Button";
+import { makeDeposit } from '../../db/db';
+import { useNavigate } from 'react-router-dom';
 
 function Deposit() {
+    const navigate = useNavigate();
     const [amount, setAmount] = useState('');
+    const [method, setMethod] = useState('card');
     const [validStatus, setValidStatus] = useState(0);
     const [message, setMessage] = useState('');
+    
     const onChange = (e) => {
         let val = parseInt(e.target.value);
         if (val < 10) {
@@ -19,15 +24,21 @@ function Deposit() {
             setMessage('')
         }
         setAmount(e.target.value)
-        console.log(e.target.value);
     }
 
-    const onSubmit = () => {
+    const onSubmit = async () => {
         if (amount < 1 || !amount) {
             setValidStatus(-1);
             setMessage('Введите сумму')
+        } else {
+            const response = await makeDeposit(amount, method)
+            console.log(response)
+            if (response.success) {
+                navigate(`/payment/${response.payment.uuid}`)
+            }
         }
     }
+
     return <div>
         <div className="flex horizontal-padding vertical-padding">
             <h3>Пополнить баланс</h3>
@@ -43,11 +54,11 @@ function Deposit() {
             <div className="flex column gap-2">
                 <h3>Выберите способ оплаты</h3>
                 <div className="flex gap-1 align-items-center">
-                    <input checked={true} id="card" name="type" type="radio"/>
+                    <input checked={method === 'card'} id="card" name="type" type="radio" onChange={() => setMethod('card')}/>
                     <label htmlFor="card">Картой (Kassa)</label>
                 </div>
                 <div className="flex gap-1 align-items-center">
-                    <input id="sbp" name="type" type="radio"/>
+                    <input id="sbp" name="type" type="radio" onChange={() => setMethod('sbp')}/>
                     <label htmlFor="sbp">СБП (Kassa)</label>
                 </div>
             </div>

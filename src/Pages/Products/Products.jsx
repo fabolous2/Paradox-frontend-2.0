@@ -1,29 +1,52 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import Card from "../../Components/Card/Card";
-import Header from "../../Components/Header/Header";
-import Game from "../../Components/Game/Game";
 import {Dropdown} from '@mui/base/Dropdown';
 import {Menu} from '@mui/base/Menu';
 import {MenuButton as BaseMenuButton} from '@mui/base/MenuButton';
 import {MenuItem as BaseMenuItem, menuItemClasses} from '@mui/base/MenuItem';
 import {blue, grey} from "@mui/material/colors";
 import {styled} from "@mui/material";
+import {getProducts, getGame} from "../../db/db";
+import { useLocation } from 'react-router-dom';
 
-const {getData, getGames} = require('../../db/db');
-
-const items = getData();
-const games = getGames();
 
 function Products() {
+  const [items, setItems] = useState([]);
+  const [game_name, setGameName] = useState(null);
+  const [sort, setSort] = useState('purchase_count')
+  const location = useLocation();
+  const game_id = new URLSearchParams(location.search).get("id");
 
-    const createHandleMenuClick = (menuItem: string) => {
-        return () => {
-            console.log(`Clicked on ${menuItem}`);
-        };
+  const sortValues = {
+      'purchase_count': 'по популярности',
+      'price_lower': 'по убыванию цены',
+      'price_higher': 'по возрастанию цены',
+  };
+
+  useEffect(() => {
+    const fetchData = async (sort, game_id) => {
+      const data = await getProducts(sort, game_id);
+      setItems(data);
     };
+    fetchData(sort, game_id);
+  }, [sort, game_id]);
 
-    const Listbox = styled('ul')(
+  useEffect(() => {
+    const fetchGameName = async (game_id) => {
+      const data = await getGame(game_id);
+      setGameName(data.name);
+    };
+    fetchGameName(game_id);
+  }, [game_id]);
+
+  const createHandleMenuClick = (sort) => {
+    return () => {
+      setSort(sort);
+    };
+  };
+
+  const Listbox = styled('ul')(
         ({theme}) => `
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: 0.875rem;
@@ -44,7 +67,7 @@ function Products() {
   `,
     );
 
-    const MenuButton = styled(BaseMenuButton)(
+  const MenuButton = styled(BaseMenuButton)(
         ({theme, ...props}) => `
   font-family: 'IBM Plex Sans', sans-serif;
   font-weight: 600;
@@ -75,7 +98,7 @@ function Products() {
   `,
     );
 
-    const MenuItem = styled(BaseMenuItem)(
+  const MenuItem = styled(BaseMenuItem)(
         ({theme}) => `
   list-style: none;
   padding: 8px;
@@ -100,24 +123,29 @@ function Products() {
     );
 
     return <div>
-        {/*<div className="flex align-stretch flex-wrap w-100">*/}
-        {/*    {games.map((game) => {*/}
-        {/*        return <Game game={game} key={game.id}/>;*/}
-        {/*    })}*/}
-        {/*</div>*/}
         <div className="flex justify-between py-08 horizontal-padding">
-            <h2>Game 1</h2>
-            {/*<div className="relative">*/}
-            {/*    <Dropdown>*/}
-            {/*        <MenuButton className="text-blue">по популярности<KeyboardArrowDownIcon/></MenuButton>*/}
-            {/*        <Menu slots={{listbox: Listbox}}>*/}
-            {/*            <MenuItem onClick={createHandleMenuClick('1')}>по популярности</MenuItem>*/}
-            {/*            <MenuItem onClick={createHandleMenuClick('2')}>по убыванию цены</MenuItem>*/}
-            {/*            <MenuItem onClick={createHandleMenuClick('3')}>по возрастанию цены</MenuItem>*/}
-            {/*        </Menu>*/}
-            {/*    </Dropdown>*/}
-            {/*</div>*/}
-
+            <h2>{game_name}</h2>
+            <div className="relative">
+                <Dropdown
+                    sx={{
+                        borderColor: "var(--tg-theme-section-separator-color) !important",
+                        background: "var(--tg-theme-bg-color) !important"
+                    }}>
+                    <MenuButton className="text-blue">{sortValues[sort]}<KeyboardArrowDownIcon/></MenuButton>
+                    <Menu sx={{
+                        color: "var(--tg-theme-text-color) !important",
+                        borderColor: "var(--tg-theme-section-separator-color) !important",
+                        background: "var(--tg-theme-bg-color) !important"
+                    }}
+                          slots={{listbox: Listbox}}>
+                        {Object.entries(sortValues).map(([key, value]) => (
+                            <MenuItem key={key} onClick={createHandleMenuClick(key)}>
+                                {value}
+                            </MenuItem>
+                        ))}
+                    </Menu>
+                </Dropdown>
+            </div>
         </div>
         <div className="flex column">
             {items.map((item) => {
