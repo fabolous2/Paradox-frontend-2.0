@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = "http://paradox_backend:8000/api";
+const API_URL = "http://paradox-shop.ru/api";
 
 export function getXPadding() {
     return "1.5rem";
