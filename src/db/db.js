@@ -34,7 +34,11 @@ export async function sendOrder(product_id, additionalData = {}) {
 export async function searchProducts(searchTerm) {
   try {
     const response = await axios.get(`${API_URL}/products/search`, {
-      params: { search: searchTerm }
+      params: { search: searchTerm },
+      headers: {
+        'Cache-Control': 'no-cache',
+        'Pragma': 'no-cache'
+      }
     });
     return response.data;
   } catch (error) {
@@ -45,7 +49,12 @@ export async function searchProducts(searchTerm) {
 
 
 export async function getGamesAPI() {
-  const response = await axios.get(`${API_URL}/games/`);
+  const response = await axios.get(`${API_URL}/games/`, {
+    headers: {
+      'Cache-Control': 'no-cache',
+      'Pragma': 'no-cache'
+    }
+  });
   console.log(response.data);
   return response.data;
 }
