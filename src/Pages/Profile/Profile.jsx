@@ -6,7 +6,6 @@ import TabScreen from "../../Components/TabScreen/TabScreen";
 import {useNavigate} from "react-router-dom";
 import {useTelegram} from '../../hooks/useTelegram';
 import {getUser} from '../../db/db';
-import profilePhoto from '../../images/profile_photo.png';
 
 function Profile() {
     const navigate = useNavigate();
@@ -38,7 +37,7 @@ function Profile() {
             <h3>Профиль</h3>
         </div>
         <div className="flex horizontal-padding vertical-padding">
-            <img className="avatar" src={user?.photo_url || profilePhoto} alt={`${user?.first_name} ${user?.last_name}`}/>
+            <img className="avatar" src={user?.photo_url || "src\images\profile_photo.png"} alt={`${user?.first_name} ${user?.last_name}`}/>
             <div className="flex column justify-center horizontal-padding">
                 <b>{user?.first_name} {user?.last_name}</b>
                 <span>{user?.username}</span>
