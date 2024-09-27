@@ -92,10 +92,13 @@ export async function getOrders(initData) {
 }
 
 
-export async function getOneOrder(order_id) {
+export async function getOneOrder(order_id, initData) {
   const response = await axios.get(`${API_URL}/profile/orders/${order_id}`, {
     params: {
       order_id: order_id
+    },
+    headers: {
+      'Authorization': initData
     }
   });
   console.log(response.data)

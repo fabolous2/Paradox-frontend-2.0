@@ -27,7 +27,7 @@ function OrderDetails() {
 
     useEffect(() => {
         const fetchData = async () => {
-            const orderData = await getOneOrder(id);
+            const orderData = await getOneOrder(id, tg.initData);
             const productData = await getOneProduct(orderData.product_id);
             setOrder(orderData);
             setProduct(productData);
