@@ -85,7 +85,6 @@ const OrderForm = () => {
     }
     fetchProduct();
   }, [id]);
-
   const handleEmailSubmit = () => {
     if (!email.trim()) {
       setEmailError('Пожалуйста, заполните поле email');
@@ -150,14 +149,13 @@ const OrderForm = () => {
         default:
           additionalData = { login, password };
       }
-      await sendOrder({ productId: id, additionalData });
+      await sendOrder(id, additionalData, tg.initData);
       navigate('/order/success');
     } catch (error) {
       console.error('Error sending order:', error);
       alert('Произошла ошибка при отправке заказа');
     }
   };
-
   const renderFormFields = () => {
     return formFields.map((field) => {
       const commonInputStyle = {
@@ -170,7 +168,8 @@ const OrderForm = () => {
         maxWidth: '100%',
         border: 'none',
         borderBottom: '1px solid var(--tg-theme-hint-color)',
-        outline: 'none'
+        outline: 'none',
+        fontSize: '16px'
       };
       
       switch(field) {
@@ -372,7 +371,7 @@ const OrderForm = () => {
   }
 
   return (
-    <div style={{minHeight: '100vh', display: 'flex', flexDirection: 'column', padding: '1rem', backgroundColor: 'var(--tg-theme-bg-color)', color: 'var(--tg-theme-text-color)'}}>
+    <div style={{minHeight: '100vh', display: 'flex', flexDirection: 'column', padding: '1rem', backgroundColor: 'var(--tg-theme-bg-color)', color: 'var(--tg-theme-text-color)', overflow: 'hidden', maxWidth: '100vw'}}>
       <h1 style={{fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem'}}>Оформление заказа</h1>
       <div style={{flexGrow: 1, display: 'flex', flexDirection: 'column'}}>
       {product.instruction && product.instruction.trim() !== '' && (
@@ -385,6 +384,6 @@ const OrderForm = () => {
       <MainButton text="Продолжить" onClick={handleSubmit} />
     </div>
   );
-};
+}
 
 export default OrderForm;

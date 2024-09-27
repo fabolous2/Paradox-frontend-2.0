@@ -38,7 +38,11 @@ function MyReferral() {
     useEffect(() => {
         tg.MainButton.setText("Сохранить");
         tg.MainButton.onClick(onSubmit);
-        tg.MainButton.show();
+        if (code.trim() !== '') {
+            tg.MainButton.show();
+        } else {
+            tg.MainButton.hide();
+        }
 
         return () => {
             tg.MainButton.offClick();
@@ -55,6 +59,12 @@ function MyReferral() {
             return;
         }
         setCode(newCode);
+        
+        if (newCode.trim() === '') {
+            setValidStatus(-1);
+            setMessage('Реферальный код не может быть пустым');
+            return;
+        }
         
         const checkAvailability = async () => {
             const response = await checkCodeAvailability(newCode);
@@ -81,6 +91,11 @@ function MyReferral() {
     }
 
     const onSubmit = async () => {
+        if (code.trim() === '') {
+            setValidStatus(-1);
+            setMessage('Реферальный код не может быть пустым');
+            return;
+        }
         setLink(`https://t.me/paradox_bot?start=${code}`);
         try {
             if (code !== user.referral_code) {  
@@ -108,16 +123,17 @@ function MyReferral() {
             <h3>Реферальная программа</h3>
         </div>
         <div className="flex column horizontal-padding gap-1">
-            <div className="label">Ваш реферальный код:</div>
+            <div className="label" style={{marginBottom: '0.5rem'}}>Ваш реферальный код:</div>
             <div className="flex column">
                 <input id="code" value={code} onChange={onChange} name="code" placeholder={code}
                        className={`input-text ${validStatus === 1 && 'input-valid'} ${validStatus === -1 && 'input-invalid'}`}
-                       type="text"/>
-                <small className={`${validStatus === 1 ? 'text-valid' : 'text-invalid'}`}>{message}</small>
+                       type="text"
+                       style={{marginBottom: '0.5rem'}}/>
+                <small className={`${validStatus === 1 ? 'text-valid' : 'text-invalid'}`} style={{marginBottom: '0.5rem'}}>{message}</small>
             </div>
         </div>
         <div className="horizontal-padding flex column">
-            <div className="label">Распространяйте ваше реферальную ссылку, и за
+            <div className="label" style={{marginBottom: '0.5rem'}}>Распространяйте ваше реферальную ссылку, и за
                 каждого нового пользователя по вашей ссылке
                 вы будете получать процент с каждой его покупки на баланс.
             </div>

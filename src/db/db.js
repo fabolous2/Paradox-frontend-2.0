@@ -18,16 +18,17 @@ export function getUser(initData) {
     return db_user;
 }
 
-export async function sendOrder(product_id, additionalData = {}) {
+export async function sendOrder(product_id, additionalData = {}, initData) {
   const response = await axios.post(`${API_URL}/products/${product_id}/purchase`, {
     product_id: product_id,
     additional_data: additionalData
   },
-  {
-  headers: {
-    'Content-Type': 'application/json'
-  }
-  });
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': initData
+      }
+    });
   return response.data;
 }
 
