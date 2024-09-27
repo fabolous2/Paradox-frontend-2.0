@@ -6,11 +6,13 @@ import TabScreen from "../../Components/TabScreen/TabScreen";
 import {useNavigate} from "react-router-dom";
 import {useTelegram} from '../../hooks/useTelegram';
 import {getUser} from '../../db/db';
+import CircularProgress from '@mui/material/CircularProgress';
 
 function Profile() {
     const navigate = useNavigate();
     const {tg, user} = useTelegram();
     const [db_user, setDbUser] = useState(null);
+    const [loading, setLoading] = useState(true);
  
     useEffect(() => {
       tg.BackButton.show();
@@ -26,11 +28,25 @@ function Profile() {
     
     useEffect(() => {
         async function fetchUser() {
-            const userData = await getUser(tg.initData);
-            setDbUser(userData);
+            try {
+                const userData = await getUser(tg.initData);
+                setDbUser(userData);
+            } catch (error) {
+                console.error("Error fetching user data:", error);
+            } finally {
+                setLoading(false);
+            }
         }
         fetchUser();
     }, [tg]);
+
+    if (loading) {
+        return (
+            <div className="flex justify-center align-items-center" style={{height: '100vh'}}>
+                <CircularProgress />
+            </div>
+        );
+    }
 
     return <div>
         <div className="flex horizontal-padding vertical-padding">
