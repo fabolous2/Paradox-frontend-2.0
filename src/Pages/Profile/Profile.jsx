@@ -53,7 +53,7 @@ function Profile() {
             <h3>Профиль</h3>
         </div>
         <div className="flex horizontal-padding vertical-padding">
-            <img className="avatar" src={user?.photo_url || "/images/profile_photo.png"} alt={`${user?.first_name} ${user?.last_name}`}/>
+            <img className="avatar" src={user?.photo_url || "https://www.flaticon.com/ru/free-icons/-"} alt={`${user?.first_name} ${user?.last_name}`}/>
             <div className="flex column justify-center horizontal-padding">
                 <b>{user?.first_name} {user?.last_name}</b>
                 <span>{user?.username}</span>

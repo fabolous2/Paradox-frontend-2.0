@@ -43,6 +43,10 @@ const DeficiencyDeposit = () => {
             try {
                 const response = await getOneProduct(productId)
                 setProduct(response)
+                if (dbUser && response) {
+                    const requiredAmount = Math.max(response.price - dbUser.balance, 0)
+                    setAmount(requiredAmount.toString())
+                }
             } catch (error) {
                 console.error("Error fetching product:", error)
             } finally {
@@ -50,7 +54,7 @@ const DeficiencyDeposit = () => {
             }
         }
         fetchProduct()
-    }, [productId])
+    }, [productId, dbUser])
 
     const handleChangeAmount = (e) => {
         let val = parseInt(e.target.value);
@@ -75,48 +79,45 @@ const DeficiencyDeposit = () => {
         )
     }
 
-    return (
-        <div className="deficiency-deposit">
-            <div className="content">
-                <div className="card">
-                    <h1 className="title">Ой!</h1>
-                    <div className="error-message">
-                        <p>❌ Недостаточно средств на балансе!</p>
-                        <p>Ваш баланс: {dbUser.balance} ₽!</p>
-                        {product && <p>Необходимо пополнить баланс на {product.price - dbUser.balance} ₽</p>}
-                    </div>
-                    <div className="form">
-                        <label htmlFor="amount" className="subtitle">Введите сумму в рублях</label>
-                        <div className="input-container">
-                            <input 
-                                id="amount" 
-                                value={amount || (product ? product.price - dbUser.balance : '')} 
-                                onChange={handleChangeAmount} 
-                                name="amount" 
-                                placeholder="Сумма"
-                                className={`input-text ${validStatus === 1 ? 'input-valid' : ''} ${validStatus === -1 ? 'input-invalid' : ''}`}
-                                type="number" 
-                                min={10} 
-                                max={50000}
-                            />
-                            <small className={validStatus === 1 ? 'text-valid' : 'text-invalid'}>{message}</small>
-                        </div>
-                        <div className="payment-method">
-                            <h3>Выберите способ оплаты</h3>
-                            <div className="radio-group">
-                                <input checked={method === 'card'} id="card" name="type" type="radio" onChange={() => setMethod('card')}/>
-                                <label htmlFor="card">Картой (Kassa)</label>
-                            </div>
-                            <div className="radio-group">
-                                <input id="sbp" name="type" type="radio" onChange={() => setMethod('sbp')}/>
-                                <label htmlFor="sbp">СБП (Kassa)</label>
-                            </div>
-                        </div>
-                    </div>
+    return <div>
+        <div className="flex horizontal-padding vertical-padding">
+            <h3>Пополнить баланс</h3>
+        </div>
+        <div className="flex column horizontal-padding gap-1">
+            <div className="error-message">
+                <h2>Ой!</h2>
+                <p>❌ Недостаточно средств на балансе!</p>
+                <p>Ваш баланс: {dbUser.balance} ₽</p>
+                {product && <p>Необходимо пополнить баланс на {Math.max(product.price - dbUser.balance, 0)} ₽</p>}
+            </div>
+            <label htmlFor="amount" className="subtitle">Введите сумму в рублях</label>
+            <div className="flex column">
+                <input 
+                    id="amount" 
+                    value={amount} 
+                    onChange={handleChangeAmount} 
+                    name="amount" 
+                    placeholder="Сумма"
+                    className={`input-text ${validStatus === 1 ? 'input-valid' : ''} ${validStatus === -1 ? 'input-invalid' : ''}`}
+                    type="number" 
+                    min={10} 
+                    max={50000}
+                />
+                <small className={`${validStatus === 1 ? 'text-valid' : 'text-invalid'}`}>{message}</small>
+            </div>
+            <div className="flex column gap-2">
+                <h3>Выберите способ оплаты</h3>
+                <div className="flex gap-1 align-items-center">
+                    <input checked={method === 'card'} id="card" name="type" type="radio" onChange={() => setMethod('card')}/>
+                    <label htmlFor="card">Картой (Kassa)</label>
+                </div>
+                <div className="flex gap-1 align-items-center">
+                    <input id="sbp" name="type" type="radio" onChange={() => setMethod('sbp')}/>
+                    <label htmlFor="sbp">СБП (Kassa)</label>
                 </div>
             </div>
         </div>
-    );
+    </div>
 };
 
 export default DeficiencyDeposit;
