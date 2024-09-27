@@ -10,6 +10,19 @@ function ProductItem() {
     const [product, setProduct] = useState(null);
     const [user, setUser] = useState(null);
     const { tg } = useTelegram();
+
+    const handlePurchase = () => {
+        if (user && product) {
+            let balance = parseInt(user.balance);
+            let price = parseInt(product.price);
+            
+            if (balance >= price) {
+                navigate(`/product/checkout/${id}`);
+            } else {
+                navigate(`/deficiency/${id}`);
+            }
+        }
+    };
  
     useEffect(() => {
       tg.BackButton.show();
@@ -40,11 +53,9 @@ function ProductItem() {
     }, []);
 
     useEffect(() => {
-        tg.MainButton.setParams({
-            text: 'Купить',
-        });
-        tg.MainButton.onClick(handlePurchase);
+        tg.MainButton.setText('Купить');
         tg.MainButton.show();
+        tg.MainButton.onClick(handlePurchase);
 
         return () => {
             tg.MainButton.offClick(handlePurchase);
@@ -55,17 +66,6 @@ function ProductItem() {
     if (!product) {
         return <div>Loading...</div>;
     }
-
-    const handlePurchase = () => {
-        let balance = parseInt(user.balance);
-        let price = parseInt(product.price);
-        
-        if (balance >= price) {
-            navigate(`/product/checkout/${id}`);
-        } else {
-            navigate(`/deficiency/${id}`);
-        }
-    };
 
     return (
         <div style={{height: "100vh", display: "flex", flexDirection: "column"}} className='relative'>
