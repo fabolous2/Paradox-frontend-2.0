@@ -54,15 +54,9 @@ function Deposit() {
     }, []);
     
     const onSubmit = async () => {
-        if (amount < 10 || amount > 50000 || !amount) {
-            setValidStatus(-1);
-            setMessage('Введите корректную сумму (от 10 до 50000 руб)');
-        } else {
-            const response = await makeDeposit(amount, method, tg.initData);
-            console.log(response);
-            if (response.success) {
-                navigate(`/payment/${response.payment.uuid}`);
-            }
+        const response = await makeDeposit(amount, method, tg.initData);
+        if (response.success) {
+            navigate(`/payment/${response.payment.uuid}`);
         }
     };
 

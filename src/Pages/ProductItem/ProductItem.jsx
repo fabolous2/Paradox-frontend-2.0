@@ -3,7 +3,6 @@ import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { getOneProduct, getUser } from '../../db/db';
 import { useTelegram } from '../../hooks/useTelegram';
-import { MainButton } from '@vkruglikov/react-telegram-web-app';
 
 function ProductItem() {
     const { id } = useParams();
@@ -40,6 +39,19 @@ function ProductItem() {
         fetchUser();
     }, []);
 
+    useEffect(() => {
+        tg.MainButton.setParams({
+            text: 'Купить',
+        });
+        tg.MainButton.onClick(handlePurchase);
+        tg.MainButton.show();
+
+        return () => {
+            tg.MainButton.offClick(handlePurchase);
+            tg.MainButton.hide();
+        };
+    }, [user, product]);
+
     if (!product) {
         return <div>Loading...</div>;
     }
@@ -47,6 +59,7 @@ function ProductItem() {
     const handlePurchase = () => {
         let balance = parseInt(user.balance);
         let price = parseInt(product.price);
+        
         if (balance >= price) {
             navigate(`/product/checkout/${id}`);
         } else {
@@ -75,7 +88,6 @@ function ProductItem() {
                     </span>
                 </div>
             </div>
-            <MainButton onClick={handlePurchase} text="Купить" />
         </div>
     );
 }
