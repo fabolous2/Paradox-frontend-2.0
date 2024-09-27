@@ -1,14 +1,28 @@
 import React, {useState, useEffect} from 'react';
-import Button from "../../Components/Button";
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { getOneProduct, getUser } from '../../db/db';
+import { useTelegram } from '../../hooks/useTelegram';
+import { MainButton } from '@vkruglikov/react-telegram-web-app';
 
 function ProductItem() {
     const { id } = useParams();
     const navigate = useNavigate();
     const [product, setProduct] = useState(null);
     const [user, setUser] = useState(null);
+    const { tg } = useTelegram();
+ 
+    useEffect(() => {
+      tg.BackButton.show();
+      tg.BackButton.onClick(() => {
+        window.history.back();
+      });
+  
+      return () => {
+        tg.BackButton.offClick();
+        tg.BackButton.hide();
+      };
+    }, []);
 
     useEffect(() => {
         const fetchProduct = async () => {
@@ -20,7 +34,7 @@ function ProductItem() {
 
     useEffect(() => {
         const fetchUser = async () => {
-            const user = await getUser();
+            const user = await getUser(tg.initData);
             setUser(user);
         }
         fetchUser();
@@ -61,13 +75,7 @@ function ProductItem() {
                     </span>
                 </div>
             </div>
-            <div className="w-100 flex">
-                <div className="px-04 w-100 py-04">
-                    <Button onClick={handlePurchase} className="w-100 text__center"
-                            type="checkout"
-                            title="Купить"></Button>
-                </div>
-            </div>
+            <MainButton onClick={handlePurchase} text="Купить" />
         </div>
     );
 }

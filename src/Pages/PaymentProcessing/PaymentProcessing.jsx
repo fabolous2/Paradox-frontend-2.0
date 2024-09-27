@@ -1,43 +1,93 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { getOneTransaction } from "../../db/db";
+import { useTelegram } from "../../hooks/useTelegram";
 
 export default function PaymentProcessing() {
     const navigate = useNavigate()
     const { order_id } = useParams()
     const [transaction, setTransaction] = useState(null)
+    const { tg } = useTelegram();
+ 
+    useEffect(() => {
+      tg.BackButton.show();
+      tg.BackButton.onClick(() => {
+        window.history.back();
+      });
+  
+      return () => {
+        tg.BackButton.offClick();
+        tg.BackButton.hide();
+      };
+    }, []);
 
     useEffect(() => {
         const fetchTransaction = async () => {
-            const response = await getOneTransaction(order_id)
+            const response = await getOneTransaction(order_id, tg.initDataUnsafe)
             setTransaction(response)
         }
         fetchTransaction()
     }, [order_id])
 
-    return <div className="flex flex-col items-center justify-center min-h-screen bg-white p-4">
-    <div className="w-full max-w-sm">
-      <div className="mb-8 flex justify-center">
-        <div className="w-12 h-12 border-t-4 border-blue-500 border-solid rounded-full animate-spin"></div>
-      </div>
-      <p className="text-center text-gray-600 mb-8">Ожидаем оплату...</p>
-      <button 
-        className="w-full bg-blue-500 text-white font-semibold py-3 px-4 rounded-full mb-4 hover:bg-blue-600 transition duration-300"
-        onClick={() => {
-            console.log("transaction", transaction)
-          if (transaction && transaction.payment_data && transaction.payment_data.url) {
-            window.location.href = transaction.payment_data.url;
-          } else {
-            console.error('Payment URL not available');
-          }
-        }}
-      >
-        Перейти к оплате
-      </button>
-      <button className="w-full bg-gray-200 text-gray-700 font-semibold py-3 px-4 rounded-full hover:bg-gray-300 transition duration-300" onClick={() => navigate("/profile")}>
-        Вернуться в профиль
-      </button>
-    </div>
-    </div>
+    useEffect(() => {
+        tg.MainButton.setParams({
+            text: 'Перейти к оплате',
+            color: tg.themeParams.button_color,
+        });
+        tg.MainButton.onClick(() => {
+            if (transaction && transaction.payment_data && transaction.payment_data.url) {
+                window.location.href = transaction.payment_data.url;
+            } else {
+                console.error('Payment URL not available');
+            }
+        });
+        tg.MainButton.show();
+
+        return () => {
+            tg.MainButton.offClick();
+            tg.MainButton.hide();
+        };
+    }, [transaction]);
+
+    return (
+        <div style={{
+            backgroundColor: tg.themeParams.bg_color,
+            color: tg.themeParams.text_color,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            minHeight: '100vh',
+            padding: '1rem'
+        }}>
+            <div style={{width: '100%', maxWidth: '300px'}}>
+                <div style={{marginBottom: '2rem', display: 'flex', justifyContent: 'center'}}>
+                    <div style={{
+                        width: '3rem',
+                        height: '3rem',
+                        borderTop: `4px solid ${tg.themeParams.button_color}`,
+                        borderRadius: '50%',
+                        animation: 'spin 1s linear infinite'
+                    }}></div>
+                </div>
+                <p style={{textAlign: 'center', marginBottom: '2rem'}}>Ожидаем оплату...</p>
+                <button 
+                    style={{
+                        width: '100%',
+                        backgroundColor: tg.themeParams.button_color,
+                        color: tg.themeParams.button_text_color,
+                        padding: '0.75rem 1rem',
+                        borderRadius: '0.5rem',
+                        border: 'none',
+                        marginBottom: '1rem',
+                        cursor: 'pointer'
+                    }}
+                    onClick={() => navigate("/profile")}
+                >
+                    Вернуться в профиль
+                </button>
+            </div>
+        </div>
+    )
 }

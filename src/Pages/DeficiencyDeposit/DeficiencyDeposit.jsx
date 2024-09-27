@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { getOneProduct } from '../../db/db';
+import { getOneProduct, getUser } from '../../db/db';
 import { useParams } from 'react-router-dom';
+import { useTelegram } from '../../hooks/useTelegram';
 
 const DeficiencyDeposit = () => {
     const { productId } = useParams()
@@ -10,9 +11,34 @@ const DeficiencyDeposit = () => {
     const [amount, setAmount] = useState(0);
     const [validStatus, setValidStatus] = useState(0);
     const [message, setMessage] = useState('');
+    const [dbUser, setDbUser] = useState(null)
+    const { tg } = useTelegram();
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const response = await getUser(tg.initDataUnsafe)
+                setDbUser(response)
+            } catch (error) {
+                console.error("Error fetching user:", error)
+            }
+        }
+        fetchUser()
+    }, [])
+ 
+    useEffect(() => {
+      tg.BackButton.show();
+      tg.BackButton.onClick(() => {
+        window.history.back();
+      });
+  
+      return () => {
+        tg.BackButton.offClick();
+        tg.BackButton.hide();
+      };
+    }, []);
     
     useEffect(() => {
-        console.log("productId", productId)
         const fetchProduct = async () => {
             try {
                 const response = await getOneProduct(productId)
@@ -59,8 +85,8 @@ const DeficiencyDeposit = () => {
                                 <h1 className="text-xl font-bold mb-2">Ой!</h1>
                                 <div className="bg-gray-700 p-3 rounded-lg mb-4" style={{ backgroundColor: 'var(--tg-theme-hint-color)' }}>
                                     <p className="text-red-500 mb-2">❌ Недостаточно средств на балансе!</p>
-                                    <p>Ваш баланс: 20 ₽!</p>
-                                    {product && <p>Необходимо пополнить баланс на {product.price - 20} ₽</p>}
+                                    <p>Ваш баланс: {dbUser.balance} ₽!</p>
+                                    {product && <p>Необходимо пополнить баланс на {product.price - dbUser.balance} ₽</p>}
                                 </div>
                                 <div className="flex column horizontal-padding gap-1">
                                     <label htmlFor="amount" className="subtitle">Введите сумму в рублях</label>

@@ -1,13 +1,40 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import './PromoCode.css'
-import Button from "../../Components/Button";
 import { PromoAPI, getPromo, checkIsUsedPromo } from '../../db/db';
+import { useTelegram } from '../../hooks/useTelegram';
 
 function PromoCode() {
     const [code, setCode] = useState('');
     const [validStatus, setValidStatus] = useState(0);
     const [message, setMessage] = useState('');
     const [debounceTimer, setDebounceTimer] = useState(null);
+    const { tg } = useTelegram();
+ 
+    useEffect(() => {
+      tg.BackButton.show();
+      tg.BackButton.onClick(() => {
+        window.history.back();
+      });
+  
+      return () => {
+        tg.BackButton.offClick();
+        tg.BackButton.hide();
+      };
+    }, []);
+
+    useEffect(() => {
+        if (validStatus === 1) {
+            tg.MainButton.setText('Применить промокод');
+            tg.MainButton.show();
+            tg.MainButton.onClick(onSubmit);
+        } else {
+            tg.MainButton.hide();
+        }
+
+        return () => {
+            tg.MainButton.offClick(onSubmit);
+        };
+    }, [validStatus]);
 
     const onChange = async (e) => {
         const newCode = e.target.value;
@@ -21,7 +48,7 @@ function PromoCode() {
             const timer = setTimeout(async () => {
                 const promoResult = await getPromo(newCode);
                 if (promoResult) {
-                    const isUsed = await checkIsUsedPromo(newCode);
+                    const isUsed = await checkIsUsedPromo(newCode, tg.initDataUnsafe);
                     if (isUsed === true) {
                         setValidStatus(-1);
                         setMessage('Промокод уже был использован вами');
@@ -52,12 +79,11 @@ function PromoCode() {
         try {
             const result = await (async () => {
                 console.log("api");
-                const response = await PromoAPI(code);
+                const response = await PromoAPI(code, tg.initDataUnsafe);
                 console.log("response", response);
                 return response;
             })();
             if (result) {
-                // console.log("result", result);
                 setValidStatus(1);
                 setMessage('Промокод успешно применён');
             } else {
@@ -83,14 +109,6 @@ function PromoCode() {
                 <small className={`${validStatus === 1 ? 'text-valid' : 'text-invalid'}`}>{message}</small>
             </div>
         </div>
-        {validStatus === 1 && (
-            <div className="bottom-0 left-0 absolute w-100 flex">
-                <div className="px-04 w-100 py-04">
-                    <Button onClick={onSubmit} style={{color: "red !important"}} className="w-100 text__center" type="checkout"
-                            title="Применить промокод"></Button>
-                </div>
-            </div>
-        )}
     </div>
 }
 

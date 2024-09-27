@@ -7,11 +7,11 @@ export function getXPadding() {
 }
 
 
-export function getUser() {
+export function getUser(initData) {
     const db_user = axios.get(`${API_URL}/profile/`, {
-        // headers: {
-        //     'Authorization': `${initData}`
-        // }
+      headers: {
+          'Authorization': `${initData}`
+      }
     }).then(r => {
         return r.data;
     })
@@ -74,12 +74,12 @@ export async function makePayment(amount, method, initData) {
 }
 
 
-export async function getOrders() {
+export async function getOrders(initData) {
   try {
     const response = await axios.get(`${API_URL}/profile/orders/`, {
-      // headers: {
-      //   'Authorization': initData
-      // }
+      headers: {
+        'Authorization': initData
+      }
     });
     if (response.data === null || response.data === undefined) {
       return [];
@@ -102,12 +102,12 @@ export async function getOneOrder(order_id) {
 }
 
 
-export async function getTransactions() {
+export async function getTransactions(initData) {
   try {
     const response = await axios.get(`${API_URL}/profile/transactions/`, {
-      // headers: {
-      //   'Authorization': initData
-      // }
+      headers: {
+        'Authorization': initData
+      }
     });
     if (response.data === null || response.data === undefined) {
       return [];
@@ -120,10 +120,13 @@ export async function getTransactions() {
 }
 
 
-export async function getOneTransaction(transaction_id) {
+export async function getOneTransaction(transaction_id, initData) {
   const response = await axios.get(`${API_URL}/profile/transactions/${transaction_id}`, {
     params: {
       transaction_id: transaction_id
+    },
+    headers: {
+      'Authorization': initData
     }
   });
   console.log("transaction", response.data)
@@ -131,15 +134,14 @@ export async function getOneTransaction(transaction_id) {
 }
 
 
-export async function PromoAPI(name) {
+export async function PromoAPI(name, initData) {
   const response = await axios.post(`${API_URL}/promo/`, {
     name: name
   }, {
-    // headers: {
-    //   'Authorization': initData
-    // }
+    headers: {
+      'Authorization': initData
+    }
   });
-  console.log("PromoAPI", response.data)
   return response.data;
 }
 
@@ -162,12 +164,15 @@ export async function getPromo(name) {
 }
 
 
-export async function checkIsUsedPromo(name) {
+export async function checkIsUsedPromo(name, initData) {
   try {
     const response = await axios.get(`${API_URL}/promo/check-used`, {
       params: {
         name: name
       },
+      headers: {
+        'Authorization': initData
+      }
     });
     if (response.status === 200) {
       return false;
@@ -217,16 +222,16 @@ export async function setReferralCode(referral_code) {
 }
 
 
-export async function postFeedback(product_id, stars, text) {
+export async function postFeedback(product_id, stars, text, initData) {
   const response = await axios.post(`${API_URL}/feedback/post/`, {
     params: {
       product: {id: product_id},
       stars: stars,
       text: text
     },
-    // headers: {
-    //   'Authorization': initData
-    // }
+    headers: {
+      'Authorization': initData
+    }
   });
   return response.data;
 }
@@ -259,10 +264,9 @@ export async function removeFeedback(feedback_id, initData) {
 }
 
 
-export async function getProducts(sort, game_id) {
+export async function getProducts(game_id) {
   const response = await axios.get(`${API_URL}/products/`, {
     params: {
-      sort: sort,
       game_id: game_id
     }
   });
@@ -279,14 +283,15 @@ export async function getOneProduct(product_id) {
   return response.data;
 }
 
-export async function isUserPostedFeedback(product_id) {
+export async function isUserPostedFeedback(product_id, initData) {
   try {
     const response = await axios.get(`${API_URL}/feedback/is_user_posted_feedback/${product_id}`, {
       params: {
       product_id: product_id
     },
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Authorization': initData
       }
     });
     if (response.data) {
@@ -315,14 +320,15 @@ export async function getGame(game_id) {
 }
 
 
-export async function makeDeposit(amount, method) {
+export async function makeDeposit(amount, method, initData) {
   try {
     const response = await axios.post(`${API_URL}/payment/`, {
       amount: amount,
       method: method
     }, {
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': initData
       }
     });
     return response.data;
@@ -330,4 +336,16 @@ export async function makeDeposit(amount, method) {
     console.error('Error making deposit:', error);
     throw error;
   }
+}
+
+
+export async function purchaseProduct(product_id, additional_data, initData) {
+  const response = await axios.post(`${API_URL}/products/${product_id}/purchase`, {
+    product_id: product_id,
+    additional_data: additional_data
+  }, {
+    headers: {
+      'Authorization': initData
+    }
+  });
 }

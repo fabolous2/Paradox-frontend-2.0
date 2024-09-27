@@ -11,12 +11,25 @@ import {blue, grey} from "@mui/material/colors";
 import {styled} from "@mui/material";
 import {getGamesAPI} from "../../db/db";
 import {getProducts} from "../../db/db";
-
+import { useTelegram } from "../../hooks/useTelegram";
 
 function Main() {
     const [games, setGamesState] = useState([]);
     const [items, setItemsState] = useState([]);
     const [sortBy, setSortBy] = useState('purchase_count')
+    const { tg } = useTelegram();
+ 
+    useEffect(() => {
+      tg.BackButton.show();
+      tg.BackButton.onClick(() => {
+        window.history.back();
+      });
+  
+      return () => {
+        tg.BackButton.offClick();
+        tg.BackButton.hide();
+      };
+    }, []);
 
     const sortValues = {
         'purchase_count': 'по популярности',

@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import './MyReferral.css'
 import Button from "../../Components/Button";
 import { getUser, checkCodeAvailability, setReferralCode } from '../../db/db';
+import { useTelegram } from '../../hooks/useTelegram';
 
 function MyReferral() {
     const [code, setCode] = useState('');
@@ -10,16 +11,41 @@ function MyReferral() {
     const [btnMessage, setBtnMessage] = useState('Копировать ссылку');
     const [link, setLink] = useState(`https://t.me/paradox_bot?start=${code}`);
     const [user, setUser] = useState(null);
+    const { tg } = useTelegram();
+ 
+    useEffect(() => {
+      tg.BackButton.show();
+      tg.BackButton.onClick(() => {
+        window.history.back();
+      });
+  
+      return () => {
+        tg.BackButton.offClick();
+        tg.BackButton.hide();
+      };
+    }, []);
 
     useEffect(() => {
         const fetchUser = async () => {
-            const response = await getUser();
+            const response = await getUser(tg.initDataUnsafe);
             setUser(response);
             setCode(response.referral_code);
             setLink(`https://t.me/paradox_bot?start=${response.referral_code}`);
         };
         fetchUser();
     }, []);
+
+    useEffect(() => {
+        tg.MainButton.setText("Сохранить");
+        tg.MainButton.onClick(onSubmit);
+        tg.MainButton.show();
+
+        return () => {
+            tg.MainButton.offClick();
+            tg.MainButton.hide();
+        };
+    }, [code]);
+
     const onChange = (e) => {
         const newCode = e.target.value;
         const allowedChars = /^[a-zA-Z0-9]*$/;
@@ -105,13 +131,6 @@ function MyReferral() {
             }} style={{color: "red !important"}} className="w-100 text__center"
                     type="secondary"
                     title={btnMessage}></Button>
-        </div>
-        <div className="bottom-0 left-0 absolute w-100 flex">
-            <div className="px-04 w-100 py-04">
-                <Button onClick={onSubmit} style={{color: "red !important"}} className="w-100 text__center"
-                        type="checkout"
-                        title="Сохранить"></Button>
-            </div>
         </div>
     </div>
 }

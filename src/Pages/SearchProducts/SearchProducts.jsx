@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import { searchProducts } from '../../db/db';
 import Card from "../../Components/Card/Card";
@@ -10,28 +10,66 @@ import {MenuItem as BaseMenuItem, menuItemClasses} from '@mui/base/MenuItem';
 import {blue, grey} from "@mui/material/colors";
 import {styled} from "@mui/material";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import { getProducts } from "../../db/db";
+import { useTelegram } from "../../hooks/useTelegram";
 
 export const SearchProducts = () => {
   const [searchResults, setSearchResults] = useState([]);
   const location = useLocation();
   const query = new URLSearchParams(location.search).get("query");
-  const [sortBy, setSortBy] = useState('purchase_count')
+  const [sortConfig, setSortConfig] = useState({ key: 'purchase_count', direction: 'descending' });
+  const { tg } = useTelegram();
+ 
+  useEffect(() => {
+    tg.BackButton.show();
+    tg.BackButton.onClick(() => {
+      window.history.back();
+    });
+
+    return () => {
+      tg.BackButton.offClick();
+      tg.BackButton.hide();
+    };
+  }, []);
 
   const sortValues = {
-      'purchase_count': 'по популярности',
-      'price_lower': 'по убыванию цены',
-      'price_higher': 'по возрастанию цены',
+    'purchase_count': 'по популярности',
+    'price_lower': 'по убыванию цены',
+    'price_higher': 'по возрастанию цены',
   };
-  const createHandleMenuClick = (menuItem) => {
-      return () => {
-          setSortBy(menuItem);
-          async function fetchItems(sort, game_id) {
-              const items = await getProducts(sort, game_id);
-              setSearchResults(items);
-          }
-          fetchItems(sortBy, searchResults[0].game_id);
-      };
+
+  useEffect(() => {
+    const fetchResults = async () => {
+      const results = await searchProducts(query);
+      setSearchResults(results);
+    };
+    fetchResults();
+  }, [query]);
+
+  const sortedResults = useMemo(() => {
+    let sortableItems = [...searchResults];
+    if (sortConfig !== null) {
+      sortableItems.sort((a, b) => {
+        switch (sortConfig.key) {
+          case 'purchase_count':
+            return b.purchase_count - a.purchase_count;
+          case 'price_higher':
+            return a.price - b.price;
+          case 'price_lower':
+            return b.price - a.price;
+          default:
+            return 0;
+        }
+      });
+    }
+    return sortableItems;
+  }, [searchResults, sortConfig]);
+
+  const requestSort = (key) => {
+    let direction = 'ascending';
+    if (sortConfig.key === key && sortConfig.direction === 'ascending') {
+      direction = 'descending';
+    }
+    setSortConfig({ key, direction });
   };
 
   const Listbox = styled('ul')(({theme}) => `
@@ -102,45 +140,45 @@ export const SearchProducts = () => {
     fetchResults();
   }, [query]);
 
-    return (
-     <div>
-        <div className="header">
-          <SearchBar/>
-        </div>
-        <div className="flex justify-end mb-4">
-          <Dropdown
-              sx={{
-                  borderColor: "var(--tg-theme-section-separator-color) !important",
-                  background: "var(--tg-theme-bg-color) !important"
-              }}>
-              <MenuButton className="text-blue">{sortValues[sortBy]}<KeyboardArrowDownIcon/></MenuButton>
-              <Menu sx={{
-                  color: "var(--tg-theme-text-color) !important",
-                  borderColor: "var(--tg-theme-section-separator-color) !important",
-                  background: "var(--tg-theme-bg-color) !important"
-              }}
-                    slots={{listbox: Listbox}}>
-                  {Object.entries(sortValues).map(([key, value]) => (
-                      <MenuItem key={key} onClick={createHandleMenuClick(key)}>
-                          {value}
-                      </MenuItem>
-                  ))}
-              </Menu>
-          </Dropdown>
-        </div>
-        <div className="flex column">
-            {searchResults.map((item) => (
-                <Card 
-                    sx={{
-                        '&:hover': {
-                            backgroundColor: "var(--tg-theme-secondary-bg-color)"
-                        }
-                    }} 
-                    item={item} 
-                    key={item.id}
-                />
+  return (
+    <div>
+      <div className="header">
+        <SearchBar/>
+      </div>
+      <div className="flex justify-end mb-4">
+        <Dropdown
+          sx={{
+            borderColor: "var(--tg-theme-section-separator-color) !important",
+            background: "var(--tg-theme-bg-color) !important"
+          }}>
+          <MenuButton className="text-blue">{sortValues[sortConfig.key]}<KeyboardArrowDownIcon/></MenuButton>
+          <Menu sx={{
+            color: "var(--tg-theme-text-color) !important",
+            borderColor: "var(--tg-theme-section-separator-color) !important",
+            background: "var(--tg-theme-bg-color) !important"
+          }}
+            slots={{listbox: Listbox}}>
+            {Object.entries(sortValues).map(([key, value]) => (
+              <MenuItem key={key} onClick={() => requestSort(key)}>
+                {value}
+              </MenuItem>
             ))}
-        </div>
+          </Menu>
+        </Dropdown>
+      </div>
+      <div className="flex column">
+        {sortedResults.map((item) => (
+          <Card 
+            sx={{
+              '&:hover': {
+                backgroundColor: "var(--tg-theme-secondary-bg-color)"
+              }
+            }} 
+            item={item} 
+            key={item.id}
+          />
+        ))}
+      </div>
     </div>
-    );
+  );
 };

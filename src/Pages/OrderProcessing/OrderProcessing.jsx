@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { MainButton } from '@vkruglikov/react-telegram-web-app';
 import { getOneProduct, sendOrder } from '../../db/db';
+import { useTelegram } from '../../hooks/useTelegram';
 
 const OrderForm = () => {
   const { id } = useParams();
@@ -21,6 +22,19 @@ const OrderForm = () => {
   const [blockman_id, setBlockmanId] = useState('');
   const [nickname, setNickname] = useState('');
   const [login, setLogin] = useState('');
+  const { tg } = useTelegram();
+ 
+  useEffect(() => {
+    tg.BackButton.show();
+    tg.BackButton.onClick(() => {
+      window.history.back();
+    });
+
+    return () => {
+      tg.BackButton.offClick();
+      tg.BackButton.hide();
+    };
+  }, []);
 
   useEffect(() => {
     const fetchProduct = async () => {

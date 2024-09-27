@@ -5,6 +5,7 @@ import {
     Routes,
     Route,
 } from "react-router-dom";
+import { useEffect } from 'react';
 import { WebAppProvider } from '@vkruglikov/react-telegram-web-app';
 import Main from "./Pages/Main/Main";
 import Profile from "./Pages/Profile/Profile";
@@ -22,8 +23,15 @@ import PostFeedback from "./Pages/PostFeedback/PostFeedback";
 import DeficiencyDeposit from './Pages/DeficiencyDeposit/DeficiencyDeposit';
 import OrderProcessing from './Pages/OrderProcessing/OrderProcessing';
 import OrderCreated from './Pages/OrderCreated/OrderCreated';
+import useTelegram from './hooks/useTelegram';
 
 function App() {
+    const { expand } = useTelegram();
+
+    useEffect(() => {
+        expand();
+    }, [expand]);
+
     return (
         <WebAppProvider>
             <Router>

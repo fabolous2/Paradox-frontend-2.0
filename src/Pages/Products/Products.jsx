@@ -9,14 +9,27 @@ import {blue, grey} from "@mui/material/colors";
 import {styled} from "@mui/material";
 import {getProducts, getGame} from "../../db/db";
 import { useLocation } from 'react-router-dom';
-
+import { useTelegram } from '../../hooks/useTelegram';
 
 function Products() {
   const [items, setItems] = useState([]);
   const [game_name, setGameName] = useState(null);
-  const [sort, setSort] = useState('purchase_count')
+  const [sortConfig, setSortConfig] = useState({ key: 'purchase_count', direction: 'descending' });
   const location = useLocation();
   const game_id = new URLSearchParams(location.search).get("id");
+  const { tg } = useTelegram();
+ 
+  useEffect(() => {
+    tg.BackButton.show();
+    tg.BackButton.onClick(() => {
+      window.history.back();
+    });
+
+    return () => {
+      tg.BackButton.offClick();
+      tg.BackButton.hide();
+    };
+  }, []);
 
   const sortValues = {
       'purchase_count': 'по популярности',
@@ -25,25 +38,46 @@ function Products() {
   };
 
   useEffect(() => {
-    const fetchData = async (sort, game_id) => {
-      const data = await getProducts(sort, game_id);
+    const fetchData = async () => {
+      const data = await getProducts(game_id);
       setItems(data);
     };
-    fetchData(sort, game_id);
-  }, [sort, game_id]);
+    fetchData();
+  }, [game_id]);
 
   useEffect(() => {
-    const fetchGameName = async (game_id) => {
+    const fetchGameName = async () => {
       const data = await getGame(game_id);
       setGameName(data.name);
     };
-    fetchGameName(game_id);
+    fetchGameName();
   }, [game_id]);
 
-  const createHandleMenuClick = (sort) => {
-    return () => {
-      setSort(sort);
-    };
+  const sortedItems = useMemo(() => {
+    let sortableItems = [...items];
+    if (sortConfig !== null) {
+      sortableItems.sort((a, b) => {
+        switch (sortConfig.key) {
+          case 'purchase_count':
+            return b.purchase_count - a.purchase_count;
+          case 'price_higher':
+            return a.price - b.price;
+          case 'price_lower':
+            return b.price - a.price;
+          default:
+            return 0;
+        }
+      });
+    }
+    return sortableItems;
+  }, [items, sortConfig]);
+
+  const requestSort = (key) => {
+    let direction = 'ascending';
+    if (sortConfig.key === key && sortConfig.direction === 'ascending') {
+      direction = 'descending';
+    }
+    setSortConfig({ key, direction });
   };
 
   const Listbox = styled('ul')(
@@ -122,39 +156,41 @@ function Products() {
   `,
     );
 
-    return <div>
+    return (
+      <div>
         <div className="flex justify-between py-08 horizontal-padding">
-            <h2>{game_name}</h2>
-            <div className="relative">
-                <Dropdown
-                    sx={{
-                        borderColor: "var(--tg-theme-section-separator-color) !important",
-                        background: "var(--tg-theme-bg-color) !important"
-                    }}>
-                    <MenuButton className="text-blue">{sortValues[sort]}<KeyboardArrowDownIcon/></MenuButton>
-                    <Menu sx={{
-                        color: "var(--tg-theme-text-color) !important",
-                        borderColor: "var(--tg-theme-section-separator-color) !important",
-                        background: "var(--tg-theme-bg-color) !important"
-                    }}
-                          slots={{listbox: Listbox}}>
-                        {Object.entries(sortValues).map(([key, value]) => (
-                            <MenuItem key={key} onClick={createHandleMenuClick(key)}>
-                                {value}
-                            </MenuItem>
-                        ))}
-                    </Menu>
-                </Dropdown>
-            </div>
+          <h2>{game_name}</h2>
+          <div className="relative">
+            <Dropdown
+              sx={{
+                borderColor: "var(--tg-theme-section-separator-color) !important",
+                background: "var(--tg-theme-bg-color) !important"
+              }}>
+              <MenuButton className="text-blue">{sortValues[sortConfig.key]}<KeyboardArrowDownIcon/></MenuButton>
+              <Menu sx={{
+                color: "var(--tg-theme-text-color) !important",
+                borderColor: "var(--tg-theme-section-separator-color) !important",
+                background: "var(--tg-theme-bg-color) !important"
+              }}
+                slots={{listbox: Listbox}}>
+                {Object.entries(sortValues).map(([key, value]) => (
+                  <MenuItem key={key} onClick={() => requestSort(key)}>
+                    {value}
+                  </MenuItem>
+                ))}
+              </Menu>
+            </Dropdown>
+          </div>
         </div>
         <div className="flex column">
-            {items.map((item) => {
-                return <Card sx={{'$:hover': {
-                        backgroundColor: "var(--tg-theme-secondary-bg-color)"
-                    }}} item={item} key={item.id}/>;
-            })}
+          {sortedItems.map((item) => {
+            return <Card sx={{'$:hover': {
+              backgroundColor: "var(--tg-theme-secondary-bg-color)"
+            }}} item={item} key={item.id}/>;
+          })}
         </div>
-    </div>
+      </div>
+    );
 }
 
 export default Products;

@@ -24,17 +24,15 @@ function TabScreen() {
     const [orders, setOrders] = useState([]);
     const Hourglass = "https://cdn-icons-png.flaticon.com/512/3889/3889548.png"
     const Paid = "https://cdn-icons-png.flaticon.com/512/3889/3889548.png"
+    const { tg } = useTelegram();
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const ordersData = await getOrders();
+                const ordersData = await getOrders(tg.initDataUnsafe);
                 setOrders(ordersData);
-                const transactionsData = await getTransactions();
+                const transactionsData = await getTransactions(tg.initDataUnsafe);
                 setTransactions(transactionsData);
-
-                console.log(ordersData);
-                console.log(transactionsData);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }

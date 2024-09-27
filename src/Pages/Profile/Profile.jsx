@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import './Profile.css'
-import avatar from '../../images/avatar.jpg';
 import Button from "../../Components/Button";
 import arrowGreater from '../../images/arrow_greater.png';
 import TabScreen from "../../Components/TabScreen/TabScreen";
@@ -12,23 +11,33 @@ function Profile() {
     const navigate = useNavigate();
     const {tg, user} = useTelegram();
     const [db_user, setDbUser] = useState(null);
-
+ 
     useEffect(() => {
-        getUser(tg).then(r => setDbUser(r));
-    }, [tg]);
-
+      tg.BackButton.show();
+      tg.BackButton.onClick(() => {
+        window.history.back();
+      });
+  
+      return () => {
+        tg.BackButton.offClick();
+        tg.BackButton.hide();
+      };
+    }, []);
+    
     useEffect(() => {
-        if (db_user) {
-            console.log('User db data:', db_user);
+        async function fetchUser() {
+            const userData = await getUser(tg.initDataUnsafe);
+            setDbUser(userData);
         }
-    }, [db_user]);
+        fetchUser();
+    }, [tg]);
 
     return <div>
         <div className="flex horizontal-padding vertical-padding">
             <h3>Профиль</h3>
         </div>
         <div className="flex horizontal-padding vertical-padding">
-            <img className="avatar" alt=""/>
+            <img className="avatar" src={user?.photo_url} alt={`${user?.first_name} ${user?.last_name}`}/>
             <div className="flex column justify-center horizontal-padding">
                 <b>{user?.first_name} {user?.last_name}</b>
                 <span>{user?.username}</span>

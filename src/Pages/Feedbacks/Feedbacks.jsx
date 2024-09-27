@@ -1,23 +1,47 @@
 import React, { useState, useEffect } from 'react';
 import { getFeedbacks, removeFeedback, getUser } from '../../db/db';
+import { useTelegram } from '../../hooks/useTelegram';
 
-async function get_telegram_user(user_id) {
-  return fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/getChat?chat_id=${user_id}`).then(res => res.json());
-}
 
 export default function Feedbacks() {
   const [feedbacks, setFeedbacks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [user, setUser] = useState(null);
+  const { tg } = useTelegram();
+  const [admins, setAdmins] = useState([6384960822])
+
+  useEffect(() => {
+    tg.BackButton.show();
+    tg.BackButton.onClick(() => {
+      window.history.back();
+    });
+
+    return () => {
+      tg.BackButton.offClick();
+      tg.BackButton.hide();
+    };
+  }, []);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const userData = await getUser(tg.initDataUnsafe);
+        setUser(userData);
+      } catch (error) {
+        console.error('Error fetching user:', error);
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   useEffect(() => {
     const loadFeedbacks = async () => {
       try {
         const data = await getFeedbacks();
         setFeedbacks(data);
-
-        // TODO: проверка роли пользователя
-        setIsAdmin(true);
+        setIsAdmin(admins.includes(user.id));
       } catch (error) {
         console.error('Error loading feedbacks:', error);
       } finally {
@@ -30,7 +54,7 @@ export default function Feedbacks() {
 
   const handleDeleteFeedback = async (feedbackId) => {
     try {
-      await removeFeedback(feedbackId);
+      await removeFeedback(feedbackId, tg.initDataUnsafe);
       setFeedbacks(feedbacks.filter(feedback => feedback.id !== feedbackId));
     } catch (error) {
       console.error('Error deleting feedback:', error);

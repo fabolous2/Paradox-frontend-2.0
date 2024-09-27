@@ -1,8 +1,22 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTelegram } from '../../hooks/useTelegram';
 
 const OrderCreated = () => {
   const navigate = useNavigate();
+  const { tg } = useTelegram();
+ 
+  useEffect(() => {
+    tg.BackButton.show();
+    tg.BackButton.onClick(() => {
+      window.history.back();
+    });
+
+    return () => {
+      tg.BackButton.offClick();
+      tg.BackButton.hide();
+    };
+  }, []);
 
   const handleReturnToProfile = () => {
     navigate('/profile');

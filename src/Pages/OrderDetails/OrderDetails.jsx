@@ -3,6 +3,7 @@ import {useParams} from 'react-router-dom';
 import { getOneOrder, getOneProduct } from '../../db/db';
 import { useNavigate } from 'react-router-dom';
 import { MainButton } from '@vkruglikov/react-telegram-web-app';
+import { useTelegram } from '../../hooks/useTelegram';
 
 function OrderDetails() {
     const navigate = useNavigate();
@@ -10,6 +11,19 @@ function OrderDetails() {
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
     const {id} = useParams();
+    const { tg } = useTelegram();
+ 
+    useEffect(() => {
+      tg.BackButton.show();
+      tg.BackButton.onClick(() => {
+        window.history.back();
+      });
+  
+      return () => {
+        tg.BackButton.offClick();
+        tg.BackButton.hide();
+      };
+    }, []);
 
     useEffect(() => {
         const fetchData = async () => {

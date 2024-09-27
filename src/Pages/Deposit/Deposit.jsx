@@ -1,8 +1,8 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import './Deposit.css'
-import Button from "../../Components/Button";
 import { makeDeposit } from '../../db/db';
 import { useNavigate } from 'react-router-dom';
+import { useTelegram } from '../../hooks/useTelegram';
 
 function Deposit() {
     const navigate = useNavigate();
@@ -10,6 +10,19 @@ function Deposit() {
     const [method, setMethod] = useState('card');
     const [validStatus, setValidStatus] = useState(0);
     const [message, setMessage] = useState('');
+    const { tg } = useTelegram();
+ 
+    useEffect(() => {
+      tg.BackButton.show();
+      tg.BackButton.onClick(() => {
+        window.history.back();
+      });
+  
+      return () => {
+        tg.BackButton.offClick();
+        tg.BackButton.hide();
+      };
+    }, []);
     
     const onChange = (e) => {
         let val = parseInt(e.target.value);
@@ -31,13 +44,27 @@ function Deposit() {
             setValidStatus(-1);
             setMessage('Введите сумму')
         } else {
-            const response = await makeDeposit(amount, method)
+            const response = await makeDeposit(amount, method, tg.initDataUnsafe)
             console.log(response)
             if (response.success) {
                 navigate(`/payment/${response.payment.uuid}`)
             }
         }
     }
+
+    useEffect(() => {
+        tg.MainButton.setParams({
+            text: 'Оплатить',
+            color: '#2cab37',
+        });
+        tg.MainButton.onClick(onSubmit);
+        tg.MainButton.show();
+
+        return () => {
+            tg.MainButton.offClick(onSubmit);
+            tg.MainButton.hide();
+        };
+    }, [amount, method]);
 
     return <div>
         <div className="flex horizontal-padding vertical-padding">
@@ -61,14 +88,6 @@ function Deposit() {
                     <input id="sbp" name="type" type="radio" onChange={() => setMethod('sbp')}/>
                     <label htmlFor="sbp">СБП (Kassa)</label>
                 </div>
-            </div>
-
-        </div>
-        <div className="bottom-0 left-0 absolute w-100 flex">
-            <div className="px-04 w-100 py-04">
-                <Button onClick={onSubmit} style={{color: "red !important"}} className="w-100 text__center"
-                        type="checkout"
-                        title="Оплатить"></Button>
             </div>
         </div>
     </div>

@@ -3,20 +3,32 @@ import './TransactionDetail.css';
 import { useEffect, useState } from 'react';
 import { getOneTransaction } from '../../db/db';
 import { useLocation } from 'react-router-dom';
+import { useTelegram } from '../../hooks/useTelegram';
 
 const TransactionDetail = () => {
     const [transaction, setTransaction] = useState(null);
     const [loading, setLoading] = useState(true);
     const location = useLocation();
-    console.log(location);
     const transaction_id = new URLSearchParams(location.search).get("id");
-    console.log(transaction_id);
+    const { tg } = useTelegram();
+ 
+    useEffect(() => {
+      tg.BackButton.show();
+      tg.BackButton.onClick(() => {
+        window.history.back();
+      });
+  
+      return () => {
+        tg.BackButton.offClick();
+        tg.BackButton.hide();
+      };
+    }, []);
 
     useEffect(() => {
         const fetchResults = async () => {
             try {
                 setLoading(true);
-                const results = await getOneTransaction(transaction_id);
+                const results = await getOneTransaction(transaction_id, tg.initDataUnsafe);
                 setTransaction(results);
             } catch (err) {
                 console.error(err);

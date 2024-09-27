@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { postFeedback, getOneProduct, isUserPostedFeedback } from '../../db/db';
 import { useNavigate } from 'react-router-dom';
-import {Button} from '../../Components/Button'
+import { useTelegram } from '../../hooks/useTelegram';
+import { MainButton } from '@vkruglikov/react-telegram-web-app';
 
 const PostFeedback = () => {
   const [rating, setRating] = useState(5);
@@ -11,18 +12,44 @@ const PostFeedback = () => {
   const [error, setError] = useState('');
   const { id } = useParams();
   const navigate = useNavigate();
+  const { tg } = useTelegram();
+ 
+  useEffect(() => {
+    tg.BackButton.show();
+    tg.BackButton.onClick(() => {
+      window.history.back();
+    });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+    return () => {
+      tg.BackButton.offClick();
+      tg.BackButton.hide();
+    };
+  }, []);
+
+  useEffect(() => {
+    tg.MainButton.setParams({
+      text: 'Отправить',
+      color: '#4CAF50',
+    });
+    tg.MainButton.onClick(handleSubmit);
+    tg.MainButton.show();
+
+    return () => {
+      tg.MainButton.offClick(handleSubmit);
+      tg.MainButton.hide();
+    };
+  }, [review, rating]);
+
+  const handleSubmit = async () => {
     if (review.trim() === '') {
       setError('Пожалуйста, введите текст отзыва');
       return;
     }
-    const is_posted = await isUserPostedFeedback(product.id);
+    const is_posted = await isUserPostedFeedback(product.id, tg.initDataUnsafe);
     if (is_posted) {
       setError('Вы уже оставили отзыв на этот товар');
     } else {
-      await postFeedback(product.id, rating, review);
+      await postFeedback(product.id, rating, review, tg.initDataUnsafe);
       navigate('/');
     }
   };
@@ -48,7 +75,7 @@ const PostFeedback = () => {
         </div>
       </div>
       {error && <p className="text-red-500 mb-4">{error}</p>}
-      <form onSubmit={handleSubmit} className="flex-grow flex flex-col">
+      <div className="flex-grow flex flex-col">
         <div className="mb-4">
           <p className="mb-2 text-gray-600">Рейтинг</p>
           <div className="flex">
@@ -80,13 +107,7 @@ const PostFeedback = () => {
           ></textarea>
           <p className="text-sm text-gray-500 mt-1">{review.length}/500 символов</p>
         </div>
-        <button
-          type="submit"
-          className="w-full bg-green-500 text-white py-2 rounded font-semibold mt-auto"
-        >
-          Отправить
-        </button>
-      </form>
+      </div>
     </div>
   );
 };
