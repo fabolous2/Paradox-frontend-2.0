@@ -39,6 +39,19 @@ function Deposit() {
         setAmount(e.target.value)
     }
 
+    const onSubmit = async () => {
+        if (validStatus === -1 || !amount) {
+            tg.showAlert('Пожалуйста, введите корректную сумму');
+            return;
+        }
+        const response = await makeDeposit(amount, method, tg.initData);
+        if (response.success) {
+            navigate(`/payment/${response.payment.uuid}`);
+        } else {
+            tg.showAlert('Произошла ошибка при создании платежа');
+        }
+    };
+
     useEffect(() => {
         tg.MainButton.setParams({
             text: 'Оплатить',
@@ -51,15 +64,8 @@ function Deposit() {
             tg.MainButton.offClick(onSubmit);
             tg.MainButton.hide();
         };
-    }, []);
+    }, [amount, method, validStatus]);
     
-    const onSubmit = async () => {
-        const response = await makeDeposit(amount, method, tg.initData);
-        if (response.success) {
-            navigate(`/payment/${response.payment.uuid}`);
-        }
-    };
-
     return <div>
         <div className="flex horizontal-padding vertical-padding">
             <h3>Пополнить баланс</h3>

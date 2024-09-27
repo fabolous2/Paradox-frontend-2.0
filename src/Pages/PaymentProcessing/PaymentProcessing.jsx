@@ -37,7 +37,7 @@ export default function PaymentProcessing() {
         });
         tg.MainButton.onClick(() => {
             if (transaction && transaction.payment_data && transaction.payment_data.url) {
-                window.location.href = transaction.payment_data.url;
+                tg.openLink(transaction.payment_data.url);
             } else {
                 console.error('Payment URL not available');
             }
