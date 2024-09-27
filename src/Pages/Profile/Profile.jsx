@@ -60,9 +60,10 @@ function Profile() {
             </div>
         </div>
         <div className="flex horizontal-padding justify-between">
-            <h3>Баланс: {db_user.balance} ₽</h3>
+            <h3>Баланс: {parseFloat(db_user.balance).toLocaleString('ru-RU', {maximumFractionDigits: 2})} ₽</h3>
             <span className="text-blue pointer" onClick={() => navigate('/deposit')}>Пополнить</span>
         </div>
+
         <div className="flex column horizontal-padding vertical-padding gap-1">
             <Button onClick={() => {navigate('/my-referral')}} className="px-08" type='info' image={arrowGreater} image_invert={true} title='Реферальная система'></Button>
             <Button onClick={() => {navigate('/promo-code')}} className="px-08" type='info' image={arrowGreater} image_invert={true} title='Ввести промокод'></Button>

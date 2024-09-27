@@ -92,6 +92,12 @@ function ProductItem() {
                         </b>
                         <b>{product.price} ₽</b>
                     </div>
+                    
+                    <div className="flex justify-between py-04">
+                        <span>Ваш баланс: {user ? user.balance : 0} ₽</span>
+                        <span>Стоимость товара: {product.price} ₽</span>
+                    </div>
+
                     <div className="flex py-04">
                         <h3>Описание</h3>
                     </div>
