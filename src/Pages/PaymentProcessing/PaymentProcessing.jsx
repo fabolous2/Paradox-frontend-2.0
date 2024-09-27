@@ -24,7 +24,7 @@ export default function PaymentProcessing() {
 
     useEffect(() => {
         const fetchTransaction = async () => {
-            const response = await getOneTransaction(order_id, tg.initDataUnsafe)
+            const response = await getOneTransaction(order_id, tg.initData)
             setTransaction(response)
         }
         fetchTransaction()

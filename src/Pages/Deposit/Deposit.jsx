@@ -44,7 +44,7 @@ function Deposit() {
             setValidStatus(-1);
             setMessage('Введите сумму')
         } else {
-            const response = await makeDeposit(amount, method, tg.initDataUnsafe)
+            const response = await makeDeposit(amount, method, tg.initData)
             console.log(response)
             if (response.success) {
                 navigate(`/payment/${response.payment.uuid}`)

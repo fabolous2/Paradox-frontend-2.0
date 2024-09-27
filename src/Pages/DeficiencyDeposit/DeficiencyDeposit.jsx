@@ -17,7 +17,7 @@ const DeficiencyDeposit = () => {
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const response = await getUser(tg.initDataUnsafe)
+                const response = await getUser(tg.initData)
                 setDbUser(response)
             } catch (error) {
                 console.error("Error fetching user:", error)

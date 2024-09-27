@@ -26,7 +26,7 @@ export default function Feedbacks() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const userData = await getUser(tg.initDataUnsafe);
+        const userData = await getUser(tg.initData);
         setUser(userData);
       } catch (error) {
         console.error('Error fetching user:', error);
@@ -54,7 +54,7 @@ export default function Feedbacks() {
 
   const handleDeleteFeedback = async (feedbackId) => {
     try {
-      await removeFeedback(feedbackId, tg.initDataUnsafe);
+      await removeFeedback(feedbackId, tg.initData);
       setFeedbacks(feedbacks.filter(feedback => feedback.id !== feedbackId));
     } catch (error) {
       console.error('Error deleting feedback:', error);

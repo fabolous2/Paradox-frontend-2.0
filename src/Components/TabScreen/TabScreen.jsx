@@ -29,9 +29,9 @@ function TabScreen() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const ordersData = await getOrders(tg.initDataUnsafe);
+                const ordersData = await getOrders(tg.initData);
                 setOrders(ordersData);
-                const transactionsData = await getTransactions(tg.initDataUnsafe);
+                const transactionsData = await getTransactions(tg.initData);
                 setTransactions(transactionsData);
             } catch (error) {
                 console.error('Error fetching data:', error);

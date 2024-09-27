@@ -45,11 +45,11 @@ const PostFeedback = () => {
       setError('Пожалуйста, введите текст отзыва');
       return;
     }
-    const is_posted = await isUserPostedFeedback(product.id, tg.initDataUnsafe);
+    const is_posted = await isUserPostedFeedback(product.id, tg.initData);
     if (is_posted) {
       setError('Вы уже оставили отзыв на этот товар');
     } else {
-      await postFeedback(product.id, rating, review, tg.initDataUnsafe);
+      await postFeedback(product.id, rating, review, tg.initData);
       navigate('/');
     }
   };

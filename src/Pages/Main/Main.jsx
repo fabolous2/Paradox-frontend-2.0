@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useMemo} from 'react';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import Card from "../../Components/Card/Card";
 import Header from "../../Components/Header/Header";
@@ -11,25 +11,11 @@ import {blue, grey} from "@mui/material/colors";
 import {styled} from "@mui/material";
 import {getGamesAPI} from "../../db/db";
 import {getProducts} from "../../db/db";
-import { useTelegram } from "../../hooks/useTelegram";
 
 function Main() {
     const [games, setGamesState] = useState([]);
     const [items, setItemsState] = useState([]);
-    const [sortBy, setSortBy] = useState('purchase_count')
-    const { tg } = useTelegram();
- 
-    useEffect(() => {
-      tg.BackButton.show();
-      tg.BackButton.onClick(() => {
-        window.history.back();
-      });
-  
-      return () => {
-        tg.BackButton.offClick();
-        tg.BackButton.hide();
-      };
-    }, []);
+    const [sortConfig, setSortConfig] = useState({ key: 'purchase_count', direction: 'descending' });
 
     const sortValues = {
         'purchase_count': 'по популярности',
@@ -38,22 +24,21 @@ function Main() {
     };
     const createHandleMenuClick = (menuItem) => {
         return () => {
-            setSortBy(menuItem);
-            async function fetchItems(sort) {
-                const items = await getProducts(sort);
-                setItemsState(items);
-            }
-            fetchItems(sortBy);
+          let direction = 'ascending';
+          if (sortConfig.key === menuItem && sortConfig.direction === 'ascending') {
+            direction = 'descending';
+          }
+          setSortConfig({ key: menuItem, direction });
         };
     };
 
     useEffect(() => {
-        async function fetchItems(sort) {
-            const items = await getProducts(sort);
+        async function fetchItems() {
+            const items = await getProducts();
             setItemsState(items);
         }
-        fetchItems(sortBy);
-    }, [sortBy]);
+        fetchItems();
+    }, []);
 
     useEffect(() => {
         async function fetchGames() {
@@ -62,6 +47,26 @@ function Main() {
         }
         fetchGames();
     }, []);
+
+    const sortedItems = useMemo(() => {
+        let sortableItems = [...items];
+        if (sortConfig !== null) {
+          sortableItems.sort((a, b) => {
+            switch (sortConfig.key) {
+              case 'purchase_count':
+                return b.purchase_count - a.purchase_count;
+              case 'price_higher':
+                return a.price - b.price;
+              case 'price_lower':
+                return b.price - a.price;
+              default:
+                return 0;
+            }
+          });
+        }
+        return sortableItems;
+    }, [items, sortConfig]);
+    
 
     const Listbox = styled('ul')(({theme}) => `
   font-family: 'IBM Plex Sans', sans-serif;
@@ -140,7 +145,7 @@ function Main() {
                         borderColor: "var(--tg-theme-section-separator-color) !important",
                         background: "var(--tg-theme-bg-color) !important"
                     }}>
-                    <MenuButton className="text-blue">{sortValues[sortBy]}<KeyboardArrowDownIcon/></MenuButton>
+                    <MenuButton className="text-blue">{sortValues[sortConfig.key]}<KeyboardArrowDownIcon/></MenuButton>
                     <Menu sx={{
                         color: "var(--tg-theme-text-color) !important",
                         borderColor: "var(--tg-theme-section-separator-color) !important",
@@ -152,15 +157,12 @@ function Main() {
                                 {value}
                             </MenuItem>
                         ))}
-                        {/*<MenuItem onClick={createHandleMenuClick('2')}>по убыванию цены</MenuItem>*/}
-                        {/*<MenuItem onClick={createHandleMenuClick('3')}>по возрастанию цены</MenuItem>*/}
                     </Menu>
                 </Dropdown>
             </div>
-
         </div>
         <div className="flex column">
-            {items.map((item) => {
+            {sortedItems.map((item) => {
                 return <Card item={item} key={item.id}/>;
             })}
         </div>

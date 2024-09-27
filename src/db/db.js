@@ -271,7 +271,7 @@ export async function getProducts(game_id) {
     }
   });
   return response.data;
-}
+} 
 
 
 export async function getOneProduct(product_id) {

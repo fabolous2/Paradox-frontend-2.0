@@ -27,7 +27,7 @@ function MyReferral() {
 
     useEffect(() => {
         const fetchUser = async () => {
-            const response = await getUser(tg.initDataUnsafe);
+            const response = await getUser(tg.initData);
             setUser(response);
             setCode(response.referral_code);
             setLink(`https://t.me/paradox_bot?start=${response.referral_code}`);

@@ -26,7 +26,7 @@ function Profile() {
     
     useEffect(() => {
         async function fetchUser() {
-            const userData = await getUser(tg.initDataUnsafe);
+            const userData = await getUser(tg.initData);
             setDbUser(userData);
         }
         fetchUser();

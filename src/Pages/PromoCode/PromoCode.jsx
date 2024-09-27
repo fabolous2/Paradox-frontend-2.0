@@ -48,7 +48,7 @@ function PromoCode() {
             const timer = setTimeout(async () => {
                 const promoResult = await getPromo(newCode);
                 if (promoResult) {
-                    const isUsed = await checkIsUsedPromo(newCode, tg.initDataUnsafe);
+                    const isUsed = await checkIsUsedPromo(newCode, tg.initData);
                     if (isUsed === true) {
                         setValidStatus(-1);
                         setMessage('Промокод уже был использован вами');
@@ -79,7 +79,7 @@ function PromoCode() {
         try {
             const result = await (async () => {
                 console.log("api");
-                const response = await PromoAPI(code, tg.initDataUnsafe);
+                const response = await PromoAPI(code, tg.initData);
                 console.log("response", response);
                 return response;
             })();

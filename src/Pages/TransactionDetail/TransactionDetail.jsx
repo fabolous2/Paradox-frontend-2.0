@@ -28,7 +28,7 @@ const TransactionDetail = () => {
         const fetchResults = async () => {
             try {
                 setLoading(true);
-                const results = await getOneTransaction(transaction_id, tg.initDataUnsafe);
+                const results = await getOneTransaction(transaction_id, tg.initData);
                 setTransaction(results);
             } catch (err) {
                 console.error(err);
