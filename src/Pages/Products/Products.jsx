@@ -80,6 +80,10 @@ function Products() {
     setSortConfig({ key, direction });
   };
 
+  const createHandleMenuClick = (key) => () => {
+    requestSort(key);
+  };
+
   const Listbox = styled('ul')(
         ({theme}) => `
   font-family: 'IBM Plex Sans', sans-serif;
@@ -102,7 +106,7 @@ function Products() {
     );
 
   const MenuButton = styled(BaseMenuButton)(
-        ({theme, ...props}) => `
+        ({theme}) => `
   font-family: 'IBM Plex Sans', sans-serif;
   font-weight: 600;
   font-size: 0.875rem;
@@ -159,21 +163,28 @@ function Products() {
     return (
       <div>
         <div className="flex justify-between py-08 horizontal-padding">
-          <h2>{game_name}</h2>
-          <div className="relative">
-            <Dropdown>
-              <MenuButton className="text-blue">
-                {sortValues[sortConfig.key]}<KeyboardArrowDownIcon/>
-              </MenuButton>
-              <Menu>
-                {Object.entries(sortValues).map(([key, value]) => (
-                  <MenuItem key={key} onClick={() => requestSort(key)}>
-                    {value}
-                  </MenuItem>
-                ))}
-              </Menu>
-            </Dropdown>
-          </div>
+            <h2>{game_name}</h2>
+            <div className="relative">
+                <Dropdown
+                    sx={{
+                        borderColor: "var(--tg-theme-section-separator-color) !important",
+                        background: "var(--tg-theme-bg-color) !important"
+                    }}>
+                    <MenuButton className="text-blue">{sortValues[sortConfig.key]}<KeyboardArrowDownIcon/></MenuButton>
+                    <Menu sx={{
+                        color: "var(--tg-theme-text-color) !important",
+                        borderColor: "var(--tg-theme-section-separator-color) !important",
+                        background: "var(--tg-theme-bg-color) !important"
+                    }}
+                          slots={{listbox: Listbox}}>
+                        {Object.entries(sortValues).map(([key, value]) => (
+                            <MenuItem key={key} onClick={createHandleMenuClick(key)}>
+                                {value}
+                            </MenuItem>
+                        ))}
+                    </Menu>
+                </Dropdown>
+            </div>
         </div>
         <div className="flex column">
           {sortedItems.map((item) => (
