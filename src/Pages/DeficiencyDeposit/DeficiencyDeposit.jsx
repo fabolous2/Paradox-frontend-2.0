@@ -82,7 +82,7 @@ const DeficiencyDeposit = () => {
     if (!productId) {
         return (
           <div style={{minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: 'var(--tg-theme-bg-color)', color: 'var(--tg-theme-text-color)'}}>
-            <p>Ошибка: ID товара не определен</p>
+            <p>Ошибка: ID товара не определен в DeficiencyDeposit</p>
           </div>
         );
     }
