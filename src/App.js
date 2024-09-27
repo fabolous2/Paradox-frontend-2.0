@@ -23,7 +23,7 @@ import PostFeedback from "./Pages/PostFeedback/PostFeedback";
 import DeficiencyDeposit from './Pages/DeficiencyDeposit/DeficiencyDeposit';
 import OrderProcessing from './Pages/OrderProcessing/OrderProcessing';
 import OrderCreated from './Pages/OrderCreated/OrderCreated';
-import useTelegram from './hooks/useTelegram';
+import { useTelegram } from './hooks/useTelegram';
 
 function App() {
     const { expand } = useTelegram();
