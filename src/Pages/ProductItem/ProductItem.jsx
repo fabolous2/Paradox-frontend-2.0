@@ -15,17 +15,18 @@ function ProductItem() {
 
     const handlePurchase = () => {
         if (user && product) {
-            let balance = parseInt(user.balance);
-            let price = parseInt(product.price);
-            
+            let balance = parseFloat(user.balance);
+            let price = parseFloat(product.price);
+    
             if (balance >= price) {
                 navigate(`/product/checkout/${id}`);
             } else {
                 navigate(`/deficiency/${id}`);
             }
+        } else {
+            console.log('User or product is null');
         }
     };
- 
     useEffect(() => {
       tg.BackButton.show();
       tg.BackButton.onClick(() => {
@@ -92,7 +93,7 @@ function ProductItem() {
                         </b>
                         <b>{product.price} ₽</b>
                     </div>
-                    
+
                     <div className="flex justify-between py-04">
                         <span>Ваш баланс: {user ? user.balance : 0} ₽</span>
                         <span>Стоимость товара: {product.price} ₽</span>
