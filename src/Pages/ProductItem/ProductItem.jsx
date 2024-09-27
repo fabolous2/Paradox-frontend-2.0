@@ -3,12 +3,14 @@ import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { getOneProduct, getUser } from '../../db/db';
 import { useTelegram } from '../../hooks/useTelegram';
+import CircularProgress from '@mui/material/CircularProgress';
 
 function ProductItem() {
     const { id } = useParams();
     const navigate = useNavigate();
     const [product, setProduct] = useState(null);
     const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
     const { tg } = useTelegram();
 
     const handlePurchase = () => {
@@ -38,8 +40,14 @@ function ProductItem() {
 
     useEffect(() => {
         const fetchProduct = async () => {
-            const product = await getOneProduct(id);
-            setProduct(product);
+            try {
+                const product = await getOneProduct(id);
+                setProduct(product);
+            } catch (error) {
+                console.error("Error fetching product:", error);
+            } finally {
+                setLoading(false);
+            }
         }
         fetchProduct();
     }, [id]);
@@ -61,10 +69,14 @@ function ProductItem() {
             tg.MainButton.offClick(handlePurchase);
             tg.MainButton.hide();
         };
-    }, [user, product]);
+    }, [user, product, id]);
 
-    if (!product) {
-        return <div>Loading...</div>;
+    if (loading) {
+        return (
+            <div className="flex justify-center align-items-center" style={{height: '100vh'}}>
+                <CircularProgress />
+            </div>
+        );
     }
 
     return (
