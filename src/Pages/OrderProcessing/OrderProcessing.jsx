@@ -37,11 +37,14 @@ const OrderForm = () => {
   }, []);
 
   useEffect(() => {
+    if (!id) {
+      setLoading(false);
+      return;
+    }
+
     const fetchProduct = async () => {
       try {
-        console.log(id);
         const fetchedProduct = await getOneProduct(id);
-        console.log(fetchedProduct);
         setProduct(fetchedProduct);
 
         switch(fetchedProduct.game_id) {
@@ -154,7 +157,6 @@ const OrderForm = () => {
       alert('Произошла ошибка при отправке заказа');
     }
   };
-
 
   const renderFormFields = () => {
     return formFields.map((field) => {
@@ -357,6 +359,14 @@ const OrderForm = () => {
     return (
       <div style={{minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: 'var(--tg-theme-bg-color)', color: 'var(--tg-theme-text-color)'}}>
         <p>Загрузка...</p>
+      </div>
+    );
+  }
+
+  if (!id) {
+    return (
+      <div style={{minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: 'var(--tg-theme-bg-color)', color: 'var(--tg-theme-text-color)'}}>
+        <p>Ошибка: ID товара не определен</p>
       </div>
     );
   }
