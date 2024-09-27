@@ -6,6 +6,7 @@ import TabScreen from "../../Components/TabScreen/TabScreen";
 import {useNavigate} from "react-router-dom";
 import {useTelegram} from '../../hooks/useTelegram';
 import {getUser} from '../../db/db';
+import profilePhoto from '../../images/profile_photo.png';
 
 function Profile() {
     const navigate = useNavigate();
@@ -37,14 +38,14 @@ function Profile() {
             <h3>Профиль</h3>
         </div>
         <div className="flex horizontal-padding vertical-padding">
-            <img className="avatar" src={user?.photo_url} alt={`${user?.first_name} ${user?.last_name}`}/>
+            <img className="avatar" src={user?.photo_url || profilePhoto} alt={`${user?.first_name} ${user?.last_name}`}/>
             <div className="flex column justify-center horizontal-padding">
                 <b>{user?.first_name} {user?.last_name}</b>
                 <span>{user?.username}</span>
             </div>
         </div>
         <div className="flex horizontal-padding justify-between">
-            <h3>Баланс: {db_user?.balance} ₽</h3>
+            <h3>Баланс: {db_user.balance} ₽</h3>
             <span className="text-blue pointer" onClick={() => navigate('/deposit')}>Пополнить</span>
         </div>
         <div className="flex column horizontal-padding vertical-padding gap-1">

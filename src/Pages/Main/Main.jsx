@@ -129,7 +129,7 @@ function Main() {
   `,);
     return <div>
         <Header/>
-        <div className="flex vertical-padding horizontal-padding">
+        <div className="flex vertical-padding horizontal-padding" style={{paddingBottom: '0.5rem'}}>
             <h2>Игры</h2>
         </div>
         <div className="flex align-stretch flex-wrap w-100">

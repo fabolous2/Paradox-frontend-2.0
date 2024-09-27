@@ -161,18 +161,11 @@ function Products() {
         <div className="flex justify-between py-08 horizontal-padding">
           <h2>{game_name}</h2>
           <div className="relative">
-            <Dropdown
-              sx={{
-                borderColor: "var(--tg-theme-section-separator-color) !important",
-                background: "var(--tg-theme-bg-color) !important"
-              }}>
-              <MenuButton className="text-blue">{sortValues[sortConfig.key]}<KeyboardArrowDownIcon/></MenuButton>
-              <Menu sx={{
-                color: "var(--tg-theme-text-color) !important",
-                borderColor: "var(--tg-theme-section-separator-color) !important",
-                background: "var(--tg-theme-bg-color) !important"
-              }}
-                slots={{listbox: Listbox}}>
+            <Dropdown>
+              <MenuButton className="text-blue">
+                {sortValues[sortConfig.key]}<KeyboardArrowDownIcon/>
+              </MenuButton>
+              <Menu>
                 {Object.entries(sortValues).map(([key, value]) => (
                   <MenuItem key={key} onClick={() => requestSort(key)}>
                     {value}
@@ -183,11 +176,9 @@ function Products() {
           </div>
         </div>
         <div className="flex column">
-          {sortedItems.map((item) => {
-            return <Card sx={{'$:hover': {
-              backgroundColor: "var(--tg-theme-secondary-bg-color)"
-            }}} item={item} key={item.id}/>;
-          })}
+          {sortedItems.map((item) => (
+            <Card item={item} key={item.id} />
+          ))}
         </div>
       </div>
     );

@@ -39,19 +39,6 @@ function Deposit() {
         setAmount(e.target.value)
     }
 
-    const onSubmit = async () => {
-        if (amount < 1 || !amount) {
-            setValidStatus(-1);
-            setMessage('Введите сумму')
-        } else {
-            const response = await makeDeposit(amount, method, tg.initData)
-            console.log(response)
-            if (response.success) {
-                navigate(`/payment/${response.payment.uuid}`)
-            }
-        }
-    }
-
     useEffect(() => {
         tg.MainButton.setParams({
             text: 'Оплатить',
@@ -59,12 +46,25 @@ function Deposit() {
         });
         tg.MainButton.onClick(onSubmit);
         tg.MainButton.show();
-
+    
         return () => {
             tg.MainButton.offClick(onSubmit);
             tg.MainButton.hide();
         };
-    }, [amount, method]);
+    }, []);
+    
+    const onSubmit = async () => {
+        if (amount < 10 || amount > 50000 || !amount) {
+            setValidStatus(-1);
+            setMessage('Введите корректную сумму (от 10 до 50000 руб)');
+        } else {
+            const response = await makeDeposit(amount, method, tg.initData);
+            console.log(response);
+            if (response.success) {
+                navigate(`/payment/${response.payment.uuid}`);
+            }
+        }
+    };
 
     return <div>
         <div className="flex horizontal-padding vertical-padding">

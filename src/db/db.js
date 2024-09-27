@@ -210,12 +210,13 @@ export async function checkCodeAvailability(referral_code) {
   }
 }
 
-export async function setReferralCode(referral_code) {
+export async function setReferralCode(referral_code, initData) {
   const response = await axios.post(`${API_URL}/referral/set_code/`, {
     referral_code: referral_code
   }, {
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Authorization': initData
     }
   });
   return response.data;

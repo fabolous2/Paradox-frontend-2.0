@@ -11,12 +11,13 @@ import {blue, grey} from "@mui/material/colors";
 import {styled} from "@mui/material";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useTelegram } from "../../hooks/useTelegram";
+import './SearchProducts.css';
 
 export const SearchProducts = () => {
   const [searchResults, setSearchResults] = useState([]);
   const location = useLocation();
   const query = new URLSearchParams(location.search).get("query");
-  const [sortConfig, setSortConfig] = useState({ key: 'purchase_count', direction: 'descending' });
+  // const [sortConfig, setSortConfig] = useState({ key: 'purchase_count', direction: 'descending' });
   const { tg } = useTelegram();
  
   useEffect(() => {
@@ -31,11 +32,11 @@ export const SearchProducts = () => {
     };
   }, []);
 
-  const sortValues = {
-    'purchase_count': 'по популярности',
-    'price_lower': 'по убыванию цены',
-    'price_higher': 'по возрастанию цены',
-  };
+  // const sortValues = {
+  //   'purchase_count': 'по популярности',
+  //   'price_lower': 'по убыванию цены',
+  //   'price_higher': 'по возрастанию цены',
+  // };
 
   useEffect(() => {
     const fetchResults = async () => {
@@ -45,92 +46,92 @@ export const SearchProducts = () => {
     fetchResults();
   }, [query]);
 
-  const sortedResults = useMemo(() => {
-    let sortableItems = [...searchResults];
-    if (sortConfig !== null) {
-      sortableItems.sort((a, b) => {
-        switch (sortConfig.key) {
-          case 'purchase_count':
-            return b.purchase_count - a.purchase_count;
-          case 'price_higher':
-            return a.price - b.price;
-          case 'price_lower':
-            return b.price - a.price;
-          default:
-            return 0;
-        }
-      });
-    }
-    return sortableItems;
-  }, [searchResults, sortConfig]);
+  // const sortedResults = useMemo(() => {
+  //   let sortableItems = [...searchResults];
+  //   if (sortConfig !== null) {
+  //     sortableItems.sort((a, b) => {
+  //       switch (sortConfig.key) {
+  //         case 'purchase_count':
+  //           return b.purchase_count - a.purchase_count;
+  //         case 'price_higher':
+  //           return a.price - b.price;
+  //         case 'price_lower':
+  //           return b.price - a.price;
+  //         default:
+  //           return 0;
+  //       }
+  //     });
+  //   }
+  //   return sortableItems;
+  // }, [searchResults, sortConfig]);
 
-  const requestSort = (key) => {
-    let direction = 'ascending';
-    if (sortConfig.key === key && sortConfig.direction === 'ascending') {
-      direction = 'descending';
-    }
-    setSortConfig({ key, direction });
-  };
+  // const requestSort = (key) => {
+  //   let direction = 'ascending';
+  //   if (sortConfig.key === key && sortConfig.direction === 'ascending') {
+  //     direction = 'descending';
+  //   }
+  //   setSortConfig({ key, direction });
+  // };
 
-  const Listbox = styled('ul')(({theme}) => `
-  font-family: 'IBM Plex Sans', sans-serif;
-  font-size: 0.875rem;
-  box-sizing: border-box;
-  padding: 6px;
-  margin: 12px 0;
-  min-width: 200px;
-  border-radius: 12px;
-  overflow: auto;
-  outline: 0px;
-  background: ${theme.palette.mode === 'dark' ? grey[900] : '#fff'};
-  border: 1px solid ${theme.palette.mode === 'dark' ? grey[700] : grey[200]};
-  color: ${theme.palette.mode === 'dark' ? grey[300] : grey[900]};
-  box-shadow: 0px 4px 6px ${theme.palette.mode === 'dark' ? 'rgba(0,0,0, 0.50)' : 'rgba(0,0,0, 0.05)'};
-  z-index: 1;
-  `,);
+  // const Listbox = styled('ul')(({theme}) => `
+  // font-family: 'IBM Plex Sans', sans-serif;
+  // font-size: 0.875rem;
+  // box-sizing: border-box;
+  // padding: 6px;
+  // margin: 12px 0;
+  // min-width: 200px;
+  // border-radius: 12px;
+  // overflow: auto;
+  // outline: 0px;
+  // background: ${theme.palette.mode === 'dark' ? grey[900] : '#fff'};
+  // border: 1px solid ${theme.palette.mode === 'dark' ? grey[700] : grey[200]};
+  // color: ${theme.palette.mode === 'dark' ? grey[300] : grey[900]};
+  // box-shadow: 0px 4px 6px ${theme.palette.mode === 'dark' ? 'rgba(0,0,0, 0.50)' : 'rgba(0,0,0, 0.05)'};
+  // z-index: 1;
+  // `,);
 
-    const MenuButton = styled(BaseMenuButton)(({theme, ...props}) => `
-  font-family: 'IBM Plex Sans', sans-serif;
-  font-weight: 600;
-  font-size: 0.875rem;
-  line-height: 1.5;
-  padding: 0;
-  padding-left: ".2rem";
-  border-radius: 8px;
-  transition: all 150ms ease;
-  background: var(--tg-theme-bg-color);
-  cursor: pointer;
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: end;
-  &:hover {
-    background: var(--tg-theme-secondary-bg-color);
-    border-color: ${theme.palette.mode === 'dark' ? grey[600] : grey[300]};
-  }
-  `,);
+  //   const MenuButton = styled(BaseMenuButton)(({theme, ...props}) => `
+  // font-family: 'IBM Plex Sans', sans-serif;
+  // font-weight: 600;
+  // font-size: 0.875rem;
+  // line-height: 1.5;
+  // padding: 0;
+  // padding-left: ".2rem";
+  // border-radius: 8px;
+  // transition: all 150ms ease;
+  // background: var(--tg-theme-bg-color);
+  // cursor: pointer;
+  // border: none;
+  // display: flex;
+  // align-items: center;
+  // justify-content: end;
+  // &:hover {
+  //   background: var(--tg-theme-secondary-bg-color);
+  //   border-color: ${theme.palette.mode === 'dark' ? grey[600] : grey[300]};
+  // }
+  // `,);
 
-    const MenuItem = styled(BaseMenuItem)(({theme}) => `
-  list-style: none;
-  padding: 8px;
-  border-radius: 8px;
-  cursor: default;
-  user-select: none;
+  //   const MenuItem = styled(BaseMenuItem)(({theme}) => `
+  // list-style: none;
+  // padding: 8px;
+  // border-radius: 8px;
+  // cursor: default;
+  // user-select: none;
 
-  &:last-of-type {
-    border-bottom: none;
-  }
+  // &:last-of-type {
+  //   border-bottom: none;
+  // }
 
-  &:focus {
-    outline: 1px solid ${theme.palette.mode === 'dark' ? blue[600] : blue[200]};
-    background-color: var(--tg-theme-bg-color);
-    color: var(--tg-theme-text-color);
-  }
+  // &:focus {
+  //   outline: 1px solid ${theme.palette.mode === 'dark' ? blue[600] : blue[200]};
+  //   background-color: var(--tg-theme-bg-color);
+  //   color: var(--tg-theme-text-color);
+  // }
 
-  &.${menuItemClasses.disabled} {
-    color: var(--tg-theme-text-color);
-  }
-  `,);
+  // &.${menuItemClasses.disabled} {
+  //   color: var(--tg-theme-text-color);
+  // }
+  // `,);
 
   useEffect(() => {
     const fetchResults = async () => {
@@ -145,14 +146,14 @@ export const SearchProducts = () => {
       <div className="header">
         <SearchBar/>
       </div>
-      <div className="flex justify-end mb-4">
-        <Dropdown
+      {/* <div className="flex justify-end mb-4">
+        {/* <Dropdown
           sx={{
             borderColor: "var(--tg-theme-section-separator-color) !important",
             background: "var(--tg-theme-bg-color) !important"
           }}>
-          <MenuButton className="text-blue">{sortValues[sortConfig.key]}<KeyboardArrowDownIcon/></MenuButton>
-          <Menu sx={{
+          {/* <MenuButton className="text-blue">{sortValues[sortConfig.key]}<KeyboardArrowDownIcon/></MenuButton> */}
+          {/* <Menu sx={{
             color: "var(--tg-theme-text-color) !important",
             borderColor: "var(--tg-theme-section-separator-color) !important",
             background: "var(--tg-theme-bg-color) !important"
@@ -163,11 +164,11 @@ export const SearchProducts = () => {
                 {value}
               </MenuItem>
             ))}
-          </Menu>
-        </Dropdown>
-      </div>
+          </Menu> */}
+        {/* </Dropdown> */}
+      {/* // </div> */}
       <div className="flex column">
-        {sortedResults.map((item) => (
+        {searchResults.map((item) => (
           <Card 
             sx={{
               '&:hover': {

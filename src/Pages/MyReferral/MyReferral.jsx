@@ -84,7 +84,7 @@ function MyReferral() {
         setLink(`https://t.me/paradox_bot?start=${code}`);
         try {
             if (code !== user.referral_code) {  
-                await setReferralCode(code);
+                await setReferralCode(code, tg.initData);
                 setValidStatus(1);
                 setMessage('Готово!');
                 setUser(prevUser => ({...prevUser, referral_code: code}));
