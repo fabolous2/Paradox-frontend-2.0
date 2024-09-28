@@ -7,7 +7,7 @@ import {useNavigate} from "react-router-dom";
 import {useTelegram} from '../../hooks/useTelegram';
 import {getUser} from '../../db/db';
 import CircularProgress from '@mui/material/CircularProgress';
-import profilePhoto from '../../images/profile-photo.png';
+import profilePhoto from '../../images/profile_photo.png';
 
 function Profile() {
     const navigate = useNavigate();
