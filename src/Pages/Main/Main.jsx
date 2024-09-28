@@ -111,32 +111,32 @@ function Main() {
   }
   `,);
 
-    const MenuItem = styled(BaseMenuItem)(({ theme, selected }) => `
-    list-style: none;
-    padding: 8px;
-    border-radius: 8px;
-    cursor: default;
-    user-select: none;
+  const MenuItem = styled(BaseMenuItem)(({ theme, selected }) => `
+  list-style: none;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: default;
+  user-select: none;
 
-    &:last-of-type {
-        border-bottom: none;
+  &:last-of-type {
+      border-bottom: none;
+  }
+
+  ${selected ? `
+      background-color: var(--tg-theme-secondary-bg-color);
+      color: var(--tg-theme-text-color);
+  ` : ''}
+
+  &:focus {
+      outline: none;
+      background-color: var(--tg-theme-secondary-bg-color);
+      color: var(--tg-theme-text-color);
+  }
+
+  &.${menuItemClasses.disabled} {
+      color: var(--tg-theme-hint-color);
     }
-
-    ${selected ? `
-        background-color: var(--tg-theme-secondary-bg-color);
-        color: var(--tg-theme-text-color);
-    ` : ''}
-
-    &:focus {
-        outline: 1px solid ${theme.palette.mode === 'dark' ? blue[600] : blue[200]};
-        background-color: var(--tg-theme-secondary-bg-color);
-        color: var(--tg-theme-text-color);
-    }
-
-    &.${menuItemClasses.disabled} {
-            color: var(--tg-theme-hint-color);
-        }
-    `,);
+    `);
 
     if (isLoading) {
         return (
