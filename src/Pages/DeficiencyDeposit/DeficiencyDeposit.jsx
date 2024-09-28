@@ -4,9 +4,11 @@ import { useParams } from 'react-router-dom';
 import { useTelegram } from '../../hooks/useTelegram';
 import CircularProgress from '@mui/material/CircularProgress';
 import { makeDeposit } from '../../db/db';
+import { useNavigate } from 'react-router-dom';
 
 const DeficiencyDeposit = () => {
     const { productId } = useParams();
+    const navigate = useNavigate();
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
     const [method, setMethod] = useState('card');
