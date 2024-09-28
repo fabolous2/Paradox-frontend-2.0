@@ -12,11 +12,13 @@ import {styled} from "@mui/material";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useTelegram } from "../../hooks/useTelegram";
 import './SearchProducts.css';
+import CircularProgress from '@mui/material/CircularProgress';
 
 export const SearchProducts = () => {
   const [searchResults, setSearchResults] = useState([]);
   const location = useLocation();
   const query = new URLSearchParams(location.search).get("query");
+  const [loading, setLoading] = useState(true);
   // const [sortConfig, setSortConfig] = useState({ key: 'purchase_count', direction: 'descending' });
   const { tg } = useTelegram();
  
@@ -39,9 +41,10 @@ export const SearchProducts = () => {
   // };
 
   useEffect(() => {
-    const fetchResults = async () => {
+    const fetchResults = async () => {;
       const results = await searchProducts(query);
       setSearchResults(results);
+      setLoading(false);
     };
     fetchResults();
   }, [query]);
@@ -137,6 +140,7 @@ export const SearchProducts = () => {
     const fetchResults = async () => {
       const results = await searchProducts(query);
       setSearchResults(results);
+      setLoading(false);
     };
     fetchResults();
   }, [query]);
@@ -146,27 +150,6 @@ export const SearchProducts = () => {
       <div className="header">
         <SearchBar/>
       </div>
-      {/* <div className="flex justify-end mb-4">
-        {/* <Dropdown
-          sx={{
-            borderColor: "var(--tg-theme-section-separator-color) !important",
-            background: "var(--tg-theme-bg-color) !important"
-          }}>
-          {/* <MenuButton className="text-blue">{sortValues[sortConfig.key]}<KeyboardArrowDownIcon/></MenuButton> */}
-          {/* <Menu sx={{
-            color: "var(--tg-theme-text-color) !important",
-            borderColor: "var(--tg-theme-section-separator-color) !important",
-            background: "var(--tg-theme-bg-color) !important"
-          }}
-            slots={{listbox: Listbox}}>
-            {Object.entries(sortValues).map(([key, value]) => (
-              <MenuItem key={key} onClick={() => requestSort(key)}>
-                {value}
-              </MenuItem>
-            ))}
-          </Menu> */}
-        {/* </Dropdown> */}
-      {/* // </div> */}
       <div className="flex column">
         {searchResults.map((item) => (
           <Card 

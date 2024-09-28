@@ -3,11 +3,13 @@ import './MyReferral.css'
 import Button from "../../Components/Button";
 import { getUser, checkCodeAvailability, setReferralCode } from '../../db/db';
 import { useTelegram } from '../../hooks/useTelegram';
+import CircularProgress from '@mui/material/CircularProgress';
 
 function MyReferral() {
     const [code, setCode] = useState('');
     const [validStatus, setValidStatus] = useState(0);
     const [message, setMessage] = useState('');
+    const [isLoading, setIsLoading] = useState(true);
     const [btnMessage, setBtnMessage] = useState('Копировать ссылку');
     const [link, setLink] = useState(`https://t.me/paradox_bot?start=${code}`);
     const [user, setUser] = useState(null);
@@ -33,6 +35,7 @@ function MyReferral() {
             setLink(`https://t.me/paradox_bot?start=${response.referral_code}`);
         };
         fetchUser();
+        setIsLoading(false);
     }, []);
 
     useEffect(() => {
@@ -118,6 +121,14 @@ function MyReferral() {
         setBtnMessage('Ссылка скопирована')
     }
 
+    if (isLoading) {
+        return (
+            <div className="flex justify-center align-items-center" style={{height: '100vh'}}>
+                <CircularProgress />
+            </div>
+        );
+    }
+
     return <div>
         <div className="flex horizontal-padding vertical-padding">
             <h3>Реферальная программа</h3>
@@ -139,9 +150,7 @@ function MyReferral() {
             </div>
 
             <span className="fw-500">Ваша реферальная ссылка:</span>
-            <p className="text-wrap"><code>
-                <mark>{link}</mark>
-            </code></p>
+            <p className="text-wrap"><code>{link}</code></p>
             <Button onClick={() => {
                 onCopy(link)
             }} style={{color: "red !important"}} className="w-100 text__center"

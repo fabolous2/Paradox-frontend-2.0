@@ -2,8 +2,8 @@ import React, {useState, useEffect} from 'react';
 import {useParams} from 'react-router-dom';
 import { getOneOrder, getOneProduct } from '../../db/db';
 import { useNavigate } from 'react-router-dom';
-import { MainButton } from '@vkruglikov/react-telegram-web-app';
 import { useTelegram } from '../../hooks/useTelegram';
+import CircularProgress from '@mui/material/CircularProgress';
 
 function OrderDetails() {
     const navigate = useNavigate();
@@ -40,11 +40,28 @@ function OrderDetails() {
         navigate(`/post-feedback/${product.id}`);
     };
 
+    useEffect(() => {
+        if (order && order.status === "completed") {
+            tg.MainButton.setText("Оставить отзыв");
+            tg.MainButton.show();
+            tg.MainButton.onClick(handleLeaveFeedback);
+        } else {
+            tg.MainButton.hide();
+        }
+
+        return () => {
+            tg.MainButton.offClick();
+            tg.MainButton.hide();
+        };
+    }, [order, product]);
+
     return (
         <div className="transaction-detail">
             <h2 className="text-2xl font-bold mb-4">Информация о заказе</h2>
             {loading ? (
-                <div>Loading...</div>
+                <div className="flex justify-center align-items-center" style={{height: '100vh'}}>
+                    <CircularProgress />
+                </div>
             ) : (
                 <>
                     <div className="detail-item">
@@ -101,13 +118,6 @@ function OrderDetails() {
                         <div className="label">Код Supercell ID</div>
                         <div className="value">{order.additional_data.code}</div>
                     </div>
-                
-                    {order.status === "completed" && (
-                        <MainButton 
-                            text="Оставить отзыв"
-                            onClick={handleLeaveFeedback}
-                        />
-                    )}
                 </>
             )}
         </div>

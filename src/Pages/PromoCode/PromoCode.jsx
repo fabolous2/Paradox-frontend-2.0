@@ -75,7 +75,6 @@ function PromoCode() {
     }
 
     const onSubmit = async () => {
-        console.log("OnSubmit")
         try {
             const result = await (async () => {
                 console.log("api");

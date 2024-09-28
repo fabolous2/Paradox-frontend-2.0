@@ -65,7 +65,7 @@ function Deposit() {
             tg.MainButton.hide();
         };
     }, [amount, method, validStatus]);
-    
+
     return <div>
         <div className="flex horizontal-padding vertical-padding">
             <h3>Пополнить баланс</h3>

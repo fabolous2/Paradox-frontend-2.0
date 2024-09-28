@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getFeedbacks, removeFeedback, getUser } from '../../db/db';
 import { useTelegram } from '../../hooks/useTelegram';
-
+import CircularProgress from '@mui/material/CircularProgress';
 
 export default function Feedbacks() {
   const [feedbacks, setFeedbacks] = useState([]);
@@ -62,7 +62,11 @@ export default function Feedbacks() {
   };
 
   if (isLoading) {
-    return <div style={{ textAlign: 'center' }}>Загрузка отзывов...</div>;
+      return (
+        <div className="flex justify-center align-items-center" style={{height: '100vh'}}>
+            <CircularProgress />
+        </div>
+    );
   }
 
   return (

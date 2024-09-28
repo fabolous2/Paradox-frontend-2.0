@@ -11,11 +11,13 @@ import {blue, grey} from "@mui/material/colors";
 import {styled} from "@mui/material";
 import {getGamesAPI} from "../../db/db";
 import {getProducts} from "../../db/db";
+import CircularProgress from '@mui/material/CircularProgress';
 
 function Main() {
     const [games, setGamesState] = useState([]);
     const [items, setItemsState] = useState([]);
     const [sortConfig, setSortConfig] = useState({ key: 'purchase_count', direction: 'descending' });
+    const [isLoading, setIsLoading] = useState(true);
 
     const sortValues = {
         'purchase_count': 'по популярности',
@@ -33,19 +35,21 @@ function Main() {
     };
 
     useEffect(() => {
-        async function fetchItems() {
-            const items = await getProducts();
-            setItemsState(items);
+        async function fetchData() {
+            try {
+                const [fetchedItems, fetchedGames] = await Promise.all([
+                    getProducts(),
+                    getGamesAPI()
+                ]);
+                setItemsState(fetchedItems);
+                setGamesState(fetchedGames);
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            } finally {
+                setIsLoading(false);
+            }
         }
-        fetchItems();
-    }, []);
-
-    useEffect(() => {
-        async function fetchGames() {
-            const games = await getGamesAPI();
-            setGamesState(games);
-        }
-        fetchGames();
+        fetchData();
     }, []);
 
     const sortedItems = useMemo(() => {
@@ -106,27 +110,41 @@ function Main() {
   }
   `,);
 
-    const MenuItem = styled(BaseMenuItem)(({theme}) => `
-  list-style: none;
-  padding: 8px;
-  border-radius: 8px;
-  cursor: default;
-  user-select: none;
+    const MenuItem = styled(BaseMenuItem)(({ theme, selected }) => `
+    list-style: none;
+    padding: 8px;
+    border-radius: 8px;
+    cursor: default;
+    user-select: none;
 
-  &:last-of-type {
-    border-bottom: none;
-  }
+    &:last-of-type {
+        border-bottom: none;
+    }
 
-  &:focus {
-    outline: 1px solid ${theme.palette.mode === 'dark' ? blue[600] : blue[200]};
-    background-color: var(--tg-theme-bg-color);
-    color: var(--tg-theme-text-color);
-  }
+    ${selected ? `
+        background-color: var(--tg-theme-secondary-bg-color);
+        color: var(--tg-theme-text-color);
+    ` : ''}
 
-  &.${menuItemClasses.disabled} {
-    color: var(--tg-theme-text-color);
-  }
-  `,);
+    &:focus {
+        outline: 1px solid ${theme.palette.mode === 'dark' ? blue[600] : blue[200]};
+        background-color: var(--tg-theme-secondary-bg-color);
+        color: var(--tg-theme-text-color);
+    }
+
+    &.${menuItemClasses.disabled} {
+            color: var(--tg-theme-hint-color);
+        }
+    `,);
+
+    if (isLoading) {
+        return (
+            <div className="flex justify-center align-items-center" style={{height: '100vh'}}>
+                <CircularProgress />
+            </div>
+        );
+    }
+
     return <div>
         <Header/>
         <div className="flex vertical-padding horizontal-padding" style={{paddingBottom: '0.5rem'}}>
@@ -150,10 +168,10 @@ function Main() {
                         color: "var(--tg-theme-text-color) !important",
                         borderColor: "var(--tg-theme-section-separator-color) !important",
                         background: "var(--tg-theme-bg-color) !important"
-                    }}
-                          slots={{listbox: Listbox}}>
+                        }}
+                        slots={{listbox: Listbox}}>
                         {Object.entries(sortValues).map(([key, value]) => (
-                            <MenuItem key={key} onClick={createHandleMenuClick(key)}>
+                            <MenuItem key={key} onClick={createHandleMenuClick(key)} selected={sortConfig.key === key}>
                                 {value}
                             </MenuItem>
                         ))}

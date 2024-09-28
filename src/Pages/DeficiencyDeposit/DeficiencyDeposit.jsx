@@ -2,25 +2,26 @@ import React, { useState, useEffect } from 'react';
 import { getOneProduct, getUser } from '../../db/db';
 import { useParams } from 'react-router-dom';
 import { useTelegram } from '../../hooks/useTelegram';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const DeficiencyDeposit = () => {
-    const { productId } = useParams()
-    const [product, setProduct] = useState(null)
-    const [loading, setLoading] = useState(true)
+    const { productId } = useParams();
+    const [product, setProduct] = useState(null);
+    const [loading, setLoading] = useState(true);
     const [method, setMethod] = useState('card');
     const [amount, setAmount] = useState('');
     const [validStatus, setValidStatus] = useState(0);
     const [message, setMessage] = useState('');
-    const [dbUser, setDbUser] = useState(null)
+    const [dbUser, setDbUser] = useState(null);
     const { tg } = useTelegram();
 
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const response = await getUser(tg.initData)
-                setDbUser(response)
+                const response = await getUser(tg.initData);
+                setDbUser(response);
             } catch (error) {
-                console.error("Error fetching user:", error)
+                console.error("Error fetching user:", error);
             }
         }
         fetchUser()
@@ -40,6 +41,11 @@ const DeficiencyDeposit = () => {
     
     useEffect(() => {
         const fetchProduct = async () => {
+            if (!productId) {
+                alert("Product ID is undefined");
+                setLoading(false);
+                return;
+            }
             try {
                 const response = await getOneProduct(productId)
                 setProduct(response)
@@ -73,17 +79,9 @@ const DeficiencyDeposit = () => {
 
     if (loading) {
         return (
-            <div className="loading-container">
-                <div className="loading-text">Loading...</div>
+            <div className="flex justify-center align-items-center" style={{height: '100vh'}}>
+                <CircularProgress />
             </div>
-        )
-    }
-
-    if (!productId) {
-        return (
-          <div style={{minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: 'var(--tg-theme-bg-color)', color: 'var(--tg-theme-text-color)'}}>
-            <p>Ошибка: ID товара не определен в DeficiencyDeposit</p>
-          </div>
         );
     }
 

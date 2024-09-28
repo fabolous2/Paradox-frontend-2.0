@@ -104,37 +104,27 @@ function Products() {
   z-index: 1;
   `,
     );
-
-  const MenuButton = styled(BaseMenuButton)(
-        ({theme}) => `
+ 
+  const MenuButton = styled(BaseMenuButton)(({theme, ...props}) => `
   font-family: 'IBM Plex Sans', sans-serif;
   font-weight: 600;
   font-size: 0.875rem;
   line-height: 1.5;
   padding: 0;
+  padding-left: ".2rem";
   border-radius: 8px;
   transition: all 150ms ease;
+  background: var(--tg-theme-bg-color);
   cursor: pointer;
-  background: ${theme.palette.mode === 'dark' ? grey[900] : '#fff'};
   border: none;
   display: flex;
   align-items: center;
   justify-content: end;
   &:hover {
-    background: ${theme.palette.mode === 'dark' ? grey[800] : grey[50]};
+    background: var(--tg-theme-secondary-bg-color);
     border-color: ${theme.palette.mode === 'dark' ? grey[600] : grey[300]};
   }
-
-  &:active {
-    background: ${theme.palette.mode === 'dark' ? grey[700] : grey[100]};
-  }
-
-  &:focus-visible {
-    box-shadow: 0 0 0 4px ${theme.palette.mode === 'dark' ? blue[300] : blue[200]};
-    outline: none;
-  }
-  `,
-    );
+  `,);
 
   const MenuItem = styled(BaseMenuItem)(
         ({theme}) => `

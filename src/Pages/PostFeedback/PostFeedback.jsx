@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { postFeedback, getOneProduct, isUserPostedFeedback } from '../../db/db';
 import { useNavigate } from 'react-router-dom';
 import { useTelegram } from '../../hooks/useTelegram';
-import { MainButton } from '@vkruglikov/react-telegram-web-app';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const PostFeedback = () => {
   const [rating, setRating] = useState(5);
@@ -62,7 +62,9 @@ const PostFeedback = () => {
     fetchProduct();
   }, [id]);
 
-  if (!product) return <div>Загрузка...</div>;
+  if (!product) return <div className="flex justify-center align-items-center" style={{height: '100vh'}}>
+    <CircularProgress />
+  </div>;
 
   return (
     <div className="p-4 w-full h-screen flex flex-col">

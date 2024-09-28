@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { getOneTransaction } from '../../db/db';
 import { useLocation } from 'react-router-dom';
 import { useTelegram } from '../../hooks/useTelegram';
+import { CircularProgress } from '@mui/material';
 
 const TransactionDetail = () => {
     const [transaction, setTransaction] = useState(null);
@@ -39,7 +40,9 @@ const TransactionDetail = () => {
         fetchResults();
       }, [transaction_id]);
     
-      if (loading) return <div>Loading...</div>;
+      if (loading) return <div className="flex justify-center align-items-center" style={{height: '100vh'}}>
+        <CircularProgress />
+      </div>;
 
     return (
         <div className="transaction-detail">
