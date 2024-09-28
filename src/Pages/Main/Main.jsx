@@ -104,6 +104,7 @@ function Main() {
   display: flex;
   align-items: center;
   justify-content: end;
+  user-select: none;
   &:hover {
     background: var(--tg-theme-secondary-bg-color);
     border-color: ${theme.palette.mode === 'dark' ? grey[600] : grey[300]};

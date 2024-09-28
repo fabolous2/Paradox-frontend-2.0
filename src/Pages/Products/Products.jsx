@@ -84,8 +84,7 @@ function Products() {
     requestSort(key);
   };
 
-  const Listbox = styled('ul')(
-        ({theme}) => `
+  const Listbox = styled('ul')(({theme}) => `
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: 0.875rem;
   box-sizing: border-box;
@@ -98,14 +97,11 @@ function Products() {
   background: ${theme.palette.mode === 'dark' ? grey[900] : '#fff'};
   border: 1px solid ${theme.palette.mode === 'dark' ? grey[700] : grey[200]};
   color: ${theme.palette.mode === 'dark' ? grey[300] : grey[900]};
-  box-shadow: 0px 4px 6px ${
-            theme.palette.mode === 'dark' ? 'rgba(0,0,0, 0.50)' : 'rgba(0,0,0, 0.05)'
-        };
+  box-shadow: 0px 4px 6px ${theme.palette.mode === 'dark' ? 'rgba(0,0,0, 0.50)' : 'rgba(0,0,0, 0.05)'};
   z-index: 1;
-  `,
-    );
- 
-  const MenuButton = styled(BaseMenuButton)(({theme, ...props}) => `
+  `,);
+
+    const MenuButton = styled(BaseMenuButton)(({theme, ...props}) => `
   font-family: 'IBM Plex Sans', sans-serif;
   font-weight: 600;
   font-size: 0.875rem;
@@ -120,39 +116,43 @@ function Products() {
   display: flex;
   align-items: center;
   justify-content: end;
+  user-select: none;
   &:hover {
     background: var(--tg-theme-secondary-bg-color);
     border-color: ${theme.palette.mode === 'dark' ? grey[600] : grey[300]};
   }
   `,);
 
-  const MenuItem = styled(BaseMenuItem)(
-        ({theme}) => `
-  list-style: none;
-  padding: 8px;
-  border-radius: 8px;
-  cursor: default;
-  user-select: none;
+    const MenuItem = styled(BaseMenuItem)(({ theme, selected }) => `
+    list-style: none;
+    padding: 8px;
+    border-radius: 8px;
+    cursor: default;
+    user-select: none;
 
-  &:last-of-type {
-    border-bottom: none;
-  }
+    &:last-of-type {
+        border-bottom: none;
+    }
 
-  &:focus {
-    outline: 3px solid ${theme.palette.mode === 'dark' ? blue[600] : blue[200]};
-    background-color: ${theme.palette.mode === 'dark' ? grey[800] : grey[100]};
-    color: ${theme.palette.mode === 'dark' ? grey[300] : grey[900]};
-  }
+    ${selected ? `
+        background-color: var(--tg-theme-secondary-bg-color);
+        color: var(--tg-theme-text-color);
+    ` : ''}
 
-  &.${menuItemClasses.disabled} {
-    color: ${theme.palette.mode === 'dark' ? grey[700] : grey[400]};
-  }
-  `,
-    );
+    &:focus {
+        outline: 1px solid ${theme.palette.mode === 'dark' ? blue[600] : blue[200]};
+        background-color: var(--tg-theme-secondary-bg-color);
+        color: var(--tg-theme-text-color);
+    }
+
+    &.${menuItemClasses.disabled} {
+            color: var(--tg-theme-hint-color);
+        }
+    `,);
 
     return (
       <div>
-        <div className="flex justify-between py-08 horizontal-padding">
+       <div className="flex justify-between py-08 horizontal-padding">
             <h2>{game_name}</h2>
             <div className="relative">
                 <Dropdown
@@ -165,10 +165,10 @@ function Products() {
                         color: "var(--tg-theme-text-color) !important",
                         borderColor: "var(--tg-theme-section-separator-color) !important",
                         background: "var(--tg-theme-bg-color) !important"
-                    }}
-                          slots={{listbox: Listbox}}>
+                        }}
+                        slots={{listbox: Listbox}}>
                         {Object.entries(sortValues).map(([key, value]) => (
-                            <MenuItem key={key} onClick={createHandleMenuClick(key)}>
+                            <MenuItem key={key} onClick={createHandleMenuClick(key)} selected={sortConfig.key === key}>
                                 {value}
                             </MenuItem>
                         ))}

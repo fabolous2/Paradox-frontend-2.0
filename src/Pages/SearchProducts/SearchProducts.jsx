@@ -145,6 +145,10 @@ export const SearchProducts = () => {
     fetchResults();
   }, [query]);
 
+  if (loading) return <div className="flex justify-center align-items-center" style={{height: '100vh'}}>
+    <CircularProgress />
+  </div>
+
   return (
     <div>
       <div className="header">
