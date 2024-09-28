@@ -57,7 +57,7 @@ function Profile() {
             <img className="avatar" src={user?.photo_url || profilePhoto}/>
             <div className="flex column justify-center horizontal-padding">
                 <b>{user?.first_name} {user?.last_name}</b>
-                <span>{user?.username}</span>
+                <span style={{ color: '#888888' }}>@{user?.username}</span>
             </div>
         </div>
         <div className="flex horizontal-padding justify-between">

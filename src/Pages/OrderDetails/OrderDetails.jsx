@@ -55,6 +55,37 @@ function OrderDetails() {
         };
     }, [order, product]);
 
+    const renderAdditionalFields = () => {
+        if (!order || !order.additional_data) return null;
+    
+        const { ...additionalData } = order.additional_data;
+    
+        const gameSpecificFields = {
+            'Brawl Stars': ['email', 'code'],
+            'PUBG': ['pubg_id'],
+            'Blockman Go': ['blockman_id', 'password'],
+            'Roblox': ['username', 'password', 'twoFactorCode'],
+            'Clash of Clans': ['email', 'code'],
+            'Clash Royale': ['email', 'code'],
+            'Squad Busters': ['email', 'code'],
+            'Fortnite': ['nickname'],
+            'FIFA Mobile': ['email', 'password'],
+            'Minecraft': ['email', 'password'],
+            'Stumble Guys': ['nickname'],
+            'My Singing Monsters': ['email', 'code'],
+            'World of Tanks [Евро]': ['email', 'password'],
+        };
+    
+        const fieldsToRender = gameSpecificFields[product.game_name] || Object.keys(additionalData);
+    
+        return fieldsToRender.map(field => (
+            <div className="detail-item" key={field}>
+                <div className="label">{field.charAt(0).toUpperCase() + field.slice(1).replace('_', ' ')}</div>
+                <div className="value">{additionalData[field]}</div>
+            </div>
+        ));
+    };
+    
     return (
         <div className="transaction-detail">
             <h2 className="text-2xl font-bold mb-4">Информация о заказе</h2>
@@ -87,7 +118,7 @@ function OrderDetails() {
                         <div className="label">Товар</div>
                         <div className="value">{product.name}</div>
                     </div>
-
+    
                     <div className="detail-item">
                         <div className="label">ID товара</div>
                         <div className="value">{product.id}</div>
@@ -97,7 +128,7 @@ function OrderDetails() {
                         <div className="label">Стоимость</div>
                         <div className="value">{order.price}</div>
                     </div>
-
+    
                     <div className="detail-item">
                         <div className="label">Статус заказа</div>
                         <div className="value">
@@ -108,16 +139,8 @@ function OrderDetails() {
                             null}
                         </div>
                     </div>
-                            
-                    <div className="detail-item">
-                        <div className="label">Почта Supercell ID</div>
-                        <div className="value">{order.additional_data.email}</div>
-                    </div>
-
-                    <div className="detail-item">
-                        <div className="label">Код Supercell ID</div>
-                        <div className="value">{order.additional_data.code}</div>
-                    </div>
+    
+                    {renderAdditionalFields()}
                 </>
             )}
         </div>

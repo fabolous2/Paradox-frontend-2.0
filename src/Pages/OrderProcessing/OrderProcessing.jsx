@@ -68,7 +68,6 @@ const OrderForm = () => {
           case 9:
           case 11:
           case 12:
-          case 14:
             setFormFields(['email', 'password']);
             break;
           case 13:
@@ -140,7 +139,6 @@ const OrderForm = () => {
         case 8:
         case 9:
         case 11:
-        case 14:
           additionalData = { login: email, password };
           break;
         case 13:
@@ -181,7 +179,7 @@ const OrderForm = () => {
                  product.game_id === 9 ? 'Почта от XBOX Live' :
                  product.game_id === 11 ? 'Почта' :
                  product.game_id === 12 ? 'Почта' :
-                 product.game_id === 14 ? 'Почта' : 'Почта Supercell ID'}
+                 product.game_id === 1 || product.game_id === 2 || product.game_id === 3 || product.game_id === 4 ? 'Почта' : 'Почта Supercell ID'}
               </label>
               <div style={{display: 'flex'}}>
                 <input
@@ -197,7 +195,7 @@ const OrderForm = () => {
                   }}
                   placeholder="Введите email"
                 />
-                {(product.game_id === 8 || product.game_id === 14) && (
+                {(product.game_id === 1 || product.game_id === 2 || product.game_id === 3 || product.game_id === 4) && (
                   <button
                     onClick={handleEmailSubmit}
                     style={{backgroundColor: '#3b82f6', color: 'white', padding: '0.5rem', borderTopRightRadius: '0.25rem', borderBottomRightRadius: '0.25rem', border: 'none'}}
