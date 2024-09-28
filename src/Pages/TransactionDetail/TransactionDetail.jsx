@@ -5,6 +5,7 @@ import { getOneTransaction } from '../../db/db';
 import { useLocation } from 'react-router-dom';
 import { useTelegram } from '../../hooks/useTelegram';
 import { CircularProgress } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 const TransactionDetail = () => {
     const [transaction, setTransaction] = useState(null);
@@ -12,11 +13,12 @@ const TransactionDetail = () => {
     const location = useLocation();
     const transaction_id = new URLSearchParams(location.search).get("id");
     const { tg } = useTelegram();
- 
+    const navigate = useNavigate();
+
     useEffect(() => {
       tg.BackButton.show();
       tg.BackButton.onClick(() => {
-        window.history.back();
+        navigate('/profile');
       });
   
       return () => {

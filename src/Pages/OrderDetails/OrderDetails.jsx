@@ -16,7 +16,7 @@ function OrderDetails() {
     useEffect(() => {
       tg.BackButton.show();
       tg.BackButton.onClick(() => {
-        window.history.back();
+        navigate('/profile');
       });
   
       return () => {

@@ -3,23 +3,28 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getOneTransaction } from "../../db/db";
 import { useTelegram } from "../../hooks/useTelegram";
+import { CircularProgress } from '@mui/material';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 export default function PaymentProcessing() {
     const navigate = useNavigate()
     const { order_id } = useParams()
     const [transaction, setTransaction] = useState(null)
+    const [paymentStatus, setPaymentStatus] = useState('pending')
+    const [timeLeft, setTimeLeft] = useState(600)
     const { tg } = useTelegram();
- 
+
     useEffect(() => {
-      tg.BackButton.show();
-      tg.BackButton.onClick(() => {
-        window.history.back();
-      });
-  
-      return () => {
-        tg.BackButton.offClick();
-        tg.BackButton.hide();
-      };
+        tg.BackButton.show();
+        tg.BackButton.onClick(() => {
+            window.history.back();
+        });
+
+        return () => {
+            tg.BackButton.offClick();
+            tg.BackButton.hide();
+        };
     }, []);
 
     useEffect(() => {
@@ -28,27 +33,83 @@ export default function PaymentProcessing() {
             setTransaction(response)
         }
         fetchTransaction()
+
+        const checkPaymentStatus = async () => {
+            const updatedTransaction = await getOneTransaction(order_id, tg.initData)
+            if (updatedTransaction.is_successful) {
+                setPaymentStatus('success')
+            }
+        }
+
+        const statusInterval = setInterval(checkPaymentStatus, 5000) // Check every 5 seconds
+
+        const timer = setInterval(() => {
+            setTimeLeft((prevTime) => {
+                if (prevTime <= 0) {
+                    clearInterval(timer)
+                    clearInterval(statusInterval)
+                    setPaymentStatus('failed')
+                    return 0
+                }
+                return prevTime - 1
+            })
+        }, 1000)
+
+        return () => {
+            clearInterval(statusInterval)
+            clearInterval(timer)
+        }
     }, [order_id])
 
     useEffect(() => {
-        tg.MainButton.setParams({
-            text: 'Перейти к оплате',
-            color: tg.themeParams.button_color,
-        });
-        tg.MainButton.onClick(() => {
-            if (transaction && transaction.payment_data && transaction.payment_data.url) {
-                tg.openLink(transaction.payment_data.url);
-            } else {
-                console.error('Payment URL not available');
-            }
-        });
-        tg.MainButton.show();
+        if (paymentStatus === 'pending') {
+            tg.MainButton.setParams({
+                text: 'Перейти к оплате',
+                color: tg.themeParams.button_color,
+            });
+            tg.MainButton.onClick(() => {
+                if (transaction && transaction.payment_data && transaction.payment_data.url) {
+                    tg.openLink(transaction.payment_data.url);
+                } else {
+                    console.error('Payment URL not available');
+                }
+            });
+            tg.MainButton.show();
+        } else {
+            tg.MainButton.hide();
+        }
 
         return () => {
             tg.MainButton.offClick();
             tg.MainButton.hide();
         };
-    }, [transaction]);
+    }, [transaction, paymentStatus]);
+
+    const renderContent = () => {
+        switch (paymentStatus) {
+            case 'success':
+                return (
+                    <>
+                        <CheckCircleOutlineIcon style={{ fontSize: 60, color: 'green' }} />
+                        <p style={{textAlign: 'center', marginBottom: '2rem'}}>Оплата прошла успешно!</p>
+                    </>
+                );
+            case 'failed':
+                return (
+                    <>
+                        <CancelIcon style={{ fontSize: 60, color: 'red' }} />
+                        <p style={{textAlign: 'center', marginBottom: '2rem'}}>Оплата не удалась. Попробуйте еще раз.</p>
+                    </>
+                );
+            default:
+                return (
+                    <>
+                        <CircularProgress size={60} />
+                        <p style={{textAlign: 'center', marginBottom: '2rem'}}>Ожидаем оплату... {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}</p>
+                    </>
+                );
+        }
+    }
 
     return (
         <div style={{
@@ -62,16 +123,9 @@ export default function PaymentProcessing() {
             padding: '1rem'
         }}>
             <div style={{width: '100%', maxWidth: '300px'}}>
-                <div style={{marginBottom: '2rem', display: 'flex', justifyContent: 'center'}}>
-                    <div style={{
-                        width: '3rem',
-                        height: '3rem',
-                        borderTop: `4px solid ${tg.themeParams.button_color}`,
-                        borderRadius: '50%',
-                        animation: 'spin 1s linear infinite'
-                    }}></div>
+                <div style={{marginBottom: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                    {renderContent()}
                 </div>
-                <p style={{textAlign: 'center', marginBottom: '2rem'}}>Ожидаем оплату...</p>
                 <button 
                     style={{
                         width: '100%',
@@ -88,14 +142,6 @@ export default function PaymentProcessing() {
                     Вернуться в профиль
                 </button>
             </div>
-            <style>
-                {`
-                @keyframes spin {
-                    0% { transform: rotate(0deg); }
-                    100% { transform: rotate(360deg); }
-                }
-                `}
-            </style>
         </div>
     )
 }

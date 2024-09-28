@@ -3,6 +3,7 @@ import { getOneProduct, getUser } from '../../db/db';
 import { useParams } from 'react-router-dom';
 import { useTelegram } from '../../hooks/useTelegram';
 import CircularProgress from '@mui/material/CircularProgress';
+import { makeDeposit } from '../../db/db';
 
 const DeficiencyDeposit = () => {
     const { productId } = useParams();
@@ -38,44 +39,67 @@ const DeficiencyDeposit = () => {
         tg.BackButton.hide();
       };
     }, []);
-    
+
     useEffect(() => {
         const fetchProduct = async () => {
+            setLoading(true);
             if (!productId) {
-                alert("Product ID is undefined");
                 setLoading(false);
                 return;
             }
             try {
-                const response = await getOneProduct(productId)
-                setProduct(response)
+                const response = await getOneProduct(productId);
+                setProduct(response);
+                setLoading(false);
                 if (dbUser && response) {
-                    const requiredAmount = Math.max(response.price - dbUser.balance, 0)
-                    setAmount(requiredAmount.toString())
+                    const requiredAmount = Math.max(response.price - dbUser.balance, 0);
+                    setAmount(requiredAmount.toString());
                 }
             } catch (error) {
-                console.error("Error fetching product:", error)
-            } finally {
-                setLoading(false)
+                console.error("Error fetching product:", error);
             }
-        }
-        fetchProduct()
-    }, [productId, dbUser])
+        };
+        fetchProduct();
+    }, [productId, dbUser]);
 
     const handleChangeAmount = (e) => {
         let val = parseInt(e.target.value);
-        if (val < 10) {
+        if (isNaN(val) || val < 10) {
             setValidStatus(-1);
             setMessage('Минимальная сумма - 10 руб!')
         } else if (val > 50000) {
             setValidStatus(-1);
             setMessage('Максимальная сумма - 50000 руб!')
         } else {
-            setValidStatus(0);
+            setValidStatus(1);
             setMessage('')
         }
         setAmount(e.target.value)
     }
+
+    useEffect(() => {
+        const isValidAmount = amount && parseInt(amount) >= 10 && parseInt(amount) <= 50000;
+        
+        if (isValidAmount) {
+            tg.MainButton.setText('Оплатить');
+            tg.MainButton.show();
+            tg.MainButton.onClick(async () => {
+                const response = await makeDeposit(amount, method, tg.initData);
+                if (response.success) {
+                    navigate(`/payment/${response.payment.uuid}`);
+                } else {
+                    tg.showAlert('Произошла ошибка при создании платежа');
+                }
+            });
+        } else {
+            tg.MainButton.hide();
+        }
+
+        return () => {
+            tg.MainButton.offClick();
+            tg.MainButton.hide();
+        };
+    }, [amount, tg.MainButton]);
 
     if (loading) {
         return (
