@@ -45,12 +45,17 @@ const PostFeedback = () => {
       setError('Пожалуйста, введите текст отзыва');
       return;
     }
+    setError(''); // Clear any previous error
     const is_posted = await isUserPostedFeedback(product.id, tg.initData);
     if (is_posted) {
       setError('Вы уже оставили отзыв на этот товар');
     } else {
-      await postFeedback(product.id, rating, review, tg.initData);
-      navigate('/');
+      try {
+        await postFeedback(product.id, rating, review, tg.initData);
+        navigate('/');
+      } catch (err) {
+        setError('Произошла ошибка при отправке отзыва. Пожалуйста, попробуйте еще раз.');
+      }
     }
   };
 
@@ -86,45 +91,44 @@ const PostFeedback = () => {
       color: 'var(--tg-theme-text-color)',
       overflow: 'hidden'
     }}>
-      <h2 style={{fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1.5rem'}}>Оставить отзыв</h2>
+      <h2 style={{fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1rem'}}>Оставить отзыв</h2>
       <div style={{
         display: 'flex',
         alignItems: 'center',
-        marginBottom: '2rem',
-        padding: '1rem',
+        marginBottom: '1rem',
+        padding: '0.5rem',
         borderRadius: '0.5rem',
-        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
         backgroundColor: 'var(--tg-theme-secondary-bg-color)'
       }}>
         <img src={product.image_url} alt={product.name} style={{
-          width: '8rem',
-          height: '6rem',
-          marginRight: '1.5rem',
-          borderRadius: '0.5rem',
+          width: '4rem',
+          height: '4rem',
+          marginRight: '1rem',
+          borderRadius: '0.25rem',
           objectFit: 'cover'
         }} />
         <div>
-          <p style={{fontWeight: '700', fontSize: '1.25rem', marginBottom: '0.5rem'}}>{product.name}</p>
-          <p style={{fontSize: '1.125rem', fontWeight: '600', color: 'var(--tg-theme-button-color)'}}>{product.price} ₽</p>
+          <p style={{fontWeight: '600', fontSize: '1rem', marginBottom: '0.25rem'}}>{product.name}</p>
+          <p style={{fontSize: '0.875rem', fontWeight: '500', color: 'var(--tg-theme-button-color)'}}>{product.price} ₽</p>
         </div>
       </div>
-      {error && <p style={{color: '#ef4444', marginBottom: '1rem'}}>{error}</p>}
+      {error && <p style={{color: '#ef4444', marginBottom: '0.5rem', fontSize: '0.875rem'}}>{error}</p>}
       <div style={{flexGrow: 1, display: 'flex', flexDirection: 'column'}}>
-        <div style={{marginBottom: '1rem'}}>
-          <p style={{marginBottom: '0.5rem', color: 'var(--tg-theme-hint-color)'}}>Рейтинг</p>
+        <div style={{marginBottom: '0.5rem'}}>
+          <p style={{marginBottom: '0.25rem', color: 'var(--tg-theme-hint-color)', fontSize: '0.875rem'}}>Рейтинг</p>
           <div style={{display: 'flex'}}>
             {[1, 2, 3, 4, 5].map((star) => (
               <button
                 key={star}
                 type="button"
                 style={{
-                  fontSize: '2rem',
+                  fontSize: '1.5rem',
                   fontWeight: 'bold',
                   color: star <= rating ? '#fbbf24' : 'var(--tg-theme-hint-color)',
                   background: 'none',
                   border: 'none',
                   padding: '0',
-                  marginRight: '0.5rem',
+                  marginRight: '0.25rem',
                   cursor: 'pointer'
                 }}
                 onClick={() => setRating(star)}
@@ -134,33 +138,31 @@ const PostFeedback = () => {
             ))}
           </div>
         </div>
-        <div style={{marginBottom: '1rem', flexGrow: 1, display: 'flex', flexDirection: 'column'}}>
-          <label htmlFor="review" style={{display: 'block', marginBottom: '0.5rem', color: 'var(--tg-theme-hint-color)'}}>Текст отзыва</label>
+        <div style={{flexGrow: 1, display: 'flex', flexDirection: 'column'}}>
+          <label htmlFor="review" style={{display: 'block', marginBottom: '0.25rem', color: 'var(--tg-theme-hint-color)', fontSize: '0.875rem'}}>Текст отзыва</label>
           <textarea
             id="review"
             style={{
               width: '100%',
               flexGrow: 1,
-              border: error ? '2px solid #ef4444' : '1px solid var(--tg-theme-hint-color)',
+              border: error ? '1px solid #ef4444' : '1px solid var(--tg-theme-hint-color)',
               borderRadius: '0.25rem',
               padding: '0.5rem',
               resize: 'none',
               backgroundColor: 'var(--tg-theme-bg-color)',
               color: 'var(--tg-theme-text-color)',
               boxSizing: 'border-box',
-              minHeight: '100px',
-              maxHeight: 'calc(100vh - 300px)'
+              fontSize: '0.875rem'
             }}
             placeholder="Введите текст..."
             value={review}
             onChange={(e) => {
-              if (e.target.value.length <= 500) {
-                setReview(e.target.value);
-              }
+              setReview(e.target.value);
+              if (error) setError('');
             }}
             maxLength={500}
           ></textarea>
-          <p style={{fontSize: '0.875rem', color: 'var(--tg-theme-hint-color)', marginTop: '0.25rem'}}>{review.length}/500 символов</p>
+          <p style={{fontSize: '0.75rem', color: 'var(--tg-theme-hint-color)', marginTop: '0.25rem'}}>{review.length}/500 символов</p>
         </div>
       </div>
     </div>
