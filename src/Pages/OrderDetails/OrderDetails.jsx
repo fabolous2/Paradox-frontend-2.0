@@ -59,7 +59,7 @@ function OrderDetails() {
         if (!order || !order.additional_data) return null;
     
         const additionalData = JSON.parse(order.additional_data);
-        alert(additionalData)
+
         const gameSpecificFields = {
             'Brawl Stars': [['email', 'Почта'], ['code', 'Код']],
             'PUBG': [['pubg_id', 'PUBG ID']],
