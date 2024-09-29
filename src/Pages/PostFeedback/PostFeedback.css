@@ -112,15 +112,18 @@
   
   .review-textarea {
     width: 100%;
-    flex-grow: 1;
-    border: 1px solid var(--tg-theme-hint-color);
-    border-radius: 0.25rem;
-    padding: 0.5rem;
+    height: 150px;
     resize: none;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid var(--tg-theme-hint-color);
+    border-radius: 8px;
     background-color: var(--tg-theme-bg-color);
     color: var(--tg-theme-text-color);
     box-sizing: border-box;
-    font-size: 0.875rem;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
   }
   
   .review-textarea.error {

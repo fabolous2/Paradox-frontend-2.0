@@ -42,21 +42,22 @@ const PostFeedback = () => {
   }, []);
 
   const handleSubmit = async () => {
-    if (review.trim() === '') {
+    const currentReview = review.trim();
+    if (currentReview === '') {
       setError('Пожалуйста, введите текст отзыва');
       return;
     }
     setError('');
-    const is_posted = await isUserPostedFeedback(product.id, tg.initData);
-    if (is_posted) {
-      setError('Вы уже оставили отзыв на этот товар');
-    } else {
-      try {
-        await postFeedback(product.id, rating, review, tg.initData);
+    try {
+      const is_posted = await isUserPostedFeedback(product.id, tg.initData);
+      if (is_posted) {
+        setError('Вы уже оставили отзыв на этот товар');
+      } else {
+        await postFeedback(product.id, rating, currentReview, tg.initData);
         navigate('/');
-      } catch (err) {
-        setError('Произошла ошибка при отправке отзыва. Пожалуйста, попробуйте еще раз.');
       }
+    } catch (err) {
+      setError('Произошла ошибка при отправке отзыва. Пожалуйста, попробуйте еще раз.');
     }
   };
 
