@@ -77,7 +77,7 @@ function OrderDetails() {
         };
     
         const fieldsToRender = gameSpecificFields[product.game_name] || Object.entries(additionalData).map(([key, value]) => [key, key]);
-    
+        alert(fieldsToRender)
         return fieldsToRender.map(([field, label]) => (
             <div className="detail-item" key={field}>
                 <div className="label">{label}</div>
