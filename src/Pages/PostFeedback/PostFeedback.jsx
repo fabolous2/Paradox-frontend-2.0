@@ -38,7 +38,7 @@ const PostFeedback = () => {
       tg.MainButton.offClick(handleSubmit);
       tg.MainButton.hide();
     };
-  }, [review, rating]);
+  }, []);
 
   const handleSubmit = async () => {
     if (review.trim() === '') {
@@ -86,12 +86,26 @@ const PostFeedback = () => {
       color: 'var(--tg-theme-text-color)',
       overflow: 'hidden'
     }}>
-      <h2 style={{fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1rem'}}>Оставить отзыв</h2>
-      <div style={{display: 'flex', alignItems: 'center', marginBottom: '1rem'}}>
-        <img src={product.image_url} alt={product.name} style={{width: '5rem', height: '3rem', marginRight: '1rem', borderRadius: '0.25rem', objectFit: 'cover'}} />
+      <h2 style={{fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1.5rem'}}>Оставить отзыв</h2>
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        marginBottom: '2rem',
+        padding: '1rem',
+        borderRadius: '0.5rem',
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+        backgroundColor: 'var(--tg-theme-secondary-bg-color)'
+      }}>
+        <img src={product.image_url} alt={product.name} style={{
+          width: '8rem',
+          height: '6rem',
+          marginRight: '1.5rem',
+          borderRadius: '0.5rem',
+          objectFit: 'cover'
+        }} />
         <div>
-          <p style={{fontWeight: '600'}}>{product.name}</p>
-          <p style={{fontSize: '0.875rem'}}>{product.price} ₽</p>
+          <p style={{fontWeight: '700', fontSize: '1.25rem', marginBottom: '0.5rem'}}>{product.name}</p>
+          <p style={{fontSize: '1.125rem', fontWeight: '600', color: 'var(--tg-theme-button-color)'}}>{product.price} ₽</p>
         </div>
       </div>
       {error && <p style={{color: '#ef4444', marginBottom: '1rem'}}>{error}</p>}
@@ -132,7 +146,10 @@ const PostFeedback = () => {
               padding: '0.5rem',
               resize: 'none',
               backgroundColor: 'var(--tg-theme-bg-color)',
-              color: 'var(--tg-theme-text-color)'
+              color: 'var(--tg-theme-text-color)',
+              boxSizing: 'border-box',
+              minHeight: '100px',
+              maxHeight: 'calc(100vh - 300px)'
             }}
             placeholder="Введите текст..."
             value={review}
