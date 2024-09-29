@@ -58,29 +58,29 @@ function OrderDetails() {
     const renderAdditionalFields = () => {
         if (!order || !order.additional_data) return null;
     
-        const { ...additionalData } = order.additional_data;
+        const additionalData = order.additional_data;
     
         const gameSpecificFields = {
-            'Brawl Stars': ['email', 'code'],
-            'PUBG': ['pubg_id'],
-            'Blockman Go': ['blockman_id', 'password'],
-            'Roblox': ['username', 'password', 'twoFactorCode'],
-            'Clash of Clans': ['email', 'code'],
-            'Clash Royale': ['email', 'code'],
-            'Squad Busters': ['email', 'code'],
-            'Fortnite': ['nickname'],
-            'FIFA Mobile': ['email', 'password'],
-            'Minecraft': ['email', 'password'],
-            'Stumble Guys': ['nickname'],
-            'My Singing Monsters': ['email', 'code'],
-            'World of Tanks [Евро]': ['email', 'password'],
+            'Brawl Stars': [['email', 'Почта'], ['code', 'Код']],
+            'PUBG': [['pubg_id', 'PUBG ID']],
+            'Blockman Go': [['blockman_id', 'ID'], ['password', 'Пароль']],
+            'Roblox': [['username', 'Имя пользователя'], ['password', 'Пароль'], ['twoFactorCode', 'Код двухфакторной аутентификации']],
+            'Clash of Clans': [['email', 'Почта'], ['code', 'Код']],
+            'Clash Royale': [['email', 'Почта'], ['code', 'Код']],
+            'Squad Busters': [['email', 'Почта'], ['code', 'Код']],
+            'Fortnite': [['nickname', 'Никнейм']],
+            'FIFA Mobile': [['email', 'Почта'], ['password', 'Пароль']],
+            'Minecraft': [['email', 'Почта'], ['password', 'Пароль']],
+            'Stumble Guys': [['nickname', 'Никнейм']],
+            'My Singing Monsters': [['email', 'Почта'], ['code', 'Код']],
+            'World of Tanks [Евро]': [['email', 'Почта'], ['password', 'Пароль']],
         };
     
-        const fieldsToRender = gameSpecificFields[product.game_name] || Object.keys(additionalData);
+        const fieldsToRender = gameSpecificFields[product.game_name] || Object.entries(additionalData).map(([key, value]) => [key, key]);
     
-        return fieldsToRender.map(field => (
+        return fieldsToRender.map(([field, label]) => (
             <div className="detail-item" key={field}>
-                <div className="label">{field.charAt(0).toUpperCase() + field.slice(1).replace('_', ' ')}</div>
+                <div className="label">{label}</div>
                 <div className="value">{additionalData[field]}</div>
             </div>
         ));

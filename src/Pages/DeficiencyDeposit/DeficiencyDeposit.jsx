@@ -17,6 +17,30 @@ const DeficiencyDeposit = () => {
     const [message, setMessage] = useState('');
     const [dbUser, setDbUser] = useState(null);
     const { tg } = useTelegram();
+    
+    useEffect(() => {
+        const isValidAmount = amount && parseInt(amount) >= 10 && parseInt(amount) <= 50000;
+        
+        if (isValidAmount) {
+            tg.MainButton.setText('Оплатить');
+            tg.MainButton.show();
+            tg.MainButton.onClick(async () => {
+                const response = await makeDeposit(amount, method, tg.initData);
+                if (response.success) {
+                    navigate(`/payment/${response.payment.uuid}`);
+                } else {
+                    tg.showAlert('Произошла ошибка при создании платежа');
+                }
+            });
+        } else {
+            tg.MainButton.hide();
+        }
+
+        return () => {
+            tg.MainButton.offClick();
+            tg.MainButton.hide();
+        };
+    }, [amount, tg.MainButton]);
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -78,30 +102,6 @@ const DeficiencyDeposit = () => {
         }
         setAmount(e.target.value)
     }
-
-    useEffect(() => {
-        const isValidAmount = amount && parseInt(amount) >= 10 && parseInt(amount) <= 50000;
-        
-        if (isValidAmount) {
-            tg.MainButton.setText('Оплатить');
-            tg.MainButton.show();
-            tg.MainButton.onClick(async () => {
-                const response = await makeDeposit(amount, method, tg.initData);
-                if (response.success) {
-                    navigate(`/payment/${response.payment.uuid}`);
-                } else {
-                    tg.showAlert('Произошла ошибка при создании платежа');
-                }
-            });
-        } else {
-            tg.MainButton.hide();
-        }
-
-        return () => {
-            tg.MainButton.offClick();
-            tg.MainButton.hide();
-        };
-    }, [amount, tg.MainButton]);
 
     if (loading) {
         return (
