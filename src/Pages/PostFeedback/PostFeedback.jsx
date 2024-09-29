@@ -13,7 +13,7 @@ const PostFeedback = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { tg } = useTelegram();
- 
+
   useEffect(() => {
     tg.BackButton.show();
     tg.BackButton.onClick(() => {
@@ -62,30 +62,57 @@ const PostFeedback = () => {
     fetchProduct();
   }, [id]);
 
-  if (!product) return <div className="flex justify-center align-items-center" style={{height: '100vh'}}>
-    <CircularProgress />
-  </div>;
+  if (!product) return (
+    <div style={{
+      height: '100vh',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: 'var(--tg-theme-bg-color)',
+      color: 'var(--tg-theme-text-color)'
+    }}>
+      <CircularProgress />
+    </div>
+  );
 
   return (
-    <div className="p-4 w-full h-screen flex flex-col">
-      <h2 className="text-xl font-bold mb-4">Оставить отзыв</h2>
-      <div className="flex items-center mb-4">
-        <img src={product.image_url} alt={product.name} className="w-35 h-20 mr-4 rounded object-cover" />
+    <div style={{
+      padding: '1rem',
+      width: '100%',
+      height: '100vh',
+      display: 'flex',
+      flexDirection: 'column',
+      backgroundColor: 'var(--tg-theme-bg-color)',
+      color: 'var(--tg-theme-text-color)',
+      overflow: 'hidden'
+    }}>
+      <h2 style={{fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1rem'}}>Оставить отзыв</h2>
+      <div style={{display: 'flex', alignItems: 'center', marginBottom: '1rem'}}>
+        <img src={product.image_url} alt={product.name} style={{width: '5rem', height: '3rem', marginRight: '1rem', borderRadius: '0.25rem', objectFit: 'cover'}} />
         <div>
-          <p className="font-semibold">{product.name}</p>
-          <p className="text-sm">{product.price} ₽</p>
+          <p style={{fontWeight: '600'}}>{product.name}</p>
+          <p style={{fontSize: '0.875rem'}}>{product.price} ₽</p>
         </div>
       </div>
-      {error && <p className="text-red-500 mb-4">{error}</p>}
-      <div className="flex-grow flex flex-col">
-        <div className="mb-4">
-          <p className="mb-2 text-gray-600">Рейтинг</p>
-          <div className="flex">
+      {error && <p style={{color: '#ef4444', marginBottom: '1rem'}}>{error}</p>}
+      <div style={{flexGrow: 1, display: 'flex', flexDirection: 'column'}}>
+        <div style={{marginBottom: '1rem'}}>
+          <p style={{marginBottom: '0.5rem', color: 'var(--tg-theme-hint-color)'}}>Рейтинг</p>
+          <div style={{display: 'flex'}}>
             {[1, 2, 3, 4, 5].map((star) => (
               <button
                 key={star}
                 type="button"
-                className={`text-4xl font-bold ${star <= rating ? 'text-yellow-400' : 'text-gray-400'}`}
+                style={{
+                  fontSize: '2rem',
+                  fontWeight: 'bold',
+                  color: star <= rating ? '#fbbf24' : 'var(--tg-theme-hint-color)',
+                  background: 'none',
+                  border: 'none',
+                  padding: '0',
+                  marginRight: '0.5rem',
+                  cursor: 'pointer'
+                }}
                 onClick={() => setRating(star)}
               >
                 ★
@@ -93,11 +120,20 @@ const PostFeedback = () => {
             ))}
           </div>
         </div>
-        <div className="mb-4 flex-grow">
-          <label htmlFor="review" className="block mb-2 text-gray-600">Текст отзыва</label>
+        <div style={{marginBottom: '1rem', flexGrow: 1, display: 'flex', flexDirection: 'column'}}>
+          <label htmlFor="review" style={{display: 'block', marginBottom: '0.5rem', color: 'var(--tg-theme-hint-color)'}}>Текст отзыва</label>
           <textarea
             id="review"
-            className={`w-full h-32 border rounded p-2 resize-none overflow-auto ${error ? 'border-2 border-red-500' : ''}`}
+            style={{
+              width: '100%',
+              flexGrow: 1,
+              border: error ? '2px solid #ef4444' : '1px solid var(--tg-theme-hint-color)',
+              borderRadius: '0.25rem',
+              padding: '0.5rem',
+              resize: 'none',
+              backgroundColor: 'var(--tg-theme-bg-color)',
+              color: 'var(--tg-theme-text-color)'
+            }}
             placeholder="Введите текст..."
             value={review}
             onChange={(e) => {
@@ -107,7 +143,7 @@ const PostFeedback = () => {
             }}
             maxLength={500}
           ></textarea>
-          <p className="text-sm text-gray-500 mt-1">{review.length}/500 символов</p>
+          <p style={{fontSize: '0.875rem', color: 'var(--tg-theme-hint-color)', marginTop: '0.25rem'}}>{review.length}/500 символов</p>
         </div>
       </div>
     </div>
