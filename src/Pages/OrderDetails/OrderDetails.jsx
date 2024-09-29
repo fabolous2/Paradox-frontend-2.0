@@ -58,8 +58,8 @@ function OrderDetails() {
     const renderAdditionalFields = () => {
         if (!order || !order.additional_data) return null;
     
-        const additionalData = order.additional_data;
-    
+        const additionalData = JSON.parse(order.additional_data);
+        alert(additionalData)
         const gameSpecificFields = {
             'Brawl Stars': [['email', 'Почта'], ['code', 'Код']],
             'PUBG': [['pubg_id', 'PUBG ID']],
@@ -77,7 +77,7 @@ function OrderDetails() {
         };
     
         const fieldsToRender = gameSpecificFields[product.game_name] || Object.entries(additionalData).map(([key, value]) => [key, key]);
-        alert(fieldsToRender)
+
         return fieldsToRender.map(([field, label]) => (
             <div className="detail-item" key={field}>
                 <div className="label">{label}</div>
@@ -118,12 +118,12 @@ function OrderDetails() {
                         <div className="label">Товар</div>
                         <div className="value">{product.name}</div>
                     </div>
-    
+
                     <div className="detail-item">
                         <div className="label">ID товара</div>
                         <div className="value">{product.id}</div>
                     </div>
-                    
+
                     <div className="detail-item">
                         <div className="label">Стоимость</div>
                         <div className="value">{order.price}</div>
