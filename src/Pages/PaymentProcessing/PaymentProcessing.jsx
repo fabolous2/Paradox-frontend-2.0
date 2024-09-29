@@ -6,6 +6,7 @@ import { useTelegram } from "../../hooks/useTelegram";
 import { CircularProgress } from '@mui/material';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CancelIcon from '@mui/icons-material/Cancel';
+import { motion } from 'framer-motion';
 
 export default function PaymentProcessing() {
     const navigate = useNavigate()
@@ -41,7 +42,7 @@ export default function PaymentProcessing() {
             }
         }
 
-        const statusInterval = setInterval(checkPaymentStatus, 5000) // Check every 5 seconds
+        const statusInterval = setInterval(checkPaymentStatus, 5000)
 
         const timer = setInterval(() => {
             setTimeLeft((prevTime) => {
@@ -90,7 +91,17 @@ export default function PaymentProcessing() {
             case 'success':
                 return (
                     <>
-                        <CheckCircleOutlineIcon style={{ fontSize: 60, color: 'green' }} />
+                        <motion.div
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            transition={{
+                                type: "spring",
+                                stiffness: 260,
+                                damping: 20
+                            }}
+                        >
+                            <CheckCircleOutlineIcon style={{ fontSize: 60, color: 'green' }} />
+                        </motion.div>
                         <p style={{textAlign: 'center', marginBottom: '2rem'}}>Оплата прошла успешно!</p>
                     </>
                 );

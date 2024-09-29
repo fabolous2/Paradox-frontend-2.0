@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './PostFeedback.css';
 import { useParams } from 'react-router-dom';
 import { postFeedback, getOneProduct, isUserPostedFeedback } from '../../db/db';
@@ -17,31 +17,15 @@ const PostFeedback = () => {
 
   useEffect(() => {
     tg.BackButton.show();
-    tg.BackButton.onClick(() => {
-      window.history.back();
-    });
+    tg.BackButton.onClick(() => navigate(-1));
 
     return () => {
-      tg.BackButton.offClick();
+      tg.BackButton.offClick(() => navigate(-1));
       tg.BackButton.hide();
     };
-  }, []);
+  }, [tg.BackButton, navigate]);
 
-  useEffect(() => {
-    tg.MainButton.setParams({
-      text: 'Отправить',
-      color: '#4CAF50',
-    });
-    tg.MainButton.onClick(handleSubmit);
-    tg.MainButton.show();
-
-    return () => {
-      tg.MainButton.offClick(handleSubmit);
-      tg.MainButton.hide();
-    };
-  }, []);
-
-  const handleSubmit = async () => {
+  const handleSubmit = useCallback(async () => {
     const currentReview = review.trim();
     if (currentReview === '') {
       setError('Пожалуйста, введите текст отзыва');
@@ -59,7 +43,21 @@ const PostFeedback = () => {
     } catch (err) {
       setError('Произошла ошибка при отправке отзыва. Пожалуйста, попробуйте еще раз.');
     }
-  };
+  }, [review, product, rating, tg.initData, navigate]);
+
+  useEffect(() => {
+    tg.MainButton.setParams({
+      text: 'Отправить',
+      color: '#4CAF50',
+    });
+    tg.MainButton.onClick(handleSubmit);
+    tg.MainButton.show();
+
+    return () => {
+      tg.MainButton.offClick(handleSubmit);
+      tg.MainButton.hide();
+    };
+  }, [tg.MainButton, handleSubmit]);
 
   useEffect(() => {
     const fetchProduct = async () => {
