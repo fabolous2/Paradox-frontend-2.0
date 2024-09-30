@@ -57,13 +57,13 @@ const OrderForm = () => {
           case 5:
             setFormFields(['username', 'password', 'twoFactorCode']);
             break;
-          case 6:
           case 10:
             setFormFields(['nickname']);
             break;
           case 7:
             setFormFields(['pubg_id']);
             break;
+          case 6:
           case 8:
           case 9:
           case 11:
@@ -71,7 +71,7 @@ const OrderForm = () => {
             setFormFields(['email', 'password']);
             break;
           case 13:
-            setFormFields(['blockman_id', 'password']);
+            setFormFields(['blockman_id']);
             break;
           default:
             setFormFields(['login', 'password']);
@@ -105,14 +105,14 @@ const OrderForm = () => {
   const handleSubmit = async () => {
     const errors = {};
     formFields.forEach(field => {
-      if (!eval(field)) {
+      if (field !== 'twoFactorCode' && !eval(field)) {
         errors[field] = true;
       }
     });
 
     if (Object.keys(errors).length > 0) {
       setFormErrors(errors);
-      alert('Пожалуйста, заполните все поля');
+      alert('Пожалуйста, заполните все обязательные поля');
       return;
     }
 
@@ -126,9 +126,11 @@ const OrderForm = () => {
           additionalData = { email, code };
           break;
         case 5:
-          additionalData = { login: username, password, two_factor_code: twoFactorCode };
+          additionalData = { login: username, password };
+          if (twoFactorCode) {
+            additionalData.two_factor_code = twoFactorCode;
+          }
           break;
-        case 6:
         case 10:
         case 12:
           additionalData = { nickname };
@@ -136,13 +138,14 @@ const OrderForm = () => {
         case 7:
           additionalData = { pubg_id };
           break;
+        case 6:
         case 8:
         case 9:
         case 11:
           additionalData = { login: email, password };
           break;
         case 13:
-          additionalData = { blockman_id, password };
+          additionalData = { blockman_id };
           break;
         default:
           additionalData = { login, password };
@@ -175,7 +178,7 @@ const OrderForm = () => {
           return (
             <div key={field} style={{marginBottom: '1rem'}}>
               <label style={{display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.25rem'}}>
-                {product.game_id === 8 ? 'Почта от Facebook' :
+                {product.game_id === 8 ? 'Почта от Facebook/Google Play' :
                  product.game_id === 9 ? 'Почта от XBOX Live' :
                  product.game_id === 11 ? 'Почта' :
                  product.game_id === 12 ? 'Почта' :
@@ -204,6 +207,9 @@ const OrderForm = () => {
                   </button>
                 )}
               </div>
+              {(product.game_id === 1 || product.game_id === 2 || product.game_id === 3 || product.game_id === 4) && (
+                <p style={{color: 'gray', fontSize: '0.75rem', marginTop: '0.25rem'}}>Стрелка отправляет код Supercell ID на почту</p>
+              )}
               {emailError && <p style={{color: '#ef4444', fontSize: '0.875rem', marginTop: '0.25rem'}}>{emailError}</p>}
               {codeSuccess && <p style={{color: '#10b981', fontSize: '0.875rem', marginTop: '0.25rem'}}>{codeSuccess}</p>}
             </div>
@@ -244,7 +250,7 @@ const OrderForm = () => {
           return (
             <div key={field} style={{marginBottom: '1rem'}}>
               <label style={{display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.25rem'}}>
-                {product.game_id === 8 ? 'Пароль от Facebook' :
+                {product.game_id === 8 ? 'Пароль от Facebook/Google Play' :
                  product.game_id === 9 ? 'Пароль от XBOX Live' :
                  'Пароль'}
               </label>
@@ -263,17 +269,20 @@ const OrderForm = () => {
         case 'twoFactorCode':
           return (
             <div key={field} style={{marginBottom: '1rem'}}>
-              <label style={{display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.25rem'}}>Код двухфакторной аутентификации</label>
+              <label style={{display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.25rem'}}>Код двухфакторной аутентификации (необязательно)</label>
               <input
                 type="text"
                 value={twoFactorCode}
                 onChange={(e) => setTwoFactorCode(e.target.value)}
                 style={{
                   ...commonInputStyle,
-                  borderBottom: formErrors.twoFactorCode ? '1px solid red' : '1px solid var(--tg-theme-hint-color)'
+                  borderBottom: '1px solid var(--tg-theme-hint-color)'
                 }}
                 placeholder="Введите код двухфакторной аутентификации"
               />
+              <p style={{color: 'gray', fontSize: '0.75rem', marginTop: '0.25rem'}}>
+                Укажите двухфакторный код, если у вас подключена 2-х факторная аутентификация по почте/аутентификатору. Если у вас она не подключена, то просто оставьте это поле пустым.
+              </p>
             </div>
           );
         case 'nickname':

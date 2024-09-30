@@ -72,6 +72,17 @@ function ProductItem() {
         };
     }, [user, product, id]);
 
+    const renderDescription = (text) => {
+        const urlRegex = /(https?:\/\/[^\s]+)/g;
+        return text.split(urlRegex).map((part, index) => 
+            urlRegex.test(part) ? (
+                <a key={index} href={part} target="_blank" rel="noopener noreferrer">{part}</a>
+            ) : (
+                part
+            )
+        );
+    };
+
     if (loading) {
         return (
             <div className="flex justify-center align-items-center" style={{height: '100vh'}}>
@@ -97,7 +108,7 @@ function ProductItem() {
                         <h3>Описание</h3>
                     </div>
                     <span className="bg-lightgray rounded px-08 word-pre py-08">
-                        {product.description}
+                        {renderDescription(product.description)}
                     </span>
                 </div>
             </div>
