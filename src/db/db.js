@@ -19,7 +19,11 @@ export function getUser(initData) {
 }
 
 export function getUserFeedbacks(user_id) {
-  const response = axios.get(`${API_URL}/feedback/user/${user_id}`);
+  const response = axios.get(`${API_URL}/feedback/user/${user_id}`, {
+    params: {
+      user_id: user_id
+    }
+  });
   return response.data;
 }
 
