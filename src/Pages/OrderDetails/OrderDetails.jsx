@@ -64,19 +64,24 @@ function OrderDetails() {
             'Brawl Stars': [['email', 'Почта'], ['code', 'Код']],
             'PUBG': [['pubg_id', 'PUBG ID']],
             'Blockman Go': [['blockman_id', 'ID'], ['password', 'Пароль']],
-            'Roblox': [['username', 'Имя пользователя'], ['password', 'Пароль'], ['twoFactorCode', 'Код двухфакторной аутентификации']],
+            'Roblox': [['login', 'Имя пользователя'], ['password', 'Пароль']],
             'Clash of Clans': [['email', 'Почта'], ['code', 'Код']],
             'Clash Royale': [['email', 'Почта'], ['code', 'Код']],
             'Squad Busters': [['email', 'Почта'], ['code', 'Код']],
-            'Fortnite': [['nickname', 'Никнейм']],
-            'FIFA Mobile': [['email', 'Почта'], ['password', 'Пароль']],
-            'Minecraft': [['email', 'Почта'], ['password', 'Пароль']],
+            'Fortnite': [['login', 'Почта'], ['password', 'Пароль']],
+            'FIFA Mobile': [['login', 'Почта'], ['password', 'Пароль']],
+            'Minecraft': [['login', 'Почта'], ['password', 'Пароль']],
             'Stumble Guys': [['nickname', 'Никнейм']],
-            'My Singing Monsters': [['email', 'Почта'], ['code', 'Код']],
+            'My Singing Monsters': [['login', 'Почта'], ['password', 'Пароль']],
             'World of Tanks [Евро]': [['email', 'Почта'], ['password', 'Пароль']],
         };
     
-        const fieldsToRender = gameSpecificFields[product.game_name] || Object.entries(additionalData).map(([key, value]) => [key, key]);
+        let fieldsToRender = gameSpecificFields[product.game_name] || Object.entries(additionalData).map(([key, value]) => [key, key]);
+
+        // Add two_factor_code field for Roblox if it exists in additionalData
+        if (product.game_name === 'Roblox' && additionalData.two_factor_code) {
+            fieldsToRender.push(['two_factor_code', 'Код двухфакторной аутентификации']);
+        }
 
         return fieldsToRender.map(([field, label]) => (
             <div className="detail-item" key={field}>

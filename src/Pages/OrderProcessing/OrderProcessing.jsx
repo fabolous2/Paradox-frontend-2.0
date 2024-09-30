@@ -131,8 +131,10 @@ const OrderForm = () => {
             additionalData.two_factor_code = twoFactorCode;
           }
           break;
-        case 10:
         case 12:
+          additionalData = { login: email, password };
+          break;
+        case 10:
           additionalData = { nickname };
           break;
         case 7:
@@ -145,7 +147,7 @@ const OrderForm = () => {
           additionalData = { login: email, password };
           break;
         case 13:
-          additionalData = { blockman_id };
+          additionalData = { blockman_id, password };
           break;
         default:
           additionalData = { login, password };
@@ -175,11 +177,11 @@ const OrderForm = () => {
       
       switch(field) {
         case 'email':
-          return (
+          return ( 
             <div key={field} style={{marginBottom: '1rem'}}>
               <label style={{display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.25rem'}}>
                 {product.game_id === 8 ? 'Почта от Facebook/Google Play' :
-                 product.game_id === 9 ? 'Почта от XBOX Live' :
+                 product.game_id === 9 || product.game_id === 6 ? 'Почта от XBOX Live' :
                  product.game_id === 11 ? 'Почта' :
                  product.game_id === 12 ? 'Почта' :
                  product.game_id === 1 || product.game_id === 2 || product.game_id === 3 || product.game_id === 4 ? 'Почта' : 'Почта Supercell ID'}
@@ -377,13 +379,20 @@ const OrderForm = () => {
     );
   }
 
+  const makeLinksClickable = (text) => {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    return text.split(urlRegex).map((part, index) => 
+      urlRegex.test(part) ? <a key={index} href={part} target="_blank" rel="noopener noreferrer">{part}</a> : part
+    );
+  };
+
   return (
     <div style={{minHeight: '100vh', display: 'flex', flexDirection: 'column', padding: '1rem', backgroundColor: 'var(--tg-theme-bg-color)', color: 'var(--tg-theme-text-color)', overflow: 'hidden', maxWidth: '100vw'}}>
       <h1 style={{fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem'}}>Оформление заказа</h1>
       <div style={{flexGrow: 1, display: 'flex', flexDirection: 'column'}}>
       {product.instruction && product.instruction.trim() !== '' && (
         <span className="bg-lightgray rounded px-08 word-pre py-08" style={{ marginBottom: '1.5rem', marginTop: '1rem' }}>
-          {product.instruction}
+          {makeLinksClickable(product.instruction)}
         </span>
       )}
         {renderFormFields()}
