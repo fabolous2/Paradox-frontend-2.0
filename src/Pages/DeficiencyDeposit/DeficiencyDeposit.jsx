@@ -17,6 +17,20 @@ const DeficiencyDeposit = () => {
     const [message, setMessage] = useState('');
     const [dbUser, setDbUser] = useState(null);
     const { tg } = useTelegram();
+
+    useEffect(() => {
+        const fetchProduct = async () => {
+            try {
+                const product = await getOneProduct(productId);
+                setProduct(product);
+            } catch (error) {
+                console.error("Error fetching product:", error);
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchProduct();
+    }, [productId]);
     
     useEffect(() => {
         const isValidAmount = amount && parseInt(amount) >= 10 && parseInt(amount) <= 50000;
@@ -66,27 +80,27 @@ const DeficiencyDeposit = () => {
       };
     }, []);
 
-    useEffect(() => {
-        const fetchProduct = async () => {
-            setLoading(true);
-            if (!productId) {
-                setLoading(false);
-                return;
-            }
-            try {
-                const response = await getOneProduct(productId);
-                setProduct(response);
-                setLoading(false);
-                if (dbUser && response) {
-                    const requiredAmount = Math.max(response.price - dbUser.balance, 0);
-                    setAmount(requiredAmount.toString());
-                }
-            } catch (error) {
-                console.error("Error fetching product:", error);
-            }
-        };
-        fetchProduct();
-    }, [productId, dbUser]);
+    // useEffect(() => {
+    //     const fetchProduct = async () => {
+    //         setLoading(true);
+    //         if (!productId) {
+    //             setLoading(false);
+    //             return;
+    //         }
+    //         try {
+    //             const response = await getOneProduct(productId);
+    //             setProduct(response);
+    //             setLoading(false);
+    //             if (dbUser && response) {
+    //                 const requiredAmount = Math.max(response.price - dbUser.balance, 0);
+    //                 setAmount(requiredAmount.toString());
+    //             }
+    //         } catch (error) {
+    //             console.error("Error fetching product:", error);
+    //         }
+    //     };
+    //     fetchProduct();
+    // }, [productId, dbUser]);
 
     const handleChangeAmount = (e) => {
         let val = parseInt(e.target.value);
