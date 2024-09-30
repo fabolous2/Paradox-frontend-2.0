@@ -53,20 +53,20 @@ function TabScreen() {
             <div key={order.id} onClick={() => {navigate(`/orders/${order.id}`)}} className="bg-gray rounded py-04 px-08 flex align-items-center">
                 <div className="icon-container">
                     <img className="icon" src={
-                        order.status === 'progress' ? Hourglass :
-                        order.status === 'paid' ? Paid :
-                        order.status === 'closed' ? Lock :
-                        order.status === 'completed' ? Check :
+                        order.status === 'PROGRESS' ? Hourglass :
+                        order.status === 'PAID' ? Paid :
+                        order.status === 'CLOSED' ? Lock :
+                        order.status === 'COMPLETED' ? Check :
                         null
                     } alt=""/>
                 </div>
                 <div className="flex column">
                     <small className="fw-500">{order.name}</small>
                     <small>
-                        {order.status === 'progress' ? 'В обработке' :
-                         order.status === 'paid' ? 'Оплачен' :
-                         order.status === 'closed' ? 'Закрыт' :
-                         order.status === 'completed' ? 'Выполнен' :
+                        {order.status === 'PROGRESS' ? 'В обработке' :
+                         order.status === 'PAID' ? 'Оплачен' :
+                         order.status === 'CLOSED' ? 'Закрыт' :
+                         order.status === 'COMPLETED' ? 'Выполнен' :
                          null}
                     </small>
                 </div>
