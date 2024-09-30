@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './PostFeedback.css';
 import { useParams } from 'react-router-dom';
 import { postFeedback, getOneProduct, isUserPostedFeedback } from '../../db/db';
@@ -14,7 +14,6 @@ const PostFeedback = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { tg } = useTelegram();
-  const mainButtonShown = useRef(false);
 
   useEffect(() => {
     tg.BackButton.show();
@@ -47,24 +46,16 @@ const PostFeedback = () => {
   }, [review, product, rating, tg.initData, navigate]);
 
   useEffect(() => {
-    const showMainButton = () => {
-      if (!mainButtonShown.current) {
-        tg.MainButton.setParams({
-          text: 'Отправить',
-          color: '#4CAF50',
-        });
-        tg.MainButton.onClick(handleSubmit);
-        tg.MainButton.show();
-        mainButtonShown.current = true;
-      }
-    };
-
-    showMainButton();
+    tg.MainButton.setParams({
+      text: 'Отправить',
+      color: '#4CAF50',
+    });
+    tg.MainButton.onClick(handleSubmit);
+    tg.MainButton.show();
 
     return () => {
       tg.MainButton.offClick(handleSubmit);
       tg.MainButton.hide();
-      mainButtonShown.current = false;
     };
   }, [tg.MainButton, handleSubmit]);
 
