@@ -229,11 +229,10 @@ export async function setReferralCode(referral_code, initData) {
 
 export async function postFeedback(product_id, stars, text, initData) {
   const response = await axios.post(`${API_URL}/feedback/post/`, {
-    params: {
-      product: {id: product_id},
-      stars: stars,
-      text: text
-    },
+    product: {id: product_id},
+    stars: stars,
+    text: text
+  }, {
     headers: {
       'Authorization': initData
     }

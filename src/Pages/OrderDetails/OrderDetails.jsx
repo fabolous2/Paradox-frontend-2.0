@@ -137,10 +137,10 @@ function OrderDetails() {
                     <div className="detail-item">
                         <div className="label">Статус заказа</div>
                         <div className="value">
-                            {order.status === "paid" ? "Оплачено" : 
-                            order.status === "closed" ? "Закрыт" :
-                            order.status === "completed" ? "Выполнен" :
-                            order.status === "progress" ? "В обработке" :
+                            {order.status === "PAID" ? "Оплачено" : 
+                            order.status === "CLOSED" ? "Закрыт" :
+                            order.status === "COMPLETED" ? "Выполнен" :
+                            order.status === "PROGRESS" ? "В обработке" :
                             null}
                         </div>
                     </div>
