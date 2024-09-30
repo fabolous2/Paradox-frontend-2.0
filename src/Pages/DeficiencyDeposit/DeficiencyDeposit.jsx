@@ -5,9 +5,10 @@ import { useTelegram } from '../../hooks/useTelegram';
 import CircularProgress from '@mui/material/CircularProgress';
 import { makeDeposit } from '../../db/db';
 import { useNavigate } from 'react-router-dom';
+import './DeficiencyDeposit.css';
 
 const DeficiencyDeposit = () => {
-    const { productId } = useParams();
+    const { id } = useParams();
     const navigate = useNavigate();
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -20,8 +21,13 @@ const DeficiencyDeposit = () => {
 
     useEffect(() => {
         const fetchProduct = async () => {
+            if (!id) {
+                console.error("Product ID is undefined");
+                setLoading(false);
+                return;
+            }
             try {
-                const product = await getOneProduct(productId);
+                const product = await getOneProduct(id);
                 setProduct(product);
             } catch (error) {
                 console.error("Error fetching product:", error);
@@ -30,7 +36,25 @@ const DeficiencyDeposit = () => {
             }
         }
         fetchProduct();
-    }, [productId]);
+    }, [id]);  
+    
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const response = await getUser(tg.initData);
+                setDbUser(response);
+                if (product) {
+                    const requiredAmount = Math.max(product.price - response.balance, 0);
+                    setAmount(requiredAmount.toString());
+                    handleChangeAmount({ target: { value: requiredAmount.toString() } });
+                }
+            } catch (error) {
+                console.error("Error fetching user:", error);
+            }
+        }
+        fetchUser();
+    }, [product])
+
     
     useEffect(() => {
         const isValidAmount = amount && parseInt(amount) >= 10 && parseInt(amount) <= 50000;
@@ -54,19 +78,7 @@ const DeficiencyDeposit = () => {
             tg.MainButton.offClick();
             tg.MainButton.hide();
         };
-    }, [amount, tg.MainButton]);
-
-    useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                const response = await getUser(tg.initData);
-                setDbUser(response);
-            } catch (error) {
-                console.error("Error fetching user:", error);
-            }
-        }
-        fetchUser()
-    }, [])
+    }, [tg.MainButton]);
  
     useEffect(() => {
       tg.BackButton.show();
@@ -79,28 +91,6 @@ const DeficiencyDeposit = () => {
         tg.BackButton.hide();
       };
     }, []);
-
-    // useEffect(() => {
-    //     const fetchProduct = async () => {
-    //         setLoading(true);
-    //         if (!productId) {
-    //             setLoading(false);
-    //             return;
-    //         }
-    //         try {
-    //             const response = await getOneProduct(productId);
-    //             setProduct(response);
-    //             setLoading(false);
-    //             if (dbUser && response) {
-    //                 const requiredAmount = Math.max(response.price - dbUser.balance, 0);
-    //                 setAmount(requiredAmount.toString());
-    //             }
-    //         } catch (error) {
-    //             console.error("Error fetching product:", error);
-    //         }
-    //     };
-    //     fetchProduct();
-    // }, [productId, dbUser]);
 
     const handleChangeAmount = (e) => {
         let val = parseInt(e.target.value);
