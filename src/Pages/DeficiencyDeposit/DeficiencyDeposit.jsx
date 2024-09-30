@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { getOneProduct, getUser } from '../../db/db';
 import { useParams } from 'react-router-dom';
 import { useTelegram } from '../../hooks/useTelegram';
@@ -55,30 +55,32 @@ const DeficiencyDeposit = () => {
         fetchUser();
     }, [product])
 
-    
+    const handleMainButtonClick = useCallback(async () => {
+        const response = await makeDeposit(amount, method, tg.initData);
+        if (response.success) {
+            navigate(`/payment/${response.payment.uuid}`);
+        } else {
+            tg.showAlert('Произошла ошибка при создании платежа');
+        }
+    }, [amount, method, tg, navigate]);
+
     useEffect(() => {
         const isValidAmount = amount && parseInt(amount) >= 10 && parseInt(amount) <= 50000;
         
+        tg.MainButton.setText('Оплатить');
+        
         if (isValidAmount) {
-            tg.MainButton.setText('Оплатить');
             tg.MainButton.show();
-            tg.MainButton.onClick(async () => {
-                const response = await makeDeposit(amount, method, tg.initData);
-                if (response.success) {
-                    navigate(`/payment/${response.payment.uuid}`);
-                } else {
-                    tg.showAlert('Произошла ошибка при создании платежа');
-                }
-            });
+            tg.MainButton.onClick(handleMainButtonClick);
         } else {
             tg.MainButton.hide();
         }
 
         return () => {
-            tg.MainButton.offClick();
+            tg.MainButton.offClick(handleMainButtonClick);
             tg.MainButton.hide();
         };
-    }, [tg.MainButton]);
+    }, [amount, tg.MainButton, handleMainButtonClick]);
  
     useEffect(() => {
       tg.BackButton.show();
