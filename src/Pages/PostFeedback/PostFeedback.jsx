@@ -46,12 +46,16 @@ const PostFeedback = () => {
   }, [review, product, rating, tg.initData, navigate]);
 
   useEffect(() => {
-    tg.MainButton.setParams({
-      text: 'Отправить',
-      color: '#4CAF50',
-    });
-    tg.MainButton.onClick(handleSubmit);
-    tg.MainButton.show();
+    const setupMainButton = () => {
+      tg.MainButton.setParams({
+        text: 'Отправить',
+        color: '#4CAF50',
+      });
+      tg.MainButton.onClick(handleSubmit);
+      tg.MainButton.show();
+    };
+
+    setupMainButton();
 
     return () => {
       tg.MainButton.offClick(handleSubmit);
@@ -110,7 +114,10 @@ const PostFeedback = () => {
             onChange={(e) => {
               setReview(e.target.value);
               if (error) setError('');
+              tg.MainButton.show();
             }}
+            onFocus={() => tg.MainButton.hide()}
+            onBlur={() => tg.MainButton.show()}
             maxLength={500}
           ></textarea>
           <p className="character-count">{review.length}/500 символов</p>

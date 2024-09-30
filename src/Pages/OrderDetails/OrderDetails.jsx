@@ -41,7 +41,7 @@ function OrderDetails() {
     };
 
     useEffect(() => {
-        if (order && order.status === "completed") {
+        if (order && order.status === "COMPLETED") {
             tg.MainButton.setText("Оставить отзыв");
             tg.MainButton.show();
             tg.MainButton.onClick(handleLeaveFeedback);
