@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getFeedbacks, removeFeedback, getUser } from '../../db/db';
+import { getFeedbacks, removeFeedback, getUser, getUserFeedbacks } from '../../db/db';
 import { useTelegram } from '../../hooks/useTelegram';
 import CircularProgress from '@mui/material/CircularProgress';
 
@@ -93,7 +93,7 @@ const FeedbackItem = ({ feedback, isAdmin, onDelete }) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const userData = await getUser(feedback.user_id);
+        const userData = await getUserFeedbacks(feedback.user_id);
         setUser(userData);
       } catch (error) {
         console.error('Error fetching user:', error);

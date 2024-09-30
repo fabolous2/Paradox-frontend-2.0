@@ -18,6 +18,11 @@ export function getUser(initData) {
     return db_user;
 }
 
+export function getUserFeedbacks(user_id) {
+  const response = axios.get(`${API_URL}/feedback/user/${user_id}`);
+  return response.data;
+}
+
 export async function sendOrder(product_id, additionalData = {}, initData) {
   const response = await axios.post(`${API_URL}/products/${product_id}/purchase`, {
     product_id: product_id,
