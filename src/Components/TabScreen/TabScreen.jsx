@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import './TabScreen.css';
 import {motion} from "framer-motion";
-import Lock from '../../images/lock.png';
 import Card from '../../images/credit-card-arrow-right.svg';
 import Check from '../../images/check.png';
 import ArrowGreater from '../../images/arrow_greater.png';
@@ -12,6 +11,7 @@ import {getOrders, getTransactions} from '../../db/db';
 import {useTelegram} from '../../hooks/useTelegram';
 import Replenishment from '../../images/replenishment.png';
 import Hourglass from '../../images/hourglasses.png';
+import Closed from '../../images/closed.png';
 
 let tabs = [
     {id: 1, label: "Заказы"},
@@ -55,7 +55,7 @@ function TabScreen() {
                     <img className="icon" src={
                         order.status === 'PROGRESS' ? Hourglass :
                         order.status === 'PAID' ? Paid :
-                        order.status === 'CLOSED' ? Lock :
+                        order.status === 'CLOSED' ? Closed :
                         order.status === 'COMPLETED' ? Check :
                         null
                     } alt=""/>
