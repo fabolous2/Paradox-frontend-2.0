@@ -75,7 +75,7 @@ export default function Feedbacks() {
     <div style={{ padding: '1rem' }}>
       <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1rem' }}>Отзывы</h2>
       
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
         {feedbacks.map((feedback) => (
           <FeedbackItem 
             key={feedback.id} 
@@ -118,7 +118,7 @@ const FeedbackItem = ({ feedback, isAdmin, onDelete }) => {
       backgroundColor: 'var(--tg-theme-bg-color)', 
       borderRadius: '12px', 
       padding: '16px', 
-      marginBottom: '8px',
+      marginBottom: '4px',
     }}>
       <div style={{ display: 'flex', alignItems: 'flex-start', marginBottom: '12px' }}>
         <img
