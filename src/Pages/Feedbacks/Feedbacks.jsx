@@ -93,7 +93,6 @@ const FeedbackItem = ({ feedback, isAdmin, onDelete }) => {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-
   useEffect(() => {
     const fetchUser = async () => {
       setIsLoading(true);
@@ -119,44 +118,45 @@ const FeedbackItem = ({ feedback, isAdmin, onDelete }) => {
       backgroundColor: 'var(--tg-theme-bg-color)', 
       borderRadius: '12px', 
       padding: '12px', 
-      marginBottom: '8px',
+      marginBottom: '16px',
     }}>
       <div style={{ display: 'flex', alignItems: 'center', marginBottom: '12px' }}>
-        <img
-          src={user?.profile_photo || FeedbackPhoto}
-          onError={(e) => { e.target.onerror = null; e.target.src = FeedbackPhoto; }}
-          alt="User Avatar"
-          style={{ width: '40px', height: '40px', borderRadius: '50%', marginRight: '12px', flexShrink: 0 }}
-        />
+        <div style={{ width: '40px', height: '40px', marginRight: '12px', flexShrink: 0, overflow: 'hidden', borderRadius: '50%' }}>
+          <img
+            src={user?.profile_photo || FeedbackPhoto}
+            onError={(e) => { e.target.onerror = null; e.target.src = FeedbackPhoto; }}
+            alt="User Avatar"
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+          />
+        </div>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <span style={{ 
-            fontWeight: '600', 
-            fontSize: '15px', 
-            color: 'var(--tg-theme-text-color)',
-            display: 'block',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap'
-          }}>
-            {user?.nickname || 'Аноним'}
-          </span>
-          <div style={{ display: 'flex', alignItems: 'center', marginTop: '2px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span style={{ 
-              fontSize: '13px', 
-              color: 'var(--tg-theme-hint-color)', 
-              marginRight: '6px',
-              flexShrink: 0
+              fontWeight: '600', 
+              fontSize: '15px', 
+              color: 'var(--tg-theme-text-color)',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap'
             }}>
-              {new Date(feedback.time).toLocaleString('ru-RU', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric',
-              })}
+              {user?.nickname || 'Аноним'}
             </span>
             <div style={{ display: 'flex', color: '#fbbf24', flexShrink: 0 }}>
               {'★'.repeat(feedback.stars)}{'☆'.repeat(5 - feedback.stars)}
             </div>
           </div>
+          <span style={{ 
+            fontSize: '13px', 
+            color: 'var(--tg-theme-hint-color)', 
+            display: 'block',
+            marginTop: '2px'
+          }}>
+            {new Date(feedback.time).toLocaleString('ru-RU', {
+              day: '2-digit',
+              month: '2-digit',
+              year: 'numeric',
+            })}
+          </span>
         </div>
         {isAdmin && (
           <button 
@@ -167,7 +167,8 @@ const FeedbackItem = ({ feedback, isAdmin, onDelete }) => {
               cursor: 'pointer',
               padding: '6px',
               borderRadius: '4px',
-              transition: 'background-color 0.2s'
+              transition: 'background-color 0.2s',
+              marginLeft: '8px'
             }} 
             onClick={() => onDelete(feedback.id)}
             onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'rgba(239, 68, 68, 0.1)'}
