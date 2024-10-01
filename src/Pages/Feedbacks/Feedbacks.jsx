@@ -43,7 +43,7 @@ export default function Feedbacks() {
         // Sort feedbacks by time in descending order (newest first)
         const sortedFeedbacks = data.sort((a, b) => new Date(b.time) - new Date(a.time));
         setFeedbacks(sortedFeedbacks);
-        setIsAdmin(admins.includes(user.id));
+        setIsAdmin(admins.includes(user?.user_id));
       } catch (error) {
         console.error('Error loading feedbacks:', error);
       } finally {
@@ -110,37 +110,36 @@ const FeedbackItem = ({ feedback, isAdmin, onDelete }) => {
   }, [feedback.user_id]);
 
   if (isLoading) {
-    return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}><CircularProgress /></div>;
+    return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100px' }}><CircularProgress size={24} /></div>;
   }
 
   return (
     <div style={{ 
-      backgroundColor: 'var(--tg-theme-secondary-bg-color)', 
-      borderRadius: '8px', 
+      backgroundColor: 'var(--tg-theme-bg-color)', 
+      borderRadius: '12px', 
       padding: '16px', 
       marginBottom: '16px',
-      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
     }}>
       <div style={{ display: 'flex', alignItems: 'center', marginBottom: '12px' }}>
         <img
           src={user?.profile_photo || 'https://via.placeholder.com/40?text=?'}
           onError={(e) => { e.target.onerror = null; e.target.src = 'https://via.placeholder.com/40?text=?'; }}
           alt="User Avatar"
-          style={{ width: '40px', height: '40px', borderRadius: '50%', marginRight: '12px', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)' }}
+          style={{ width: '40px', height: '40px', borderRadius: '50%', marginRight: '12px' }}
         />
         <div style={{ flex: 1 }}>
           <span style={{ fontWeight: '600', fontSize: '16px', color: 'var(--tg-theme-text-color)' }}>{user?.nickname || 'Аноним'}</span>
           <div style={{ display: 'flex', alignItems: 'center', marginTop: '4px' }}>
-            <span style={{ fontSize: '14px', color: 'var(--tg-theme-hint-color)', marginRight: '8px' }}>
+            <div style={{ display: 'flex', color: '#fbbf24', marginRight: '8px' }}>
+              {'★'.repeat(feedback.stars)}{'☆'.repeat(5 - feedback.stars)}
+            </div>
+            <span style={{ fontSize: '14px', color: 'var(--tg-theme-hint-color)' }}>
               {new Date(feedback.time).toLocaleString('ru-RU', {
                 day: '2-digit',
                 month: '2-digit',
                 year: 'numeric',
               })}
             </span>
-            <div style={{ display: 'flex', color: '#fbbf24' }}>
-              {'★'.repeat(feedback.stars)}{'☆'.repeat(5 - feedback.stars)}
-            </div>
           </div>
         </div>
         {isAdmin && (
@@ -165,14 +164,14 @@ const FeedbackItem = ({ feedback, isAdmin, onDelete }) => {
         )}
       </div>
       <div style={{ 
-        backgroundColor: 'var(--tg-theme-bg-color)', 
-        borderRadius: '6px', 
+        backgroundColor: 'var(--tg-theme-secondary-bg-color)', 
+        borderRadius: '8px', 
         padding: '12px',
         fontSize: '15px',
         color: 'var(--tg-theme-text-color)',
         lineHeight: '1.5'
       }}>
-        <p>{feedback.text}</p>
+        <p style={{ margin: 0 }}>{feedback.text}</p>
       </div>
     </div>
   );
