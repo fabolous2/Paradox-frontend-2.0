@@ -11,33 +11,35 @@ const PostFeedback = () => {
   const [review, setReview] = useState('');
   const [product, setProduct] = useState(null);
   const [error, setError] = useState('');
+  const [isWebApp, setIsWebApp] = useState(false);
   const { id } = useParams();
   const navigate = useNavigate();
   const { tg } = useTelegram();
 
   useEffect(() => {
-    tg.BackButton.show();
-    tg.BackButton.onClick(() => navigate(-1));
+    setIsWebApp(!!window.Telegram?.WebApp);
+  }, []);
 
-    return () => {
-      tg.BackButton.offClick(() => navigate(-1));
-      tg.BackButton.hide();
-    };
-  }, [tg.BackButton, navigate]);
+  useEffect(() => {
+    if (isWebApp) {
+      tg.BackButton.show();
+      tg.BackButton.onClick(() => navigate(-1));
+  
+      return () => {
+        tg.BackButton.offClick(() => navigate(-1));
+        tg.BackButton.hide();
+      };
+    }
+  }, [tg.BackButton, navigate, isWebApp]);
 
   const handleSubmit = useCallback(async () => {
-    const currentReview = review.trim();
-    if (currentReview === '') {
-      setError('Пожалуйста, введите текст отзыва');
-      return;
-    }
     setError('');
     try {
       const is_posted = await isUserPostedFeedback(product.id, tg.initData);
       if (is_posted) {
         setError('Вы уже оставили отзыв на этот товар');
       } else {
-        await postFeedback(product.id, rating, currentReview, tg.initData);
+        await postFeedback(product.id, rating, review.trim(), tg.initData);
         navigate('/');
       }
     } catch (err) {

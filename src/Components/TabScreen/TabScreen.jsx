@@ -11,6 +11,7 @@ import {useNavigate} from "react-router-dom";
 import {getOrders, getTransactions} from '../../db/db';
 import {useTelegram} from '../../hooks/useTelegram';
 import Replenishment from '../../images/replenishment.png';
+import Hourglass from '../../images/hourglasses.png';
 
 let tabs = [
     {id: 1, label: "Заказы"},
@@ -23,7 +24,6 @@ function TabScreen() {
     let [activeTab, setActiveTab] = useState(tabs[0].id);
     const [transactions, setTransactions] = useState([]);
     const [orders, setOrders] = useState([]);
-    const Hourglass = "https://cdn-icons-png.flaticon.com/512/3889/3889548.png"
     const Paid = "https://cdn-icons-png.flaticon.com/512/3889/3889548.png"
     const { tg } = useTelegram();
 

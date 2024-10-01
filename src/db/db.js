@@ -18,13 +18,14 @@ export function getUser(initData) {
     return db_user;
 }
 
-export function getUserFeedbacks(user_id) {
-  const response = axios.get(`${API_URL}/feedback/user/${user_id}`, {
-    params: {
-      user_id: user_id
-    }
-  });
-  return response.data;
+export async function getUserFeedbacks(user_id) {
+  try {
+    const response = await axios.get(`${API_URL}/feedback/user/${user_id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching user feedback:', error);
+    return null;
+  }
 }
 
 export async function sendOrder(product_id, additionalData = {}, initData) {
