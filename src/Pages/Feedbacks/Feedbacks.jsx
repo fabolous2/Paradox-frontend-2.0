@@ -75,7 +75,7 @@ export default function Feedbacks() {
     <div style={{ padding: '1rem' }}>
       <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1rem' }}>Отзывы</h2>
       
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
         {feedbacks.map((feedback) => (
           <FeedbackItem 
             key={feedback.id} 
@@ -118,9 +118,9 @@ const FeedbackItem = ({ feedback, isAdmin, onDelete }) => {
       backgroundColor: 'var(--tg-theme-bg-color)', 
       borderRadius: '12px', 
       padding: '16px', 
-      marginBottom: '16px',
+      marginBottom: '8px',
     }}>
-      <div style={{ display: 'flex', alignItems: 'center', marginBottom: '12px' }}>
+      <div style={{ display: 'flex', alignItems: 'flex-start', marginBottom: '12px' }}>
         <img
           src={user?.profile_photo || 'https://via.placeholder.com/40?text=?'}
           onError={(e) => { e.target.onerror = null; e.target.src = 'https://via.placeholder.com/40?text=?'; }}
@@ -128,19 +128,19 @@ const FeedbackItem = ({ feedback, isAdmin, onDelete }) => {
           style={{ width: '40px', height: '40px', borderRadius: '50%', marginRight: '12px' }}
         />
         <div style={{ flex: 1 }}>
-          <span style={{ fontWeight: '600', fontSize: '16px', color: 'var(--tg-theme-text-color)' }}>{user?.nickname || 'Аноним'}</span>
-          <div style={{ display: 'flex', alignItems: 'center', marginTop: '4px' }}>
-            <div style={{ display: 'flex', color: '#fbbf24', marginRight: '8px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ fontWeight: '600', fontSize: '16px', color: 'var(--tg-theme-text-color)' }}>{user?.nickname || 'Аноним'}</span>
+            <div style={{ display: 'flex', color: '#fbbf24' }}>
               {'★'.repeat(feedback.stars)}{'☆'.repeat(5 - feedback.stars)}
             </div>
-            <span style={{ fontSize: '14px', color: 'var(--tg-theme-hint-color)' }}>
-              {new Date(feedback.time).toLocaleString('ru-RU', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric',
-              })}
-            </span>
           </div>
+          <span style={{ fontSize: '14px', color: 'var(--tg-theme-hint-color)', display: 'block', marginTop: '4px' }}>
+            {new Date(feedback.time).toLocaleString('ru-RU', {
+              day: '2-digit',
+              month: '2-digit',
+              year: 'numeric',
+            })}
+          </span>
         </div>
         {isAdmin && (
           <button 
