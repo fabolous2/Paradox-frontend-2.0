@@ -118,29 +118,44 @@ const FeedbackItem = ({ feedback, isAdmin, onDelete }) => {
       backgroundColor: 'var(--tg-theme-bg-color)', 
       borderRadius: '12px', 
       padding: '16px', 
-      marginBottom: '4px',
+      marginBottom: '16px',
     }}>
-      <div style={{ display: 'flex', alignItems: 'flex-start', marginBottom: '12px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', marginBottom: '12px' }}>
         <img
           src={user?.profile_photo || 'https://via.placeholder.com/40?text=?'}
           onError={(e) => { e.target.onerror = null; e.target.src = 'https://via.placeholder.com/40?text=?'; }}
           alt="User Avatar"
-          style={{ width: '40px', height: '40px', borderRadius: '50%', marginRight: '12px' }}
+          style={{ width: '40px', height: '40px', borderRadius: '50%', marginRight: '12px', flexShrink: 0 }}
         />
-        <div style={{ flex: 1 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontWeight: '600', fontSize: '16px', color: 'var(--tg-theme-text-color)' }}>{user?.nickname || 'Аноним'}</span>
-            <div style={{ display: 'flex', color: '#fbbf24' }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <span style={{ 
+            fontWeight: '600', 
+            fontSize: '16px', 
+            color: 'var(--tg-theme-text-color)',
+            display: 'block',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap'
+          }}>
+            {user?.nickname || 'Аноним'}
+          </span>
+          <div style={{ display: 'flex', alignItems: 'center', marginTop: '4px' }}>
+            <span style={{ 
+              fontSize: '14px', 
+              color: 'var(--tg-theme-hint-color)', 
+              marginRight: '8px',
+              flexShrink: 0
+            }}>
+              {new Date(feedback.time).toLocaleString('ru-RU', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+              })}
+            </span>
+            <div style={{ display: 'flex', color: '#fbbf24', flexShrink: 0 }}>
               {'★'.repeat(feedback.stars)}{'☆'.repeat(5 - feedback.stars)}
             </div>
           </div>
-          <span style={{ fontSize: '14px', color: 'var(--tg-theme-hint-color)', display: 'block', marginTop: '4px' }}>
-            {new Date(feedback.time).toLocaleString('ru-RU', {
-              day: '2-digit',
-              month: '2-digit',
-              year: 'numeric',
-            })}
-          </span>
         </div>
         {isAdmin && (
           <button 
@@ -169,7 +184,9 @@ const FeedbackItem = ({ feedback, isAdmin, onDelete }) => {
         padding: '12px',
         fontSize: '15px',
         color: 'var(--tg-theme-text-color)',
-        lineHeight: '1.5'
+        lineHeight: '1.5',
+        overflow: 'hidden',
+        wordWrap: 'break-word'
       }}>
         <p style={{ margin: 0 }}>{feedback.text}</p>
       </div>
