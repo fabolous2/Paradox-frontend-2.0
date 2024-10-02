@@ -49,13 +49,18 @@ function PromoCode() {
             const timer = setTimeout(async () => {
                 const promoResult = await getPromo(newCode);
                 if (promoResult) {
-                    const isUsed = await checkIsUsedPromo(newCode, tg.initData);
-                    if (isUsed === true) {
+                    if (promoResult.uses <= 0) {
                         setValidStatus(-1);
-                        setMessage('Промокод уже был использован вами');
+                        setMessage('Промокод больше не действителен');
                     } else {
-                        setValidStatus(1);
-                        setMessage('');
+                        const isUsed = await checkIsUsedPromo(newCode, tg.initData);
+                        if (isUsed === true) {
+                            setValidStatus(-1);
+                            setMessage('Промокод уже был использован вами');
+                        } else {
+                            setValidStatus(1);
+                            setMessage('');
+                        }
                     }
                 } else {
                     setValidStatus(-1);

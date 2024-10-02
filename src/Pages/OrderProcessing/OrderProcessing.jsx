@@ -24,6 +24,7 @@ const OrderForm = () => {
   const [login, setLogin] = useState('');
   const { tg } = useTelegram();
   const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
  
   useEffect(() => {
     tg.BackButton.show();
@@ -112,24 +113,26 @@ const OrderForm = () => {
   };
 
   const handleSubmit = async () => {
-    if (!isCooldownPassed(id)) {
-    alert('Пожалуйста, подождите 10 секунд перед повторным заказом');
-    return;
-  }
-
-  const errors = {};
-  formFields.forEach(field => {
-    if (field !== 'twoFactorCode' && !eval(field)) {
-      errors[field] = true;
+    if (isSubmitting || !isCooldownPassed(id)) {
+      alert('Пожалуйста, подождите. Заказ уже обрабатывается или не прошло 10 секунд с предыдущего заказа.');
+      return;
     }
-  });
-
-  if (Object.keys(errors).length > 0) {
-    setFormErrors(errors);
-    alert('Пожалуйста, заполните все обязательные поля');
-    return;
-  }
-
+  
+    const errors = {};
+    formFields.forEach(field => {
+      if (field !== 'twoFactorCode' && !eval(field)) {
+        errors[field] = true;
+      }
+    });
+  
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      alert('Пожалуйста, заполните все обязательные поля');
+      return;
+    }
+  
+    setIsSubmitting(true);
+  
     try {
       let additionalData = {};
       switch(product.game_id) {
@@ -172,8 +175,11 @@ const OrderForm = () => {
     } catch (error) {
       console.error('Error sending order:', error);
       alert('Произошла ошибка при отправке заказа');
+    } finally {
+      setIsSubmitting(false);
     }
   };
+
   const renderFormFields = () => {
     return formFields.map((field) => {
       const commonInputStyle = {
@@ -444,7 +450,7 @@ const OrderForm = () => {
       )}
         {renderFormFields()}
       </div>
-      <MainButton text="Продолжить" onClick={handleSubmit} />
+      <MainButton text={isSubmitting ? "Обработка..." : "Продолжить"} onClick={handleSubmit} disabled={isSubmitting} />
     </div>
   );
 }
