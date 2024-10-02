@@ -56,7 +56,7 @@ function Profile() {
         <div className="flex horizontal-padding vertical-padding align-items-center">
             <img 
                 className="avatar" 
-                src={user.photo || profilePhoto} 
+                src={db_user?.profile_photo || profilePhoto} 
                 onError={(e) => {
                     e.target.onerror = null;
                     e.target.src = profilePhoto;
