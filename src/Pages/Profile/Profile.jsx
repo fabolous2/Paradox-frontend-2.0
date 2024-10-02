@@ -56,7 +56,7 @@ function Profile() {
         <div className="flex horizontal-padding vertical-padding align-items-center">
             <img 
                 className="avatar" 
-                src={user?.photo_url || profilePhoto} 
+                src={db_user?.profile_photo || profilePhoto} 
                 style={{ 
                     width: '80px', 
                     height: '80px', 

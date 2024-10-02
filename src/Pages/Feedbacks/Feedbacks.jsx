@@ -8,7 +8,7 @@ export default function Feedbacks() {
   const [feedbacks, setFeedbacks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [user, setUser] = useState(null);
+  const [db_user, setDbUser] = useState(null);
   const { tg } = useTelegram();
   const [admins, setAdmins] = useState([6384960822, 1719800292])
 
@@ -28,7 +28,7 @@ export default function Feedbacks() {
     const fetchUser = async () => {
       try {
         const userData = await getUser(tg.initData);
-        setUser(userData);
+        setDbUser(userData);
       } catch (error) {
         console.error('Error fetching user:', error);
       }
@@ -51,13 +51,13 @@ export default function Feedbacks() {
     };
 
     loadFeedbacks();
-  }, []);
+  }, [db_user]);
 
   useEffect(() => {
-    if (user) {
-      setIsAdmin(admins.includes(user.user_id));
+    if (db_user) {
+      setIsAdmin(admins.includes(db_user.user_id));
     }
-  }, [user, admins]);
+  }, [db_user, admins]);
 
   const handleDeleteFeedback = async (feedbackId) => {
     try {
