@@ -54,7 +54,16 @@ function Profile() {
             <h3>Профиль</h3>
         </div>
         <div className="flex horizontal-padding vertical-padding align-items-center">
-            <img className="avatar" src={user?.photo_url || profilePhoto} style={{ width: '40vw', height: '40vw' }}/>
+            <img 
+                className="avatar" 
+                src={user?.photo_url || profilePhoto} 
+                style={{ 
+                    width: '80px', 
+                    height: '80px', 
+                    borderRadius: '50%', 
+                    objectFit: 'cover' 
+                }}
+            />
             <div className="flex column justify-center horizontal-padding">
                 <b>{user?.first_name} {user?.last_name}</b>
                 <span style={{ color: '#888888' }}>@{user?.username}</span>
