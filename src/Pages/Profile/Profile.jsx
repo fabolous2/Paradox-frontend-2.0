@@ -56,7 +56,11 @@ function Profile() {
         <div className="flex horizontal-padding vertical-padding align-items-center">
             <img 
                 className="avatar" 
-                src={db_user?.profile_photo || profilePhoto} 
+                src={user.photo || profilePhoto} 
+                onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = profilePhoto;
+                }}
                 style={{ 
                     width: '80px', 
                     height: '80px', 
