@@ -143,10 +143,7 @@ const OrderForm = () => {
           additionalData = { email, code };
         break;
         case 5:
-          additionalData = { login: username, password };
-          if (twoFactorCode) {
-            additionalData = { ...additionalData, two_factor_code: twoFactorCode };
-          }
+          additionalData = { login: username, password, two_factor_code: twoFactorCode || null };
           break;
         case 12:
           additionalData = { login: email, password };
