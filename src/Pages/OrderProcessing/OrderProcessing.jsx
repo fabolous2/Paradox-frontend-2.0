@@ -141,11 +141,11 @@ const OrderForm = () => {
         case 3:
         case 4:
           additionalData = { email, code };
-          break;
+        break;
         case 5:
           additionalData = { login: username, password };
           if (twoFactorCode) {
-            additionalData.two_factor_code = twoFactorCode;
+            additionalData = { ...additionalData, two_factor_code: twoFactorCode };
           }
           break;
         case 12:
