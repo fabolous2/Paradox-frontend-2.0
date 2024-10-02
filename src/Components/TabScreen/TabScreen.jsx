@@ -94,19 +94,19 @@ function TabScreen() {
                 <div className="flex column">
                     <small className="fw-500">{transaction.type === 'Пополнение' ? 'Пополнение' : 'Списание'}</small>
                     <small>{
-                        transaction.cause === 'DONATE' ? 'Донат' :
-                        transaction.cause === 'COUPON' ? 'Ввод промокода' :
-                        transaction.cause === 'REFERRAL' ? 'Реферальный бонус' :
-                        transaction.cause === 'ADMIN_DEPOSIT' ? 'Пополнение администратором' :
-                        transaction.cause === 'ADMIN_DEBIT' ? 'Списание администратором' :
-                        transaction.cause === 'PAYMENT' ? 'Оплата заказа' :
-                        transaction.cause === 'REFUND' ? 'Возврат' :
+                        transaction.cause === 'Донат' ? 'Донат' :
+                        transaction.cause === 'Ввод промокода' ? 'Ввод промокода' :
+                        transaction.cause === 'Реферальный бонус' ? 'Реферальный бонус' :
+                        transaction.cause === 'Пополнение администратором' ? 'Пополнение администратором' :
+                        transaction.cause === 'Списание администратором' ? 'Списание администратором' :
+                        transaction.cause === 'Оплата заказа' ? 'Оплата заказа' :
+                        transaction.cause === 'Возврат' ? 'Возврат' :
                         null
                     }</small>
                 </div>
                 <div className="ms-auto flex gap-05 align-items-center">
-                    <small style={{ color: transaction.type === 'DEPOSIT' ? 'green' : 'red' }}>
-                        {transaction.type === 'DEPOSIT' ? '+' : '-'}{transaction.amount} ₽
+                    <small style={{ color: transaction.type === 'Пополнение' ? 'green' : 'red' }}>
+                        {transaction.type === 'Пополнение' ? '+' : '-'}{transaction.amount} ₽
                     </small>
                     <img style={{filter: `invert(${theme === 'dark' ? "1" : "0"})`}} className="icon-md" src={ArrowGreater} alt=""/>
                 </div>
