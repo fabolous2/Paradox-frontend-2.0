@@ -10,7 +10,7 @@ export default function Feedbacks() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [user, setUser] = useState(null);
   const { tg } = useTelegram();
-  const [admins, setAdmins] = useState([6384960822])
+  const [admins, setAdmins] = useState([6384960822, 1719800292])
 
   useEffect(() => {
     tg.BackButton.show();
