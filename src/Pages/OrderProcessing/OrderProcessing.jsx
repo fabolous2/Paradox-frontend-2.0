@@ -23,6 +23,7 @@ const OrderForm = () => {
   const [nickname, setNickname] = useState('');
   const [login, setLogin] = useState('');
   const { tg } = useTelegram();
+  const [showPassword, setShowPassword] = useState(false);
  
   useEffect(() => {
     tg.BackButton.show();
@@ -35,6 +36,13 @@ const OrderForm = () => {
       tg.BackButton.hide();
     };
   }, []);
+
+  const isCooldownPassed = (productId) => {
+    const lastOrderTime = localStorage.getItem(`lastOrder_${productId}`);
+    if (!lastOrderTime) return true;
+    const timePassed = Date.now() - parseInt(lastOrderTime);
+    return timePassed > 10000;
+  };
 
   useEffect(() => {
     if (!id) {
@@ -84,6 +92,7 @@ const OrderForm = () => {
     }
     fetchProduct();
   }, [id]);
+
   const handleEmailSubmit = () => {
     if (!email.trim()) {
       setEmailError('Пожалуйста, заполните поле email');
@@ -103,18 +112,23 @@ const OrderForm = () => {
   };
 
   const handleSubmit = async () => {
-    const errors = {};
-    formFields.forEach(field => {
-      if (field !== 'twoFactorCode' && !eval(field)) {
-        errors[field] = true;
-      }
-    });
+    if (!isCooldownPassed(id)) {
+    alert('Пожалуйста, подождите 10 секунд перед повторным заказом');
+    return;
+  }
 
-    if (Object.keys(errors).length > 0) {
-      setFormErrors(errors);
-      alert('Пожалуйста, заполните все обязательные поля');
-      return;
+  const errors = {};
+  formFields.forEach(field => {
+    if (field !== 'twoFactorCode' && !eval(field)) {
+      errors[field] = true;
     }
+  });
+
+  if (Object.keys(errors).length > 0) {
+    setFormErrors(errors);
+    alert('Пожалуйста, заполните все обязательные поля');
+    return;
+  }
 
     try {
       let additionalData = {};
@@ -153,6 +167,7 @@ const OrderForm = () => {
           additionalData = { login, password };
       }
       await sendOrder(id, additionalData, tg.initData);
+      localStorage.setItem(`lastOrder_${id}`, Date.now().toString());
       navigate('/order/success');
     } catch (error) {
       console.error('Error sending order:', error);
@@ -248,26 +263,58 @@ const OrderForm = () => {
               />
             </div>
           );
-        case 'password':
-          return (
-            <div key={field} style={{marginBottom: '1rem'}}>
-              <label style={{display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.25rem'}}>
-                {product.game_id === 8 ? 'Пароль от Facebook/Google Play' :
-                 product.game_id === 9 ? 'Пароль от XBOX Live' :
-                 'Пароль'}
-              </label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                style={{
-                  ...commonInputStyle,
-                  borderBottom: formErrors.password ? '1px solid red' : '1px solid var(--tg-theme-hint-color)'
-                }}
-                placeholder="Введите пароль"
-              />
-            </div>
-          );
+          case 'password':
+            return (
+              <div key={field} style={{marginBottom: '1rem'}}>
+                <label style={{display: 'block', fontSize: '0.875rem', fontWeight: '500', marginBottom: '0.25rem'}}>
+                  {product.game_id === 8 ? 'Пароль от Facebook/Google Play' :
+                   product.game_id === 9 ? 'Пароль от XBOX Live' :
+                   'Пароль'}
+                </label>
+                <div style={{position: 'relative'}}>
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    style={{
+                      ...commonInputStyle,
+                      borderBottom: formErrors.password ? '1px solid red' : '1px solid var(--tg-theme-hint-color)',
+                      paddingRight: '2.5rem'
+                    }}
+                    placeholder="Введите пароль"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    style={{
+                      position: 'absolute',
+                      right: '0.5rem',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      padding: 0,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}
+                  >
+                    {showPassword ? (
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{width: '20px', height: '20px'}}>
+                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                      </svg>
+                    ) : (
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{width: '20px', height: '20px'}}>
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                      </svg>
+                    )}
+                  </button>
+                </div>
+              </div>
+            );
         case 'twoFactorCode':
           return (
             <div key={field} style={{marginBottom: '1rem'}}>

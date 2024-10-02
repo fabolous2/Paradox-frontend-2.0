@@ -15,6 +15,7 @@ const PostFeedback = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { tg } = useTelegram();
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   useEffect(() => {
     setIsWebApp(!!window.Telegram?.WebApp);
@@ -34,6 +35,14 @@ const PostFeedback = () => {
 
   const handleSubmit = useCallback(async () => {
     setError('');
+    if (review.trim() === '') {
+      setShowConfirmation(true);
+    } else {
+      submitReview();
+    }
+  }, [review, product, rating, tg.initData, navigate]);
+  
+  const submitReview = async () => {
     try {
       const is_posted = await isUserPostedFeedback(product.id, tg.initData);
       if (is_posted) {
@@ -45,7 +54,17 @@ const PostFeedback = () => {
     } catch (err) {
       setError('Произошла ошибка при отправке отзыва. Пожалуйста, попробуйте еще раз.');
     }
-  }, [review, product, rating, tg.initData, navigate]);
+  };
+
+  const ConfirmationPopup = ({ onConfirm, onCancel }) => (
+    <div className="confirmation-popup">
+      <p>Вы уверены что хотите отправить отзыв без текста?</p>
+      <div className="confirmation-buttons">
+        <button onClick={onConfirm}>Да</button>
+        <button onClick={onCancel}>Нет</button>
+      </div>
+    </div>
+  );
 
   useEffect(() => {
     const setupMainButton = () => {
@@ -125,6 +144,15 @@ const PostFeedback = () => {
           <p className="character-count">{review.length}/500 символов</p>
         </div>
       </div>
+      {showConfirmation && (
+        <ConfirmationPopup
+          onConfirm={() => {
+          setShowConfirmation(false);
+          submitReview();
+        }}
+        onCancel={() => setShowConfirmation(false)}
+        />
+      )}
     </div>
   );
 };

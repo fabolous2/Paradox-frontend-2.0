@@ -43,7 +43,6 @@ export default function Feedbacks() {
         const data = await getFeedbacks();
         const sortedFeedbacks = data.sort((a, b) => new Date(b.time) - new Date(a.time));
         setFeedbacks(sortedFeedbacks);
-        setIsAdmin(admins.includes(user?.user_id));
       } catch (error) {
         console.error('Error loading feedbacks:', error);
       } finally {
@@ -53,6 +52,12 @@ export default function Feedbacks() {
 
     loadFeedbacks();
   }, []);
+
+  useEffect(() => {
+    if (user) {
+      setIsAdmin(admins.includes(user.user_id));
+    }
+  }, [user, admins]);
 
   const handleDeleteFeedback = async (feedbackId) => {
     try {
