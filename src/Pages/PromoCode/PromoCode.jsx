@@ -33,6 +33,7 @@ function PromoCode() {
 
         return () => {
             tg.MainButton.offClick(onSubmit);
+            tg.MainButton.hide();
         };
     }, [validStatus]);
 
@@ -85,6 +86,8 @@ function PromoCode() {
             if (result) {
                 setValidStatus(1);
                 setMessage('Промокод успешно применён');
+                tg.MainButton.hide();
+                window.history.back();
             } else {
                 setValidStatus(-1);
                 setMessage('Ошибка при применении промокода');
