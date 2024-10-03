@@ -33,8 +33,17 @@ export default function PaymentProcessing() {
 
     useEffect(() => {
         const fetchTransaction = async () => {
-            const response = await getOneTransaction(order_id, tg.initData)
-            setTransaction(response)
+            try {
+                const response = await getOneTransaction(order_id, tg.initData)
+                if (response && !response.is_successful) {
+                    setTransaction(response)
+                } else {
+                    navigate('/deposit', { replace: true });
+                }
+            } catch (error) {
+                console.error('Error fetching transaction:', error);
+                navigate('/deposit', { replace: true });
+            }
         }
         fetchTransaction()
 
@@ -66,7 +75,7 @@ export default function PaymentProcessing() {
             clearInterval(timer)
             localStorage.removeItem(`timeLeft_${order_id}`);
         }
-    }, [order_id])
+    }, [order_id, navigate, tg.initData])
 
     useEffect(() => {
         if (paymentStatus === 'pending' && transaction) {

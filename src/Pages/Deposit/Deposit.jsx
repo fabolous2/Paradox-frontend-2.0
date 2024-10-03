@@ -46,7 +46,7 @@ function Deposit() {
         }
         const response = await makeDeposit(amount, method, tg.initData);
         if (response.success) {
-            navigate(`/payment/${response.payment.uuid}`);
+            navigate(`/payment/${response.payment.uuid}`, { replace: true });
         } else {
             tg.showAlert('Произошла ошибка при создании платежа');
         }
