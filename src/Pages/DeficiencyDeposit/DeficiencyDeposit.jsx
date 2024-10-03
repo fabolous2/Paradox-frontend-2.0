@@ -109,7 +109,7 @@ const DeficiencyDeposit = () => {
         setAmount(e.target.value)
     }
 
-    if (loading) {
+    if (loading || !dbUser) {
         return (
             <div className="flex justify-center align-items-center" style={{height: '100vh'}}>
                 <CircularProgress />
