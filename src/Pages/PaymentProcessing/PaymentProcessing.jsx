@@ -77,29 +77,13 @@ export default function PaymentProcessing() {
         }
     }, [order_id])
 
-    useEffect(() => {
-        if (paymentStatus === 'pending' && transaction) {
-            tg.MainButton.setParams({
-                text: 'Перейти к оплате',
-                color: tg.themeParams.button_color,
-            });
-            tg.MainButton.onClick(() => {
-                if (transaction.payment_data && transaction.payment_data.url) {
-                    tg.openLink(transaction.payment_data.url);
-                } else {
-                    console.error('Payment URL not available');
-                }
-            });
-            tg.MainButton.show();
+    const handlePayment = () => {
+        if (transaction && transaction.payment_data && transaction.payment_data.url) {
+            tg.openLink(transaction.payment_data.url);
         } else {
-            tg.MainButton.hide();
+            console.error('Payment URL not available');
         }
-
-        return () => {
-            tg.MainButton.offClick();
-            tg.MainButton.hide();
-        };
-    }, [transaction, paymentStatus]);
+    };
 
     const renderContent = () => {
         switch (paymentStatus) {
@@ -152,6 +136,23 @@ export default function PaymentProcessing() {
                 <div style={{marginBottom: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
                     {renderContent()}
                 </div>
+                {paymentStatus === 'pending' && (
+                    <button 
+                        style={{
+                            width: '100%',
+                            backgroundColor: tg.themeParams.button_color,
+                            color: tg.themeParams.button_text_color,
+                            padding: '0.75rem 1rem',
+                            borderRadius: '0.5rem',
+                            border: 'none',
+                            marginBottom: '1rem',
+                            cursor: 'pointer'
+                        }}
+                        onClick={handlePayment}
+                    >
+                        Перейти к оплате
+                    </button>
+                )}
                 <button 
                     style={{
                         width: '100%',
