@@ -11,6 +11,12 @@ function Deposit() {
     const [validStatus, setValidStatus] = useState(0);
     const [message, setMessage] = useState('');
     const { tg } = useTelegram();
+
+    useEffect(() => {
+        document.querySelector('meta[http-equiv="Cache-Control"]').setAttribute("content", "no-cache, no-store, must-revalidate");
+        document.querySelector('meta[http-equiv="Pragma"]').setAttribute("content", "no-cache");
+        document.querySelector('meta[http-equiv="Expires"]').setAttribute("content", "0");
+    }, []);
  
     useEffect(() => {
       tg.BackButton.show();
