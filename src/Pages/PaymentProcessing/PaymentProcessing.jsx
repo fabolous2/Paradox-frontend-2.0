@@ -75,7 +75,7 @@ export default function PaymentProcessing() {
             clearInterval(timer)
             localStorage.removeItem(`timeLeft_${order_id}`);
         }
-    }, [order_id, navigate, tg.initData])
+    }, [order_id])
 
     useEffect(() => {
         if (paymentStatus === 'pending' && transaction) {
