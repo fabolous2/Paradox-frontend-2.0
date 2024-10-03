@@ -123,7 +123,7 @@ const DeficiencyDeposit = () => {
         </div>
         <div className="flex column horizontal-padding gap-1">
             <div className="error-message">
-                <h2>Ой!</h2>
+                <h2 style={{color: 'red'}}>Ой!</h2>
                 <p>❌ Недостаточно средств на балансе!</p>
                 <p>Ваш баланс: {dbUser.balance} ₽</p>
                 {product && <p>Необходимо пополнить баланс на {Math.max(product.price - dbUser.balance, 0)} ₽</p>}

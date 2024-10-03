@@ -13,7 +13,10 @@ export default function PaymentProcessing() {
     const { order_id } = useParams()
     const [transaction, setTransaction] = useState(null)
     const [paymentStatus, setPaymentStatus] = useState('pending')
-    const [timeLeft, setTimeLeft] = useState(600)
+    const [timeLeft, setTimeLeft] = useState(() => {
+        const savedTime = localStorage.getItem(`timeLeft_${order_id}`);
+        return savedTime ? parseInt(savedTime, 10) : 600;
+    })
     const { tg } = useTelegram();
 
     useEffect(() => {
@@ -46,30 +49,33 @@ export default function PaymentProcessing() {
 
         const timer = setInterval(() => {
             setTimeLeft((prevTime) => {
-                if (prevTime <= 0) {
+                const newTime = prevTime - 1;
+                localStorage.setItem(`timeLeft_${order_id}`, newTime.toString());
+                if (newTime <= 0) {
                     clearInterval(timer)
                     clearInterval(statusInterval)
                     setPaymentStatus('failed')
                     return 0
                 }
-                return prevTime - 1
+                return newTime
             })
         }, 1000)
 
         return () => {
             clearInterval(statusInterval)
             clearInterval(timer)
+            localStorage.removeItem(`timeLeft_${order_id}`);
         }
     }, [order_id])
 
     useEffect(() => {
-        if (paymentStatus === 'pending') {
+        if (paymentStatus === 'pending' && transaction) {
             tg.MainButton.setParams({
                 text: 'Перейти к оплате',
                 color: tg.themeParams.button_color,
             });
             tg.MainButton.onClick(() => {
-                if (transaction && transaction.payment_data && transaction.payment_data.url) {
+                if (transaction.payment_data && transaction.payment_data.url) {
                     tg.openLink(transaction.payment_data.url);
                 } else {
                     console.error('Payment URL not available');
