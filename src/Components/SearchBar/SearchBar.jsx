@@ -25,7 +25,7 @@ export function SearchBar() {
     }, [navigate]);
 
     const debouncedSearch = useCallback(
-        debounce((searchTerm) => handleSearch(searchTerm), 500),
+        debounce((searchTerm) => handleSearch(searchTerm), 0),
         [handleSearch]
     );
 
