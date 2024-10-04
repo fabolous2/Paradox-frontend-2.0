@@ -25,13 +25,16 @@ export function SearchBar() {
     }, [navigate]);
 
     const debouncedSearch = useCallback(
-        debounce((searchTerm) => handleSearch(searchTerm), 0),
+        debounce((searchTerm) => handleSearch(searchTerm), 500),
         [handleSearch]
     );
 
+    const handleClick = () => {
+        navigate('/search?query=none');
+    };
 
     return (
-        <div className="search__container" onClick={handleSearch}>
+        <div className="search__container" onClick={handleClick}>
             <img style={{filter: `invert(${theme === 'dark' ? "1" : "0"})`}} className='search__icon' src={search} alt=""/>
             <input
                 placeholder='Искать игру или товар...'
