@@ -37,7 +37,7 @@ function OrderDetails() {
     }, [id]);
 
     const handleLeaveFeedback = () => {
-        navigate(`/post-feedback/${product.id}`);
+        navigate(`/post-feedback/${order.id}`);
     };
 
     useEffect(() => {

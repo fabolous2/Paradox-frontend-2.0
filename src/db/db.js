@@ -237,9 +237,10 @@ export async function setReferralCode(referral_code, initData) {
 }
 
 
-export async function postFeedback(product_id, stars, text, initData) {
+export async function postFeedback(order_id, product_id, stars, text, initData) {
   const response = await axios.post(`${API_URL}/feedback/post/`, {
     product: {id: product_id},
+    order_id: order_id,
     stars: stars,
     text: text
   }, {
@@ -297,11 +298,11 @@ export async function getOneProduct(product_id) {
   return response.data;
 }
 
-export async function isUserPostedFeedback(product_id, initData) {
+export async function isUserPostedFeedback(order_id, initData) {
   try {
-    const response = await axios.get(`${API_URL}/feedback/is_user_posted_feedback/${product_id}`, {
+    const response = await axios.get(`${API_URL}/feedback/is_user_posted_feedback/${order_id}`, {
       params: {
-      product_id: product_id
+      order_id: order_id
     },
     headers: {
       'Content-Type': 'application/json',

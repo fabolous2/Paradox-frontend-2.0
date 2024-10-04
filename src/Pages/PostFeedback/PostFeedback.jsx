@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import './PostFeedback.css';
 import { useParams } from 'react-router-dom';
-import { postFeedback, getOneProduct, isUserPostedFeedback } from '../../db/db';
+import { postFeedback, getOneProduct, isUserPostedFeedback, getOneOrder } from '../../db/db';
 import { useNavigate } from 'react-router-dom';
 import { useTelegram } from '../../hooks/useTelegram';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -10,6 +10,7 @@ const PostFeedback = () => {
   const [rating, setRating] = useState(5);
   const [review, setReview] = useState('');
   const [product, setProduct] = useState(null);
+  const [order, setOrder] = useState(null);
   const [error, setError] = useState('');
   const [isWebApp, setIsWebApp] = useState(false);
   const { id } = useParams();
@@ -44,11 +45,11 @@ const PostFeedback = () => {
   
   const submitReview = async () => {
     try {
-      const is_posted = await isUserPostedFeedback(product.id, tg.initData);
+      const is_posted = await isUserPostedFeedback(id, tg.initData);
       if (is_posted) {
         setError('Вы уже оставили отзыв на этот товар');
       } else {
-        await postFeedback(product.id, rating, review.trim(), tg.initData);
+        await postFeedback(order.id, product.id, rating, review.trim(), tg.initData);
         navigate('/');
       }
     } catch (err) {
@@ -85,14 +86,19 @@ const PostFeedback = () => {
   }, [tg.MainButton, handleSubmit]);
 
   useEffect(() => {
+    const fetchOrder = async () => {
+      const order = await getOneOrder(id, tg.initData);
+      setOrder(order);
+    };
+    fetchOrder();
     const fetchProduct = async () => {
-      const product = await getOneProduct(id);
+      const product = await getOneProduct(order.product_id);
       setProduct(product);
     };
     fetchProduct();
   }, [id]);
 
-  if (!product) return (
+  if (!product || !order) return (
     <div className="loading-container">
       <CircularProgress />
     </div>
