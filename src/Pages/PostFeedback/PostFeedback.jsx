@@ -86,17 +86,21 @@ const PostFeedback = () => {
   }, [tg.MainButton, handleSubmit]);
 
   useEffect(() => {
-    const fetchOrder = async () => {
-      const order = await getOneOrder(id, tg.initData);
-      setOrder(order);
+    const fetchData = async () => {
+      try {
+        const fetchedOrder = await getOneOrder(id, tg.initData);
+        setOrder(fetchedOrder);
+        if (fetchedOrder && fetchedOrder.product_id) {
+          const fetchedProduct = await getOneProduct(fetchedOrder.product_id);
+          setProduct(fetchedProduct);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setError('Произошла ошибка при загрузке данных.');
+      }
     };
-    fetchOrder();
-    const fetchProduct = async () => {
-      const product = await getOneProduct(order.product_id);
-      setProduct(product);
-    };
-    fetchProduct();
-  }, [id]);
+    fetchData();
+  }, [id, tg.initData]);
 
   if (!product || !order) return (
     <div className="loading-container">
