@@ -40,7 +40,7 @@ export function SearchBar() {
                 placeholder='Искать игру или товар...'
                 className="search__bar" type="text"
                 onChange={(e) => debouncedSearch(e.target.value)}
-                onClick={(e) => e.stopPropagation()}
+                onClick={(e) => e.stopPropagation() && navigate('/search?query=none')}
             />
         </div>
     );
