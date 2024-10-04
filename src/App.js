@@ -23,6 +23,7 @@ import PostFeedback from "./Pages/PostFeedback/PostFeedback";
 import DeficiencyDeposit from './Pages/DeficiencyDeposit/DeficiencyDeposit';
 import OrderProcessing from './Pages/OrderProcessing/OrderProcessing';
 import OrderCreated from './Pages/OrderCreated/OrderCreated';
+import { SearchPage } from './Pages/Search/Search';
 import { useTelegram } from './hooks/useTelegram';
 
 function App() {
@@ -52,6 +53,7 @@ function App() {
                     <Route exact path="/deficiency/:id" element={<DeficiencyDeposit/>}/>
                     <Route exact path="/product/checkout/:id" element={<OrderProcessing/>}/>
                     <Route exact path="/order/success" element={<OrderCreated/>}/>
+                    <Route path="/search" element={<SearchPage />} />
                     <Route path="*" element={<Main/>}/>
                 </Routes>
             </Router>

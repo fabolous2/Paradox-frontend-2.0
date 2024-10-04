@@ -15,8 +15,12 @@ const debounce = (func, delay) => {
 export function SearchBar() {
     const theme = window.Telegram.WebApp.colorScheme;
     const navigate = useNavigate();
+    const isSearchTermEmpty = (term) => term.trim() === '';
 
     const handleSearch = useCallback((searchTerm) => {
+        if (isSearchTermEmpty(searchTerm)) {
+            return;
+        }
         navigate(`/search?query=${searchTerm}`);
     }, [navigate]);
 
@@ -25,18 +29,18 @@ export function SearchBar() {
         [handleSearch]
     );
 
-    const handleFocus = () => {
+    const handleClick = () => {
         navigate('/search');
     };
 
     return (
-        <div className="search__container">
+        <div className="search__container" onClick={handleClick}>
             <img style={{filter: `invert(${theme === 'dark' ? "1" : "0"})`}} className='search__icon' src={search} alt=""/>
             <input
                 placeholder='Искать игру или товар...'
                 className="search__bar" type="text"
                 onChange={(e) => debouncedSearch(e.target.value)}
-                onFocus={handleFocus}
+                onClick={(e) => e.stopPropagation()}
             />
         </div>
     );
