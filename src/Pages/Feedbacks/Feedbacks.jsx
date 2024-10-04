@@ -41,7 +41,7 @@ export default function Feedbacks() {
     const loadFeedbacks = async () => {
       try {
         const data = await getFeedbacks();
-        const sortedFeedbacks = data.sort((a, b) => new Date(b.time) - new Date(a.time));
+        const sortedFeedbacks = data.sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime());
         setFeedbacks(sortedFeedbacks);
       } catch (error) {
         console.error('Error loading feedbacks:', error);
@@ -49,9 +49,9 @@ export default function Feedbacks() {
         setIsLoading(false);
       }
     };
-
+  
     loadFeedbacks();
-  }, [db_user]);
+  }, []);
 
   useEffect(() => {
     if (db_user) {
