@@ -12,7 +12,9 @@ function Header() {
     const navigate = useNavigate();
 
     return <div className='header'>
-        <SearchBar/>
+        <SearchBar onClick={() => {
+            navigate('/search?query=none')
+        }}/>
         <Button image_invert={theme === 'dark'} image={starOutlined} onClick={() => {
             navigate('/feedbacks')
         }}></Button>
