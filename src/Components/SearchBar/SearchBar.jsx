@@ -29,12 +29,9 @@ export function SearchBar() {
         [handleSearch]
     );
 
-    const handleClick = () => {
-        navigate('/search');
-    };
 
     return (
-        <div className="search__container" onClick={handleClick}>
+        <div className="search__container" onClick={handleSearch}>
             <img style={{filter: `invert(${theme === 'dark' ? "1" : "0"})`}} className='search__icon' src={search} alt=""/>
             <input
                 placeholder='Искать игру или товар...'
