@@ -10,7 +10,7 @@ import {styled} from "@mui/material";
 import {getProducts, getGame, getGamesAPI} from "../../db/db";
 import { useLocation } from 'react-router-dom';
 import { useTelegram } from '../../hooks/useTelegram';
-import { Game } from '../../Components/Game/Game';
+import Game from "../../Components/Game/Game";
 import CircularProgress from '@mui/material/CircularProgress';
 
 function Products() {
