@@ -60,12 +60,7 @@ export async function searchProducts(searchTerm) {
 
 
 export async function getGamesAPI() {
-  const response = await axios.get(`${API_URL}/games/`, {
-    headers: {
-      'Cache-Control': 'no-cache',
-      'Pragma': 'no-cache'
-    }
-  });
+  const response = await axios.get(`${API_URL}/games/`);
   console.log(response.data);
   return response.data;
 }

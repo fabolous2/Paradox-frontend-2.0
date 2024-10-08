@@ -7,18 +7,22 @@ import {MenuButton as BaseMenuButton} from '@mui/base/MenuButton';
 import {MenuItem as BaseMenuItem, menuItemClasses} from '@mui/base/MenuItem';
 import {blue, grey} from "@mui/material/colors";
 import {styled} from "@mui/material";
-import {getProducts, getGame} from "../../db/db";
+import {getProducts, getGame, getGamesAPI} from "../../db/db";
 import { useLocation } from 'react-router-dom';
 import { useTelegram } from '../../hooks/useTelegram';
+import { Game } from '../../Components/Game/Game';
+import CircularProgress from '@mui/material/CircularProgress';
 
 function Products() {
   const [items, setItems] = useState([]);
+  const [games, setGamesState] = useState([]);
   const [game_name, setGameName] = useState(null);
   const [sortConfig, setSortConfig] = useState({ key: 'purchase_count', direction: 'descending' });
   const location = useLocation();
   const game_id = new URLSearchParams(location.search).get("id");
   const { tg } = useTelegram();
- 
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     tg.BackButton.show();
     tg.BackButton.onClick(() => {
@@ -31,6 +35,18 @@ function Products() {
     };
   }, []);
 
+  useEffect(() => {
+    if (game_id === '14') {
+      const fetchGames = async () => {
+        const data = await getGamesAPI();
+        const filteredGames = data.filter(game => ['1', '2', '3', '4'].includes(game.id.toString()));
+        setGamesState(filteredGames);
+      };
+      fetchGames();
+      setLoading(false);
+    }
+  }, []);
+
   const sortValues = {
       'purchase_count': 'по популярности',
       'price_lower': 'по убыванию цены',
@@ -38,11 +54,14 @@ function Products() {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      const data = await getProducts(game_id);
-      setItems(data);
-    };
-    fetchData();
+    if (game_id !== '14') {
+      const fetchData = async () => {
+        const data = await getProducts(game_id);
+        setItems(data);
+      };
+      fetchData();
+      setLoading(false);
+    }
   }, [game_id]);
 
   useEffect(() => {
@@ -149,6 +168,24 @@ function Products() {
       color: var(--tg-theme-hint-color);
     }
     `);
+
+    if (loading) {
+      return (
+          <div className="flex justify-center align-items-center" style={{height: '100vh'}}>
+              <CircularProgress />
+          </div>
+      );
+    }
+
+    if (game_id === '14') {
+      return (
+        <div className="flex align-stretch flex-wrap w-100">
+              {games.map((game) => {
+                  return <Game id={game.id} name={game.name} image_url={game.image_url} key={game.id}/>;
+              })}
+        </div>
+      );
+    }
 
     return (
       <div>

@@ -34,10 +34,6 @@ function Card({item}) {
         </div>
         <div className="card__title">
             <small>{game}</small>
-            {/*<div>*/}
-            {/*    {stars.map((star, index) => <img key={index} style={{width: "15px"}} src={star === 1 ? starFilled : starOutlined}*/}
-            {/*                                     alt=""/>)}*/}
-            {/*</div>*/}
         </div>
     </div>
 }
