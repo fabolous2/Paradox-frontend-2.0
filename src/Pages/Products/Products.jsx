@@ -39,13 +39,14 @@ function Products() {
     if (game_id === '14') {
       const fetchGames = async () => {
         const data = await getGamesAPI();
+        console.log(data);
         const filteredGames = data.filter(game => ['15', '16', '17', '18'].includes(game.id.toString()));
         setGamesState(filteredGames);
       };
       fetchGames();
       setLoading(false);
     }
-  }, []);
+  }, [game_id]);
 
   const sortValues = {
       'purchase_count': 'по популярности',

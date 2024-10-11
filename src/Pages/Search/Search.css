@@ -33,3 +33,16 @@
 .text-blue:before {
     border-bottom: none !important;
 }
+
+
+.search-page .search__container {
+    width: 90%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.search-page .header {
+    width: 100%;
+    padding: 1rem;
+    box-sizing: border-box;
+}
