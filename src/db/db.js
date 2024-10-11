@@ -331,6 +331,10 @@ export async function getGame(game_id) {
     const response = await axios.get(`${API_URL}/games/${game_id}`, {
       params: {
       game_id: game_id
+    },
+    headers: {
+      'Cache-Control': 'no-cache',
+      'Pragma': 'no-cache'
     }
     });
     return response.data;
