@@ -21,7 +21,7 @@
     border-radius: var(--px);
     padding-right: var(--px);
     padding-left: calc((var(--px) / 2) + 5px);
-    max-width: 800px;
+    max-width: 850px;
     margin: 0 auto;
 }
 
