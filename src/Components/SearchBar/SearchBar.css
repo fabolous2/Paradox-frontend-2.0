@@ -5,6 +5,7 @@
     background-color: var(--tg-theme-secondary-bg-color);
     width: 100%;
     padding: calc(var(--px) / 3);
+    font-size: 16px;
 }
 
 .search__icon {
@@ -20,6 +21,8 @@
     border-radius: var(--px);
     padding-right: var(--px);
     padding-left: calc((var(--px) / 2) + 5px);
+    max-width: 800px;
+    margin: 0 auto;
 }
 
 .text-blue:before {
