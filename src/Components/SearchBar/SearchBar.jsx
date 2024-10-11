@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react';
+import React, { useState } from 'react';
 import './SearchBar.css';
 import search from '../../images/search.png';
 import {useNavigate} from "react-router-dom";
@@ -12,36 +12,29 @@ const debounce = (func, delay) => {
     };
 };
 
-export function SearchBar() {
-    const theme = window.Telegram.WebApp.colorScheme;
+
+export function SearchBar({ onSearch, initialValue = '' }) {
     const navigate = useNavigate();
-    const isSearchTermEmpty = (term) => term.trim() === '';
-
-    const handleSearch = useCallback((searchTerm) => {
-        if (isSearchTermEmpty(searchTerm)) {
-            return;
-        }
-        navigate(`/search?query=${searchTerm}`);
-    }, [navigate]);
-
-    const debouncedSearch = useCallback(
-        debounce((searchTerm) => handleSearch(searchTerm), 500),
-        [handleSearch]
-    );
-
-    // const handleClick = () => {
-    //     navigate('/search?query=none');
-    // };
-
+    const theme = window.Telegram.WebApp.colorScheme;
+    const [searchTerm, setSearchTerm] = useState(initialValue);
+  
+    const handleInputChange = (e) => {
+      const term = e.target.value;
+      setSearchTerm(term);
+      onSearch(term);
+    };
+  
     return (
-        <div className="search__container">
-            <img style={{filter: `invert(${theme === 'dark' ? "1" : "0"})`}} className='search__icon' src={search} alt=""/>
-            <input
-                placeholder='Искать игру или товар...'
-                className="search__bar" type="text"
-                onChange={(e) => debouncedSearch(e.target.value)}
-                onClick={(e) => e.stopPropagation() && navigate('/search?query=none')}
-            />
-        </div>
+      <div className="search__container">
+        <img style={{filter: `invert(${theme === 'dark' ? "1" : "0"})`}} className='search__icon' src={search} alt=""/>
+        <input
+          placeholder='Искать игру или товар...'
+          className="search__bar"
+          type="text"
+          value={searchTerm}
+          onChange={handleInputChange}
+          onClick={() => navigate('/search')}
+        />
+      </div>
     );
-}
+  }

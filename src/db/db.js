@@ -44,6 +44,9 @@ export async function sendOrder(product_id, additionalData = {}, initData) {
 
 export async function searchProducts(searchTerm) {
   try {
+    if (!searchTerm || searchTerm.trim() === '') {
+      return [];
+    }
     const response = await axios.get(`${API_URL}/products/search`, {
       params: { search: searchTerm },
       headers: {
@@ -54,9 +57,9 @@ export async function searchProducts(searchTerm) {
     return response.data;
   } catch (error) {
     console.error('Error searching products:', error);
-    throw error;
+    return [];
   }
-};
+}
 
 
 export async function getGamesAPI() {
