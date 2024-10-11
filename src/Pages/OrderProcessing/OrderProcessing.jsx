@@ -61,6 +61,10 @@ const OrderForm = () => {
           case 2:
           case 3:
           case 4:
+          case 15:
+          case 16:
+          case 17:
+          case 18:
             setFormFields(['email', 'code']);
             break;
           case 5:
@@ -140,6 +144,10 @@ const OrderForm = () => {
         case 2:
         case 3:
         case 4:
+        case 15:
+        case 16:
+        case 17:
+        case 18:
           additionalData = { email, code };
         break;
         case 5:
@@ -202,7 +210,7 @@ const OrderForm = () => {
                  product.game_id === 9 || product.game_id === 6 ? 'Почта от XBOX Live' :
                  product.game_id === 11 ? 'Почта' :
                  product.game_id === 12 ? 'Почта' :
-                 product.game_id === 1 || product.game_id === 2 || product.game_id === 3 || product.game_id === 4 ? 'Почта' : 'Почта Supercell ID'}
+                 product.game_id === 1 || product.game_id === 2 || product.game_id === 3 || product.game_id === 4 || product.game_id === 15 || product.game_id === 16 || product.game_id === 17 || product.game_id === 18 ? 'Почта' : 'Почта Supercell ID'}
               </label>
               <div style={{display: 'flex'}}>
                 <input

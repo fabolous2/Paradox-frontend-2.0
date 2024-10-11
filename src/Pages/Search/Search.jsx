@@ -3,6 +3,7 @@ import { SearchBar } from '../../Components/SearchBar/SearchBar';
 import { useTelegram } from '../../hooks/useTelegram';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import './Search.css';
 
 export function SearchPage() {
     const { tg } = useTelegram();

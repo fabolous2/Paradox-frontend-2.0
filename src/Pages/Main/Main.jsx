@@ -42,7 +42,8 @@ function Main() {
                     getGamesAPI()
                 ]);
                 setItemsState(fetchedItems);
-                setGamesState(fetchedGames);
+                const filteredGames = fetchedGames.filter(game => ![15, 16, 17, 18].includes(game.id));
+                setGamesState(filteredGames);
             } catch (error) {
                 console.error("Error fetching data:", error);
             } finally {

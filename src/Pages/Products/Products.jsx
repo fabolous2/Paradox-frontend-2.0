@@ -39,7 +39,7 @@ function Products() {
     if (game_id === '14') {
       const fetchGames = async () => {
         const data = await getGamesAPI();
-        const filteredGames = data.filter(game => ['1', '2', '3', '4'].includes(game.id.toString()));
+        const filteredGames = data.filter(game => ['15', '16', '17', '18'].includes(game.id.toString()));
         setGamesState(filteredGames);
       };
       fetchGames();
