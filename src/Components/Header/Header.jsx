@@ -24,7 +24,7 @@ export default function Header() {
             <SearchBar 
                 onSearch={handleSearchClick} 
                 onClick={() => navigate('/search')} 
-                style={{ width: '100%', maxWidth: '800px' }}
+                style={{ width: '100%', maxWidth: '850px' }}
             />
             <Button image_invert={theme === 'dark'} image={starOutlined} onClick={() => navigate('/feedbacks')} />
             <Button image_invert={theme === 'dark'} image={profile} onClick={() => navigate('/profile')} />
