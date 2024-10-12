@@ -36,6 +36,9 @@ function Products() {
   }, []);
 
   useEffect(() => {
+    setItems([]);
+    setLoading(true);
+
     if (game_id === '14') {
       const fetchGames = async () => {
         const data = await getGamesAPI();
@@ -55,6 +58,9 @@ function Products() {
   };
 
   useEffect(() => {
+    setItems([]);
+    setLoading(true);
+
     if (game_id !== '14') {
       const fetchData = async () => {
         const data = await getProducts(game_id);
@@ -181,9 +187,9 @@ function Products() {
     if (game_id === '14') {
       return (
         <div className="flex align-stretch flex-wrap w-100">
-              {games.map((game) => {
-                  return <Game id={game.id} name={game.name} image_url={game.image_url} key={game.id}/>;
-              })}
+          {games.map((game) => {
+            return <Game id={game.id} name={game.name} image_url={game.image_url} key={game.id}/>;
+          })}
         </div>
       );
     }
@@ -192,6 +198,7 @@ function Products() {
       <div>
        <div className="flex justify-between py-08 horizontal-padding">
             <h2>{game_name}</h2>
+            {items.length > 0 && (
             <div className="relative">
                 <Dropdown
                     sx={{
@@ -213,11 +220,18 @@ function Products() {
                     </Menu>
                 </Dropdown>
             </div>
+            )}
         </div>
         <div className="flex column">
-          {sortedItems.map((item) => (
+        {items.length > 0 ? (
+          sortedItems.map((item) => (
             <Card item={item} key={item.id} />
-          ))}
+          ))
+        ) : (
+          <div className="text-center py-16">
+            <p>Нет доступных товаров для этой игры.</p>
+            </div>
+          )}
         </div>
       </div>
     );

@@ -282,18 +282,15 @@ export async function removeFeedback(feedback_id, initData) {
 }
 
 
-export async function getProducts(game_id) {
-  const response = await axios.get(`${API_URL}/products/`, {
-    params: {
-      game_id: game_id
-    },
-    headers: {
-      'Cache-Control': 'no-cache',
-      'Pragma': 'no-cache'
-    }
-  });
-  return response.data;
-} 
+export function getProducts(game_id) {
+  const timestamp = new Date().getTime();
+  return axios.get(`${API_URL}/products/?game_id=${game_id}&t=${timestamp}`)
+    .then(response => response.data)
+    .catch(error => {
+      console.error('Error fetching products:', error);
+      return [];
+    });
+}
 
 
 export async function getOneProduct(product_id) {
