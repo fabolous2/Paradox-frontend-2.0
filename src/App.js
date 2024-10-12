@@ -25,9 +25,11 @@ import OrderProcessing from './Pages/OrderProcessing/OrderProcessing';
 import OrderCreated from './Pages/OrderCreated/OrderCreated';
 import { SearchPage } from './Pages/Search/Search';
 import { useTelegram } from './hooks/useTelegram';
+import { useLocation } from 'react-router-dom';
 
 function App() {
     const { expand } = useTelegram();
+    const location = useLocation();
 
     useEffect(() => {
         expand();
@@ -44,7 +46,7 @@ function App() {
                     <Route exact path="/deposit" element={<Deposit/>}/>
                     <Route exact path="/my-referral" element={<MyReferral/>}/>
                     <Route exact path="/promo-code" element={<PromoCode/>}/>
-                    <Route exact path="/game" element={<Products/>}/>
+                    <Route exact path="/game" key={location.pathname} element={<Products/>}/>
                     <Route exact path="/product/:id/" key={location.pathname} element={<ProductItem/>}/>
                     <Route exact path="/transactions" element={<TransactionDetail/>}/>
                     <Route exact path="/payment/:order_id" element={<PaymentProcessing/>}/>
