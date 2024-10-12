@@ -46,8 +46,8 @@ function App() {
                     <Route exact path="/deposit" element={<Deposit/>}/>
                     <Route exact path="/my-referral" element={<MyReferral/>}/>
                     <Route exact path="/promo-code" element={<PromoCode/>}/>
-                    <Route exact path="/game" key={location.pathname} element={<Products/>}/>
-                    <Route exact path="/product/:id/" key={location.pathname} element={<ProductItem/>}/>
+                    <Route exact path="/game" element={<Products/>}/>
+                    <Route exact path="/product/:id/" element={<ProductItem/>}/>
                     <Route exact path="/transactions" element={<TransactionDetail/>}/>
                     <Route exact path="/payment/:order_id" element={<PaymentProcessing/>}/>
                     <Route exact path="/feedbacks" element={<Feedbacks/>}/>

@@ -282,7 +282,7 @@ export async function removeFeedback(feedback_id, initData) {
 }
 
 
-export function getProducts(game_id) {
+export async function getProducts(game_id) {
   const timestamp = new Date().getTime();
   return axios.get(`${API_URL}/products/?game_id=${game_id}&t=${timestamp}`)
     .then(response => response.data)
