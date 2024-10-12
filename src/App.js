@@ -25,11 +25,9 @@ import OrderProcessing from './Pages/OrderProcessing/OrderProcessing';
 import OrderCreated from './Pages/OrderCreated/OrderCreated';
 import { SearchPage } from './Pages/Search/Search';
 import { useTelegram } from './hooks/useTelegram';
-import { useLocation } from 'react-router-dom';
 
 function App() {
     const { expand } = useTelegram();
-    const location = useLocation();
 
     useEffect(() => {
         expand();
