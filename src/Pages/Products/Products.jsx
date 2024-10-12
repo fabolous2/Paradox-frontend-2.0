@@ -198,7 +198,6 @@ function Products() {
       <div>
        <div className="flex justify-between py-08 horizontal-padding">
             <h2>{game_name}</h2>
-            {items.length > 0 && (
             <div className="relative">
                 <Dropdown
                     sx={{
@@ -220,18 +219,11 @@ function Products() {
                     </Menu>
                 </Dropdown>
             </div>
-            )}
         </div>
         <div className="flex column">
-        {items.length > 0 ? (
-          sortedItems.map((item) => (
+          {sortedItems.map((item) => (
             <Card item={item} key={item.id} />
-          ))
-        ) : (
-          <div className="text-center py-16">
-            <p>Нет доступных товаров для этой игры.</p>
-            </div>
-          )}
+          ))}
         </div>
       </div>
     );
