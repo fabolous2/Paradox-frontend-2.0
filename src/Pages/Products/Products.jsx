@@ -59,7 +59,6 @@ function Products() {
 
   useEffect(() => {
     setItems([]);
-    setLoading(true);
 
     if (game_id !== '14') {
       const fetchData = async () => {
