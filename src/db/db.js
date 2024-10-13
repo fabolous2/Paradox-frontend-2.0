@@ -10,7 +10,9 @@ export function getXPadding() {
 export function getUser(initData) {
     const db_user = axios.get(`${API_URL}/profile/`, {
       headers: {
-          'Authorization': `${initData}`
+          'Authorization': `${initData}`,
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache'
       }
     }).then(r => {
         return r.data;

@@ -68,6 +68,7 @@ function Products() {
       fetchData();
       setLoading(false);
     }
+    // return () => setItems([]);
   }, [game_id]);
 
   useEffect(() => {
