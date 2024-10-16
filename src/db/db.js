@@ -378,3 +378,12 @@ export async function purchaseProduct(product_id, additional_data, initData) {
     }
   });
 }
+
+
+export async function SupercellAuth(email, game) {
+  const response = await axios.post(`${API_URL}/supercell/login`, {
+    email: email,
+    game: game
+  });
+  return response.data;
+}

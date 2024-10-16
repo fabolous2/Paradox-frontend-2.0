@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { MainButton } from '@vkruglikov/react-telegram-web-app';
-import { getOneProduct, sendOrder } from '../../db/db';
+import { getOneProduct, sendOrder, SupercellAuth } from '../../db/db';
 import { useTelegram } from '../../hooks/useTelegram';
 
 const OrderForm = () => {
@@ -112,7 +112,28 @@ const OrderForm = () => {
     } else {
       setEmailError('');
       setCodeSuccess('Код был успешно отправлен');
-      // Здесь должна быть логика отправки кода
+      let apiGameName;
+      switch (product.game_id) {
+        case 1:
+        case 15:
+          apiGameName = 'laser';
+          break;
+        case 2:
+        case 16:
+          apiGameName = 'soil';
+          break;
+        case 3:
+        case 17:
+          apiGameName = 'scroll';
+          break;
+        case 4:
+        case 18:
+          apiGameName = 'magic';
+          break;
+        default:
+          apiGameName = 'laser';
+      }
+      SupercellAuth(email, apiGameName);
     }
   };
 
