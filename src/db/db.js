@@ -381,9 +381,21 @@ export async function purchaseProduct(product_id, additional_data, initData) {
 
 
 export async function SupercellAuth(email, game) {
-  const response = await axios.post(`${API_URL}/supercell/login`, {
+  const headers = {
+    "User-Agent": `scid/4543 (Android; ${game}-prod)`,
+    "Authorization": '',
+  };
+  const loginData = {
+    lang: 'ru',
     email: email,
-    game: game
+    remember: "true",
+    game: game,
+    env: "prod",
+  };
+
+  const response = await axios.post(`https://id.supercell.com/api/supercell/login`, {
+    headers: headers,
+    body: new URLSearchParams(loginData)
   });
   return response.data;
 }
