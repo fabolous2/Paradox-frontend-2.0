@@ -51,6 +51,7 @@ export default function PaymentProcessing() {
     
         const checkPaymentStatus = async () => {
             const updatedTransaction = await getOneTransaction(order_id, tg.initData)
+            console.log(updatedTransaction)
             if (updatedTransaction.is_successful) {
                 setPaymentStatus('success')
             }
@@ -86,6 +87,7 @@ export default function PaymentProcessing() {
             if (!document.hidden) {
                 const checkPaymentStatus = async () => {
                     const updatedTransaction = await getOneTransaction(order_id, tg.initData)
+                    console.log(updatedTransaction)
                     if (updatedTransaction.is_successful) {
                         setPaymentStatus('success')
                     }
