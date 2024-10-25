@@ -90,7 +90,7 @@ function Profile() {
                 />
                 <span 
                     className={`text-blue-500 text-sm mt-2 cursor-pointer ${db_user ? 'visible' : 'invisible'}`} 
-                    onClick={handlePhotoUpload}
+                    // onClick={handlePhotoUpload}
                 >
                     Прикрепить фото
                 </span>
