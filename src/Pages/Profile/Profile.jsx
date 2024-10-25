@@ -49,7 +49,7 @@ function Profile() {
         input.onchange = async (e) => {
             const file = e.target.files[0];
             if (file) {
-                if (file.size > 10 * 1024 * 1024) { // 10MB limit
+                if (file.size > 5 * 1024 * 1024) { // 5MB limit
                     tg.showAlert('Файл слишком большой. Пожалуйста, выберите изображение размером менее 10 МБ.');
                     return;
                 }
@@ -86,13 +86,14 @@ function Profile() {
                         e.target.onerror = null;
                         e.target.src = profilePhoto;
                     }}
-                    alt="Profile"
+                    style={{ 
+                        width: '80px', 
+                        height: '80px', 
+                        borderRadius: '50%', 
+                        objectFit: 'cover' 
+                    }}
                 />
                 <span className="upload-photo-text" onClick={handlePhotoUpload}>Прикрепить фото</span>
-            </div>
-            <div className="flex column justify-center horizontal-padding">
-                <b>{user?.first_name} {user?.last_name}</b>
-                <span style={{ color: '#888888' }}>@{user?.username}</span>
             </div>
             <div className="flex column justify-center horizontal-padding">
                 <b>{user?.first_name} {user?.last_name}</b>
