@@ -65,9 +65,9 @@ function Profile() {
         input.click();
     };
 
-    if (loading) {
+    if (loading || !db_user) {
         return (
-            <div className="flex justify-center align-items-center" style={{height: '100vh'}}>
+            <div className="flex justify-center items-center h-screen">
                 <CircularProgress />
             </div>
         );
@@ -88,7 +88,12 @@ function Profile() {
                     }}
                     alt="Profile"
                 />
-                <span className="text-blue-500 text-sm mt-2 cursor-pointer" onClick={handlePhotoUpload}>Прикрепить фото</span>
+                <span 
+                    className={`text-blue-500 text-sm mt-2 cursor-pointer ${db_user ? 'visible' : 'invisible'}`} 
+                    onClick={handlePhotoUpload}
+                >
+                    Прикрепить фото
+                </span>
             </div>
             <div className="flex flex-col justify-center px-6">
                 <b>{user?.first_name} {user?.last_name}</b>
