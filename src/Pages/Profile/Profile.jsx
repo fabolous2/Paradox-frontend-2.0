@@ -15,6 +15,7 @@ function Profile() {
     const {tg, user} = useTelegram();
     const [db_user, setDbUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [profileImageLoaded, setProfileImageLoaded] = useState(false);
  
     useEffect(() => {
       tg.BackButton.show();
@@ -56,6 +57,7 @@ function Profile() {
                 try {
                     const updatedUser = await updateProfilePhoto(file, tg.initData);
                     setDbUser(updatedUser);
+                    setProfileImageLoaded(true);
                 } catch (error) {
                     console.error('Error uploading profile photo:', error);
                     tg.showAlert('Произошла ошибка при загрузке фото. Пожалуйста, попробуйте еще раз.');
@@ -86,14 +88,17 @@ function Profile() {
                         e.target.onerror = null;
                         e.target.src = profilePhoto;
                     }}
+                    onLoad={() => setProfileImageLoaded(true)}
                     alt="Profile"
                 />
-                <span 
-                    className={`text-blue-500 text-sm mt-2 cursor-pointer ${db_user ? 'visible' : 'invisible'}`} 
-                    // onClick={handlePhotoUpload}
-                >
-                    Прикрепить фото
-                </span>
+                {profileImageLoaded && (
+                    <span 
+                        className="text-blue-500 text-sm mt-2 cursor-pointer"
+                        onClick={handlePhotoUpload}
+                    >
+                        Прикрепить фото
+                    </span>
+                )}
             </div>
             <div className="flex flex-col justify-center px-6">
                 <b>{user?.first_name} {user?.last_name}</b>
