@@ -42,15 +42,24 @@ function Profile() {
         fetchUser();
     }, [tg]);
 
-    const handlePhotoUpload = () => {
+    const handlePhotoUpload = async () => {
         const input = document.createElement('input');
         input.type = 'file';
         input.accept = 'image/*';
         input.onchange = async (e) => {
             const file = e.target.files[0];
             if (file) {
-                const updatedUser = await updateProfilePhoto(file, tg.initData);
-                setDbUser(updatedUser);
+                if (file.size > 10 * 1024 * 1024) { // 10MB limit
+                    tg.showAlert('Файл слишком большой. Пожалуйста, выберите изображение размером менее 10 МБ.');
+                    return;
+                }
+                try {
+                    const updatedUser = await updateProfilePhoto(file, tg.initData);
+                    setDbUser(updatedUser);
+                } catch (error) {
+                    console.error('Error uploading profile photo:', error);
+                    tg.showAlert('Произошла ошибка при загрузке фото. Пожалуйста, попробуйте еще раз.');
+                }
             }
         };
         input.click();
@@ -77,14 +86,13 @@ function Profile() {
                         e.target.onerror = null;
                         e.target.src = profilePhoto;
                     }}
-                    style={{ 
-                        width: '80px', 
-                        height: '80px', 
-                        borderRadius: '50%', 
-                        objectFit: 'cover' 
-                    }}
+                    alt="Profile"
                 />
                 <span className="upload-photo-text" onClick={handlePhotoUpload}>Прикрепить фото</span>
+            </div>
+            <div className="flex column justify-center horizontal-padding">
+                <b>{user?.first_name} {user?.last_name}</b>
+                <span style={{ color: '#888888' }}>@{user?.username}</span>
             </div>
             <div className="flex column justify-center horizontal-padding">
                 <b>{user?.first_name} {user?.last_name}</b>
