@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import './Profile.css'
+// import './Profile.css'
 import Button from "../../Components/Button";
 import arrowGreater from '../../images/arrow_greater.png';
 import TabScreen from "../../Components/TabScreen/TabScreen";
@@ -74,30 +74,25 @@ function Profile() {
     }
 
     return <div>
-        <div className="flex horizontal-padding vertical-padding">
+        <div className="flex px-6 py-4">
             <h3>Профиль</h3>
         </div>
-        <div className="flex horizontal-padding vertical-padding align-items-center">
-            <div className="avatar-container">
+        <div className="flex px-6 py-4 items-center">
+            <div className="flex flex-col items-center relative">
                 <img 
-                    className="avatar" 
+                    className="w-20 h-20 rounded-full object-cover"
                     src={db_user?.profile_photo || profilePhoto} 
                     onError={(e) => {
                         e.target.onerror = null;
                         e.target.src = profilePhoto;
                     }}
-                    style={{ 
-                        width: '80px', 
-                        height: '80px', 
-                        borderRadius: '50%', 
-                        objectFit: 'cover' 
-                    }}
+                    alt="Profile"
                 />
-                <span className="upload-photo-text" onClick={handlePhotoUpload}>Прикрепить фото</span>
+                <span className="text-blue-500 text-sm mt-2 cursor-pointer" onClick={handlePhotoUpload}>Прикрепить фото</span>
             </div>
-            <div className="flex column justify-center horizontal-padding">
+            <div className="flex flex-col justify-center px-6">
                 <b>{user?.first_name} {user?.last_name}</b>
-                <span style={{ color: '#888888' }}>@{user?.username}</span>
+                <span className="text-gray-500">@{user?.username}</span>
             </div>
         </div>
         <div className="flex horizontal-padding justify-between">
