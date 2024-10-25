@@ -20,6 +20,38 @@ export function getUser(initData) {
     return db_user;
 }
 
+
+export async function uploadFile(file) {
+  const formData = new FormData();
+  formData.append(`file`, file, file.name);
+
+  try {
+    const response = await axios.post(`${API_URL}/cloud-storage/upload-file`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error uploading files:', error);
+    throw error;
+  }
+}
+
+
+export async function updateProfilePhoto(photo, initData) {
+  const photo_url = await uploadFile(photo);
+
+  const response = await axios.post(`${API_URL}/profile/update-profile-photo`, {
+    photo_url: photo_url.url
+  }, {
+    headers: {
+      'Authorization': initData
+    }
+  });
+  return response.data;
+}
+
 export async function getUserFeedbacks(user_id) {
   try {
     const response = await axios.get(`${API_URL}/feedback/user/${user_id}`);

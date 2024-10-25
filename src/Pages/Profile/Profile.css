@@ -3,3 +3,17 @@
     border-radius: 50%;
     aspect-ratio: 1;
 }
+
+.avatar-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.upload-photo-text {
+    color: #3390EC;
+    font-size: 14px;
+    margin-top: 8px;
+    cursor: pointer;
+}

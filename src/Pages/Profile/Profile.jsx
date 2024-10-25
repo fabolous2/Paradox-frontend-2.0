@@ -5,9 +5,10 @@ import arrowGreater from '../../images/arrow_greater.png';
 import TabScreen from "../../Components/TabScreen/TabScreen";
 import {useNavigate} from "react-router-dom";
 import {useTelegram} from '../../hooks/useTelegram';
-import {getUser} from '../../db/db';
+import {getUser, updateProfilePhoto} from '../../db/db';
 import CircularProgress from '@mui/material/CircularProgress';
 import profilePhoto from '../../images/feedback_photo.PNG';
+
 
 function Profile() {
     const navigate = useNavigate();
@@ -41,6 +42,20 @@ function Profile() {
         fetchUser();
     }, [tg]);
 
+    const handlePhotoUpload = () => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.onchange = async (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const updatedUser = await updateProfilePhoto(file, tg.initData);
+                setDbUser(updatedUser);
+            }
+        };
+        input.click();
+    };
+
     if (loading) {
         return (
             <div className="flex justify-center align-items-center" style={{height: '100vh'}}>
@@ -54,20 +69,23 @@ function Profile() {
             <h3>Профиль</h3>
         </div>
         <div className="flex horizontal-padding vertical-padding align-items-center">
-            <img 
-                className="avatar" 
-                src={db_user?.profile_photo || profilePhoto} 
-                onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = profilePhoto;
-                }}
-                style={{ 
-                    width: '80px', 
-                    height: '80px', 
-                    borderRadius: '50%', 
-                    objectFit: 'cover' 
-                }}
-            />
+            <div className="avatar-container">
+                <img 
+                    className="avatar" 
+                    src={db_user?.profile_photo || profilePhoto} 
+                    onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = profilePhoto;
+                    }}
+                    style={{ 
+                        width: '80px', 
+                        height: '80px', 
+                        borderRadius: '50%', 
+                        objectFit: 'cover' 
+                    }}
+                />
+                <span className="upload-photo-text" onClick={handlePhotoUpload}>Прикрепить фото</span>
+            </div>
             <div className="flex column justify-center horizontal-padding">
                 <b>{user?.first_name} {user?.last_name}</b>
                 <span style={{ color: '#888888' }}>@{user?.username}</span>
