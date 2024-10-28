@@ -120,15 +120,15 @@ const OrderForm = () => {
           break;
         case 2:
         case 16:
-          apiGameName = 'soil';
+          apiGameName = 'laser';
           break;
         case 3:
         case 17:
-          apiGameName = 'scroll';
+          apiGameName = 'magic';
           break;
         case 4:
         case 18:
-          apiGameName = 'magic';
+          apiGameName = 'scroll';
           break;
         default:
           apiGameName = 'laser';
