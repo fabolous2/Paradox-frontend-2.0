@@ -83,7 +83,7 @@ function Profile() {
             <div className="flex flex-col items-center relative">
                 <img 
                     className="w-20 h-20 rounded-full object-cover"
-                    src={db_user?.profile_photo || profilePhoto} 
+                    src={user.photo_url} 
                     onError={(e) => {
                         e.target.onerror = null;
                         e.target.src = profilePhoto;

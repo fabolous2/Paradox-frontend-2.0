@@ -32,7 +32,7 @@ function MyReferral() {
             const response = await getUser(tg.initData);
             setUser(response);
             setCode(response.referral_code);
-            setLink(`https://t.me/paradoxxx_test_bot?start=${response.referral_code}`);
+            setLink(`https://t.me/paradoxshopbot?start=${response.referral_code}`);
         };
         fetchUser();
         setIsLoading(false);
